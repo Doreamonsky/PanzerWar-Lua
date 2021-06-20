@@ -1,4 +1,5 @@
 require("modes.GameModes")
+require("feature.Features")
 require("events.EventDefine")
 require("events.EventSystem")
 require("GlobalDefine")
