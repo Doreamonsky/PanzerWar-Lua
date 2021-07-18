@@ -11,11 +11,7 @@ luaGameModes = {
         description = "场景自由摄像机",
         luaLibVersion = LibVersion,
         getModeName = function(userLang)
-            if userLang == "CN" then
-                return "场景自由摄像机"
-            else
-                return "Free Camera"
-            end
+            return "场景自由摄像机"
         end,
         onStartMode = FreeCameraMode.onStartMode,
         onExitMode = FreeCameraMode.onExitMode,
@@ -29,11 +25,7 @@ luaGameModes = {
         description = "遭遇战",
         luaLibVersion = LibVersion,
         getModeName = function(userLang)
-            if userLang == "CN" then
-                return "遭遇战"
-            else
-                return "Conquer Mode"
-            end
+            return "遭遇战"
         end,
         onStartMode = SkirmishMode.onStartMode,
         onExitMode = SkirmishMode.onExitMode,
@@ -47,11 +39,7 @@ luaGameModes = {
         description = "可视化的全局管理反光贴图。",
         luaLibVersion = LibVersion,
         getModeName = function(userLang)
-            if userLang == "CN" then
-                return "反光贴图全局管理"
-            else
-                return "Mask Texture Global Manager"
-            end
+            return "反光贴图全局管理"
         end,
         onStartMode = MaskTextureMgrMode.onStartMode,
         onExitMode = MaskTextureMgrMode.onExitMode,

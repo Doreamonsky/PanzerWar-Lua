@@ -17,6 +17,11 @@ CSharpAPI = CS.ShanghaiWindy.Core.LuaCallCSharpHelper
 --- @field rank int 等级
 VehicleInfo = CS.ShanghaiWindy.Core.VehicleInfo
 
+AssetLoader = CS.ShanghaiWindy.Core.AssetLoader
+AssetBundleManager = CS.ShanghaiWindy.Core.AssetBundleManager
+MapDataManager = CS.ShanghaiWindy.Core.MapDataManager
+
+RenderPiplineType = CS.ShanghaiWindy.Core.VehicleInfo.RenderPiplineType
 --- @class GameDataManager
 --- @field PlayerTeam TeamManager.Team 玩家队伍
 GameDataManager = CS.ShanghaiWindy.Core.GameDataManager

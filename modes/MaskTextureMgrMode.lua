@@ -29,14 +29,17 @@ MaskTextureMgrMode.onStartMode = function()
                             local vehicleInfos = VehicleInfoManager.Instance.vehicleList
 
                             for i = 0, vehicleInfos.Count - 1 do
-                                local vehicleCamoData =
-                                    AchievementManager.Instance:GetVehicleCamoData(vehicleInfos[i].vehicleName)
-                                vehicleCamoData.maskTexGuid = maskTex.guid
+                                if vehicleInfos[i].renderType == RenderPiplineType.BuiltIn then
+                                    -- 只有 Built-in 管线下的模型才允许自定义反光
+                                    local vehicleCamoData =
+                                        AchievementManager.Instance:GetVehicleCamoData(vehicleInfos[i].vehicleName)
+                                    vehicleCamoData.maskTexGuid = maskTex.guid
+                                end
                             end
 
                             AchievementManager.Instance:SaveVehicleData()
                             PopMessageManager.Instance:PushNotice(
-                                "更新反光贴图至:" .. maskTex.maskDisplayName:GetDisplayName(),
+                                "更新反光贴图至:" .. maskTex.maskDisplayName:GetDisplayName() .. "，重新选择战车生效。",
                                 2
                             )
                         end
@@ -48,6 +51,8 @@ MaskTextureMgrMode.onStartMode = function()
                     function()
                         CSharpAPI.OnLuaExitModeReq:Invoke()
                         GameObject.Destroy(uiObject)
+
+                        PopMessageManager.Instance:PushNotice("重新选择战车生效反光贴图。", 5)
                     end
                 )
             end
