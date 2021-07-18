@@ -1,5 +1,6 @@
 require("modes.SkirmishMode")
 require("modes.FreeCameraMode")
+require("modes.MaskTextureMgrMode")
 require("LibVersion")
 
 -- 装甲纷争 自定义模式
@@ -17,7 +18,10 @@ luaGameModes = {
             end
         end,
         onStartMode = FreeCameraMode.onStartMode,
-        onExitMode = FreeCameraMode.onExitMode
+        onExitMode = FreeCameraMode.onExitMode,
+        isProxyBattle = function()
+            return true
+        end
     },
     {
         modName = "遭遇战（重生战）",
@@ -32,6 +36,27 @@ luaGameModes = {
             end
         end,
         onStartMode = SkirmishMode.onStartMode,
-        onExitMode = SkirmishMode.onExitMode
+        onExitMode = SkirmishMode.onExitMode,
+        isProxyBattle = function()
+            return true
+        end
+    },
+    {
+        modName = "反光贴图全局管理",
+        author = "超级哆啦酱",
+        description = "可视化的全局管理反光贴图。",
+        luaLibVersion = LibVersion,
+        getModeName = function(userLang)
+            if userLang == "CN" then
+                return "反光贴图全局管理"
+            else
+                return "Mask Texture Global Manager"
+            end
+        end,
+        onStartMode = MaskTextureMgrMode.onStartMode,
+        onExitMode = MaskTextureMgrMode.onExitMode,
+        isProxyBattle = function()
+            return false
+        end
     }
 }

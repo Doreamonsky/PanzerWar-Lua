@@ -9,6 +9,7 @@
 ---@field CreateTankPlayer fun(vehicleName:string,pos:Vector3,rot:Quaternion):TankInitSystem 创建玩家坦克
 ---@field CreateFlightPlayer fun(vehicleName:string,pos:Vector3,rot:Quaternion,isSpawnOnAirPort:boolean):FlightInitSystem 创建玩家坦克
 ---@field CreateTankBot fun(vehicleName:string,pos:Vector3,rot:Quaternion,botTeam:TeamManager.Team):TankInitSystem 创建人机坦克
+---@field OnLuaExitModeReq UnityEvent
 CSharpAPI = CS.ShanghaiWindy.Core.LuaCallCSharpHelper
 
 --- @class VehicleInfo
@@ -28,6 +29,9 @@ GameEventManager = CS.ShanghaiWindy.Core.GameEventManager
 TeamManager = CS.ShanghaiWindy.Core.TeamManager
 
 VehicleInfoManager = CS.ShanghaiWindy.Core.VehicleInfoManager
+AchievementManager = CS.ShanghaiWindy.Core.AchievementManager
+MaskTextureManager = CS.ShanghaiWindy.Core.MaskTextureManager
+PopMessageManager = CS.ShanghaiWindy.Core.PopMessageManager
 
 URPMainUIManager = CS.ShanghaiWindy.URPCore.URPMainUIManager
 URPCustomModeOfflineManager = CS.ShanghaiWindy.URPCore.URPCustomModeOfflineManager
@@ -36,6 +40,9 @@ Core = CS.ShanghaiWindy.Core
 MouseLockModule = Core.MouseLockModule
 
 -- UnityEngine
+--- @class GameObject
+--- @field Instantiate fun() 实例化
+--- @field Destroy fun()
 GameObject = CS.UnityEngine.GameObject
 AudioListener = CS.UnityEngine.AudioListener
 
