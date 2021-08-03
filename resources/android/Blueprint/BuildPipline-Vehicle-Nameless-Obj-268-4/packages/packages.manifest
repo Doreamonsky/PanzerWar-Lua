@@ -1,0 +1,16 @@
+ManifestFileVersion: 0
+CRC: 269186321
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: nameless-obj-268-4_pre.masterextramesh
+      Dependencies: {}
+    Info_1:
+      Name: nameless-obj-268-4_pre.clientextramesh
+      Dependencies: {}
+    Info_2:
+      Name: nameless-obj-268-4.data
+      Dependencies: {}
+    Info_3:
+      Name: nameless-obj-268-4.vehicleinfo
+      Dependencies: {}

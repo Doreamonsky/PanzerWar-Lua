@@ -1,0 +1,23 @@
+ManifestFileVersion: 0
+CRC: 722074651
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 51ee19b3e06722f014d890496f62ae95
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: b2afeca90ed7257442a896a74713038a
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: 46cf7a348efd2fd4a91a7f77a837be6d, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Res/Vehicles/Ground/Data/Vehicle/Nameless-Char-Future-4/Nameless-Char-Future-4.asset
+Dependencies: []

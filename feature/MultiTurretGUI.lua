@@ -43,7 +43,7 @@ MultiTurretGUI.bindEvent = function()
                                         CS.UnityEngine.GameObject.Instantiate(template, template.transform.parent, true)
 
                                     instance:GetComponent("Button").onClick:AddListener(
-                                        function(...)
+                                        function()
                                             tankfireList[i]:Fire()
                                         end
                                     )
@@ -60,10 +60,25 @@ MultiTurretGUI.bindEvent = function()
                                     table.insert(MultiTurretGUI.tankFireDict, data)
                                 end
 
+                                -- 所有 TankFire 开火按钮
+                                local instance =
+                                    CS.UnityEngine.GameObject.Instantiate(template, template.transform.parent, true)
+
+                                instance:GetComponent("Button").onClick:AddListener(
+                                    function()
+                                        for k, v in pairs(tankfireList) do
+                                            tankfireList[k]:Fire()
+                                        end
+                                    end
+                                )
+                                instance.transform:Find("Text"):GetComponent(typeof(Text)).text = "All"
+                                instance:GetComponent(typeof(Image)).fillAmount = 0
+                                --
+
                                 template:SetActive(false)
 
                                 vehicle.OnGameObjectDestroyed:AddListener(
-                                    function(...)
+                                    function()
                                         MultiTurretGUI.tankFireDict = {}
                                         Destroy(ui_instance)
                                     end

@@ -1,0 +1,35 @@
+ManifestFileVersion: 0
+CRC: 292923778
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: d43e8bd5783ea83eda76252a6b5fb5c9
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: f16a4b78a0e29c5a904618f95672a800
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 54
+  Script: {instanceID: 0}
+- Class: 64
+  Script: {instanceID: 0}
+- Class: 65
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: 2fc1ae33b3e2940949c587151edfb641, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: d0d3b844f9319444587ff9ada0bbe5a3, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: ca1c23e6443768a4a85aa01441f758bb, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Res/Cooked/DelicatedServer/Nameless-STB-1_pre.prefab
+Dependencies: []

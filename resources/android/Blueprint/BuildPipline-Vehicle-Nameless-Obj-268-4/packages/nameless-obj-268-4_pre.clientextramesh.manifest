@@ -1,0 +1,49 @@
+ManifestFileVersion: 0
+CRC: 2662335340
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 98a726390f515556a509225b777800f1
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: e22434c30ffb14258f0248c1594dcb88
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 54
+  Script: {instanceID: 0}
+- Class: 64
+  Script: {instanceID: 0}
+- Class: 65
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: 2fc1ae33b3e2940949c587151edfb641, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: d0d3b844f9319444587ff9ada0bbe5a3, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: d63b63d48e24ca94590613a5c833879d, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: ca1c23e6443768a4a85aa01441f758bb, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: ce1894377d6817f48b00f52503b8e4b3, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Res/Cooked/Nameless-Obj-268-4_pre.prefab
+Dependencies: []

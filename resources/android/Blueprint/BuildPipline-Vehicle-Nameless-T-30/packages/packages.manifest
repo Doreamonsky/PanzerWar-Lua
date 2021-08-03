@@ -1,0 +1,16 @@
+ManifestFileVersion: 0
+CRC: 3907485729
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: nameless-t-30_pre.masterextramesh
+      Dependencies: {}
+    Info_1:
+      Name: nameless-t-30_pre.clientextramesh
+      Dependencies: {}
+    Info_2:
+      Name: nameless-t-30.data
+      Dependencies: {}
+    Info_3:
+      Name: nameless-t-30.vehicleinfo
+      Dependencies: {}

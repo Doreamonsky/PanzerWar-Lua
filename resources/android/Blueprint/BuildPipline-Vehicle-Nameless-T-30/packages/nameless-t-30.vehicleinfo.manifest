@@ -1,0 +1,23 @@
+ManifestFileVersion: 0
+CRC: 2033834613
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 705e3fad5a531b4cf9f466e23b8d90f1
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: b2afeca90ed7257442a896a74713038a
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: 46cf7a348efd2fd4a91a7f77a837be6d, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Res/Vehicles/Ground/Data/Vehicle/Nameless-T-30/Nameless-T-30.asset
+Dependencies: []
