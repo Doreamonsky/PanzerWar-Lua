@@ -1,7 +1,7 @@
 require("modes.SkirmishMode")
 require("modes.FreeCameraMode")
 require("modes.MaskTextureMgrMode")
-require("LibVersion")
+require("modes.DIYCreateVehicleMode")
 
 -- 装甲纷争 自定义模式
 luaGameModes = {
@@ -43,6 +43,20 @@ luaGameModes = {
         end,
         onStartMode = MaskTextureMgrMode.onStartMode,
         onExitMode = MaskTextureMgrMode.onExitMode,
+        isProxyBattle = function()
+            return false
+        end
+    },
+    {
+        modName = "DIY 创建载具",
+        author = "超级哆啦酱",
+        description = "创建载具",
+        luaLibVersion = LibVersion,
+        getModeName = function(userLang)
+            return "DIY 创建载具"
+        end,
+        onStartMode = DIYCreateVehicleMode.onStartMode,
+        onExitMode = DIYCreateVehicleMode.onExitMode,
         isProxyBattle = function()
             return false
         end

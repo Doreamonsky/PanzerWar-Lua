@@ -33,7 +33,7 @@ SkirmishMode.onStartMode = function()
         end
     )
 
-    URPMainUIManager.Instance:UpdateVehicleList(playerVehicle, availableVehicleList)
+    URPMainUIManager.Instance:CreateVehicleUIs(playerVehicle, availableVehicleList)
 
     URPMainUIManager.Instance.OnVehicleSelected:AddListener(
         function(vehicleInfo)

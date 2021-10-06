@@ -4,7 +4,8 @@ BlueprintVehicles.onStarted = function()
     local blueprints = {
         [0] = "nameless-t-30",
         [1] = "nameless-stb-1",
-        [2] = "nameless-char-future-4"
+        [2] = "nameless-char-future-4",
+        [3] = "nameless-obj-268-4"
     }
 
     -- 暂时只有 Android 支持蓝图载具测试

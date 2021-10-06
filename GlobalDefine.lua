@@ -8,7 +8,10 @@
 ---@field RandomVehicleFromList fun(vehicleList:List<VehicleInfo>):VehicleInfo 从 vehicle 数组随机获取一个非火炮的载具
 ---@field CreateTankPlayer fun(vehicleName:string,pos:Vector3,rot:Quaternion):TankInitSystem 创建玩家坦克
 ---@field CreateFlightPlayer fun(vehicleName:string,pos:Vector3,rot:Quaternion,isSpawnOnAirPort:boolean):FlightInitSystem 创建玩家坦克
----@field CreateTankBot fun(vehicleName:string,pos:Vector3,rot:Quaternion,botTeam:TeamManager.Team):TankInitSystem 创建人机坦克
+---@field CreateTankBot fun(vehicleName:string,pos:Vector3,rot:Quaternion,botTeam:TeamManager.Team):TankInitSystem 创建人机坦克\
+---@field RequestScene fun(sceneName:string,onLoaded:System.Action):void 异步加载场景
+---@field CreateDIYVehicle fun(userDefined:DIYUserDefined,onLoaded:System.Action<GameObject, VehicleTextData>):void 异步加载DIY载具
+---@field GetGUID fun():string 创建 GUID
 ---@field OnLuaExitModeReq UnityEvent
 CSharpAPI = CS.ShanghaiWindy.Core.LuaCallCSharpHelper
 
@@ -37,6 +40,7 @@ VehicleInfoManager = CS.ShanghaiWindy.Core.VehicleInfoManager
 AchievementManager = CS.ShanghaiWindy.Core.AchievementManager
 MaskTextureManager = CS.ShanghaiWindy.Core.MaskTextureManager
 PopMessageManager = CS.ShanghaiWindy.Core.PopMessageManager
+DIYDataManager = CS.ShanghaiWindy.Core.DIYDataManager
 
 URPMainUIManager = CS.ShanghaiWindy.URPCore.URPMainUIManager
 URPCustomModeOfflineManager = CS.ShanghaiWindy.URPCore.URPCustomModeOfflineManager
@@ -44,14 +48,26 @@ URPCustomModeOfflineManager = CS.ShanghaiWindy.URPCore.URPCustomModeOfflineManag
 Core = CS.ShanghaiWindy.Core
 MouseLockModule = Core.MouseLockModule
 
+--- @class DIYUserDefined
+--- @field rules List<Rule>
+DIYUserDefined = CS.ShanghaiWindy.Core.Data.DIYUserDefined
+
+--- @class DIYRule
+--- @field ruleGuid string
+--- @field itemGuid string
+--- @field isMain boolean
+--- @field parentRuleGuid string
+--- @field targetSlotIndex number
+DIYRule = CS.ShanghaiWindy.Core.Data.DIYUserDefined.Rule
+
 -- UnityEngine
 --- @class GameObject
 --- @field Instantiate fun() 实例化
 --- @field Destroy fun()
 GameObject = CS.UnityEngine.GameObject
 AudioListener = CS.UnityEngine.AudioListener
+Vector3 = CS.UnityEngine.Vector3
 
 -- UGUI
 Text = CS.UnityEngine.UI.Text
 Image = CS.UnityEngine.UI.Image
-Destroy = CS.UnityEngine.GameObject.Destroy

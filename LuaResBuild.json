@@ -1,0 +1,16 @@
+{
+    "modNames": [
+        "BuildPipline-Lua-MaskTexMgrCanvas",
+        "BuildPipline-Lua-MultiFireCanvas"
+    ],
+    "copyInfo": [
+        {
+            "platform": "Android",
+            "dstDir": "D:/Projects/LuaProject/resources/android"
+        },
+        {
+            "platform": "StandaloneWindows64",
+            "dstDir": "D:/Projects/LuaProject/resources/windows"
+        }
+    ]
+}
