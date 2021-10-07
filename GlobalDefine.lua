@@ -60,6 +60,8 @@ DIYUserDefined = CS.ShanghaiWindy.Core.Data.DIYUserDefined
 --- @field targetSlotIndex number
 DIYRule = CS.ShanghaiWindy.Core.Data.DIYUserDefined.Rule
 
+DIYDataEnum = CS.ShanghaiWindy.Core.Data.DIYDataEnum
+
 -- UnityEngine
 --- @class GameObject
 --- @field Instantiate fun() 实例化
