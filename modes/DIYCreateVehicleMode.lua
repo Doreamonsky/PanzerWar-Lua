@@ -43,6 +43,9 @@ this.onUtilCreated = function(root)
     this.saveBtn = this.fileSavePop.transform:Find("SaveBtn"):GetComponent("Button")
 
     this.fileLoadPop = root.transform:Find("DIYCreateVehicleCanvas/FileLoadPop")
+    this.fileLoadCloseBtn = this.fileLoadPop:Find("Scroll View/Viewport/Content/Title/CloseBtn"):GetComponent("Button")
+    this.fileLoadTemplate = this.fileLoadPop:Find("Scroll View/Viewport/Content/Template")
+    this.fileLoadTemplate.gameObject:SetActive(false)
 
     -- 按钮 Binding
     this.exitActionBtn.onClick:AddListener(
@@ -63,6 +66,7 @@ this.onUtilCreated = function(root)
 
     this.loadActionBtn.onClick:AddListener(
         function()
+            this.refreshFileLoadList()
             this.fileLoadPop.gameObject:SetActive(true)
         end
     )
@@ -77,6 +81,12 @@ this.onUtilCreated = function(root)
         function()
             local definedName = this.fileNameInput.text
             this.saveUserDefine(definedName)
+        end
+    )
+
+    this.fileLoadCloseBtn.onClick:AddListener(
+        function()
+            this.fileLoadPop.gameObject:SetActive(false)
         end
     )
 
@@ -99,6 +109,9 @@ this.onUtilCreated = function(root)
 
     --- 已装配件UI物体列表
     this.installedEquipUIList = {}
+
+    --- 加载UI物件列表
+    this.fileLoadUIList = {}
 
     --- 创建DIY载具的中间件
     this.bindingData = nil
@@ -325,25 +338,7 @@ end
 --- 删除配件
 this.unequipSlot = function(itemGuid)
     this.deleteRule(itemGuid)
-    GameObject.Destroy(this.instanceMesh)
-
-    CSharpAPI.CreateNewDIYVehicle(
-        this.userDefined,
-        function(instanceMesh, textData, bindingData)
-            this.bindingData = bindingData
-
-            this.refreshEquipSlotInteractBtn()
-            this.refreshInstalledEquipList()
-
-            this.instanceMesh = instanceMesh
-
-            if this.userDefined.rules.Count == 0 then
-                for k, v in pairs(this.hullUIList) do
-                    v.gameObject:SetActive(true)
-                end
-            end
-        end
-    )
+    this.loadNewUserDefine(this.userDefined)
 end
 
 --- 切换是否显示已安装的配件
@@ -376,6 +371,79 @@ this.saveUserDefine = function(defineName)
     -- C# 侧会检查载具是否拥有并设置 MainTurret 与 MainGun.
     -- 若载具想可以正常运行，则必须拥有规范父子结构的 Hull,Turret,Gun.
     CommonDataManager.Instance:SetDIYUserDefined(this.userDefined)
+
+    this.fileSavePop.gameObject:SetActive(false)
+end
+
+--- 删除 UserDefine
+this.deleteUserDefine = function(definedName)
+    -- 通知 C# 存储侧删除该 UserDefine
+    CommonDataManager.Instance:DeleteDIYUserDefined(definedName)
+end
+
+--- 加载新的 UserDefine
+--- @param userDefine DIYUserDefined
+this.loadNewUserDefine = function(userDefine)
+    -- 删除当前的预览
+    if this.instanceMesh ~= nil then
+        GameObject.Destroy(this.instanceMesh)
+    end
+
+    this.userDefined = userDefine
+
+    CSharpAPI.CreateNewDIYVehicle(
+        this.userDefined,
+        function(instanceMesh, textData, bindingData)
+            this.bindingData = bindingData
+            this.refreshEquipSlotInteractBtn()
+
+            this.instanceMesh = instanceMesh
+
+            for k, v in pairs(this.hullUIList) do
+                v.gameObject:SetActive(false)
+            end
+
+            this.refreshInstallableEquipList()
+            this.refreshInstalledEquipList()
+            this.toggleEquipList(true)
+        end
+    )
+end
+
+--- 更新存档页面列表
+this.refreshFileLoadList = function()
+    for k, v in pairs(this.fileLoadUIList) do
+        GameObject.Destroy(v.gameObject)
+    end
+    this.fileLoadUIList = {}
+
+    -- 遍历 UserDefine
+    local userDefines = CommonDataManager.Instance:GetDIYUserDefineds()
+
+    for k, v in pairs(userDefines) do
+        --- @type DIYUserDefined
+        local userDefine = v
+        local instance = GameObject.Instantiate(this.fileLoadTemplate, this.fileLoadTemplate.transform.parent, true)
+        instance.transform:Find("Title"):GetComponent("Text").text = userDefine.definedName
+        instance.transform:Find("LoadBtn"):GetComponent("Button").onClick:AddListener(
+            function()
+                -- 覆盖当前的 UserDefine
+                this.loadNewUserDefine(userDefine)
+                this.fileNameInput.text = userDefine.definedName
+                this.fileLoadPop.gameObject:SetActive(false)
+            end
+        )
+        instance.transform:Find("DeleteBtn"):GetComponent("Button").onClick:AddListener(
+            function()
+                -- 删除当前的 UserDefine
+                this.deleteUserDefine(userDefine.definedName)
+                this.refreshFileLoadList()
+            end
+        )
+        instance.gameObject:SetActive(true)
+
+        table.insert(this.fileLoadUIList, instance)
+    end
 end
 
 this.onExitMode = function()
