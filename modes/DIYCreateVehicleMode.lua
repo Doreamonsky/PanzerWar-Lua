@@ -34,14 +34,65 @@ this.onUtilCreated = function(root)
     this.slotDisableMask = root.transform:Find("DIYCreateVehicleCanvas/SlotDisableMask")
     this.slotDisableMask.gameObject:SetActive(false)
 
+    this.exitActionBtn = root.transform:Find("DIYCreateVehicleCanvas/FileAction/ExitBtn"):GetComponent("Button")
+    this.saveActionBtn = root.transform:Find("DIYCreateVehicleCanvas/FileAction/SaveBtn"):GetComponent("Button")
+    this.loadActionBtn = root.transform:Find("DIYCreateVehicleCanvas/FileAction/LoadBtn"):GetComponent("Button")
+
+    this.fileSavePop = root.transform:Find("DIYCreateVehicleCanvas/FileSavePop")
+    this.fileNameInput = this.fileSavePop.transform:Find("FileNameInput"):GetComponent("InputField")
+    this.saveBtn = this.fileSavePop.transform:Find("SaveBtn"):GetComponent("Button")
+
+    this.fileLoadPop = root.transform:Find("DIYCreateVehicleCanvas/FileLoadPop")
+
+    -- 按钮 Binding
+    this.exitActionBtn.onClick:AddListener(
+        function()
+            CSharpAPI.RequestScene(
+                "Garage",
+                function()
+                end
+            )
+        end
+    )
+
+    this.saveActionBtn.onClick:AddListener(
+        function()
+            this.fileSavePop.gameObject:SetActive(true)
+        end
+    )
+
+    this.loadActionBtn.onClick:AddListener(
+        function()
+            this.fileLoadPop.gameObject:SetActive(true)
+        end
+    )
+
+    this.fileSavePop:GetComponent("Button").onClick:AddListener(
+        function()
+            this.fileSavePop.gameObject:SetActive(false)
+        end
+    )
+
+    this.saveBtn.onClick:AddListener(
+        function()
+            local definedName = this.fileNameInput.text
+            this.saveUserDefine(definedName)
+        end
+    )
+
     this.slotDisableMask:GetComponent("Button").onClick:AddListener(
         function()
             this.toggleEquipList(true)
         end
     )
 
+    -- 逻辑数据
+
     --- Slot 增加配件交互UI按钮列表
     this.slotModifyBtnList = {}
+
+    --- 车体 UI 泪飙
+    this.hullUIList = {}
 
     --- 可装的配件UI物体列表
     this.installableEquipUIList = {}
@@ -55,22 +106,7 @@ this.onUtilCreated = function(root)
     --- 实例载具模型
     this.instanceMesh = nil
 
-    this.refreshInstallableEquipList()
-
-    this.addRule(CSharpAPI.GetGUID(), "d526381d-f6e4-42fc-9f6b-548866c23241", true, nil, 0)
-    -- this.addRule(2, "ee45c582-3a2f-4f50-b674-46bc62edf381", true, 1, 0)
-    -- this.addRule(3, "5c02c009-51bc-4260-b00e-4dbf26d9325e", true, 2, 0)
-    -- this.addRule(4, "ee45c582-3a2f-4f50-b674-46bc62edf381", false, 1, 1)
-
-    CSharpAPI.CreateNewDIYVehicle(
-        this.userDefined,
-        function(instanceMesh, textData, bindingData)
-            this.bindingData = bindingData
-            this.refreshEquipSlotInteractBtn()
-
-            this.instanceMesh = instanceMesh
-        end
-    )
+    this.createHullList()
 end
 
 --- 创建右侧的配件显示
@@ -168,8 +204,47 @@ this.refreshEquipSlotInteractBtn = function()
     end
 end
 
+this.createHullList = function()
+    for index, baseData in pairs(DIYDataManager.Instance:GetHullDataList()) do
+        local instance = this.createEquipUIObject(baseData)
+
+        instance.transform:Find("InstallBtn").gameObject:SetActive(true)
+        instance.transform:Find("InstallBtn"):GetComponent("Button").onClick:AddListener(
+            function()
+                this.addRule(CSharpAPI.GetGUID(), baseData.itemGUID, true, nil, 0)
+
+                CSharpAPI.CreateNewDIYVehicle(
+                    this.userDefined,
+                    function(instanceMesh, textData, bindingData)
+                        this.bindingData = bindingData
+                        this.refreshEquipSlotInteractBtn()
+
+                        this.instanceMesh = instanceMesh
+
+                        for k, v in pairs(this.hullUIList) do
+                            v.gameObject:SetActive(false)
+                        end
+
+                        this.refreshInstallableEquipList()
+                        this.refreshInstalledEquipList()
+                        this.toggleEquipList(true)
+                    end
+                )
+            end
+        )
+
+        table.insert(this.hullUIList, instance)
+    end
+end
+
 this.refreshInstallableEquipList = function()
-    for index, baseData in pairs(DIYDataManager.Instance:GetEquipableData()) do
+    for k, v in pairs(this.installableEquipUIList) do
+        GameObject.Destroy(v.gameObject)
+    end
+
+    this.installableEquipUIList = {}
+
+    for index, baseData in pairs(DIYDataManager.Instance:GetEquipableDataList()) do
         local instance = this.createEquipUIObject(baseData)
 
         instance.transform:Find("InstallBtn").gameObject:SetActive(true)
@@ -207,7 +282,6 @@ this.refreshInstalledEquipList = function()
 end
 
 --- 增加规则 （比较简单）
---- TODO: isMain 放入这里计算
 this.addRule = function(ruleGuid, itemGuid, isMain, parentRuleGuid, targetSlotIndex)
     local rule = DIYRule()
     rule.ruleGuid = ruleGuid
@@ -232,7 +306,6 @@ end
 
 --- 安装配件
 this.equipSlot = function(itemGuid)
-    -- TODO: isMain 逻辑
     this.addRule(CSharpAPI.GetGUID(), itemGuid, false, this.curSlotOwnerRuleId, this.curSlotIndex)
 
     CSharpAPI.UpdateDIYVehicle(
@@ -263,6 +336,12 @@ this.unequipSlot = function(itemGuid)
             this.refreshInstalledEquipList()
 
             this.instanceMesh = instanceMesh
+
+            if this.userDefined.rules.Count == 0 then
+                for k, v in pairs(this.hullUIList) do
+                    v.gameObject:SetActive(true)
+                end
+            end
         end
     )
 end
@@ -279,6 +358,24 @@ this.toggleEquipList = function(showInstalled)
     end
 
     this.slotDisableMask.gameObject:SetActive(not showInstalled)
+end
+
+this.saveUserDefine = function(defineName)
+    -- 保存名称检查
+    if not defineName or defineName == "" then
+        PopMessageManager.Instance:PushPopup(
+            "请输入存档名称.",
+            function()
+            end
+        )
+        return
+    end
+
+    this.userDefined.definedName = defineName
+
+    -- C# 侧会检查载具是否拥有并设置 MainTurret 与 MainGun.
+    -- 若载具想可以正常运行，则必须拥有规范父子结构的 Hull,Turret,Gun.
+    CommonDataManager.Instance:SetDIYUserDefined(this.userDefined)
 end
 
 this.onExitMode = function()
