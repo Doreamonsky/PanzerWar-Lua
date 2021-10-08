@@ -128,6 +128,10 @@ this.createEquipUIObject = function(baseData)
     instance.transform:Find("Title"):GetComponent("Text").text = baseData.displayName:GetDisplayName()
     instance.transform:Find("Description"):GetComponent("Text").text = baseData.description:GetDisplayName()
     instance.transform:Find("Type"):GetComponent("Text").text = this.getBaseDataTypeText(baseData:GetDataType())
+
+    if baseData.icon ~= nil then
+        instance.transform:Find("Icon"):GetComponent("Image").sprite = baseData.icon
+    end
     instance.gameObject:SetActive(true)
     return instance
 end
@@ -370,7 +374,7 @@ this.saveUserDefine = function(defineName)
 
     -- C# 侧会检查载具是否拥有并设置 MainTurret 与 MainGun.
     -- 若载具想可以正常运行，则必须拥有规范父子结构的 Hull,Turret,Gun.
-    CommonDataManager.Instance:SetDIYUserDefined(this.userDefined)
+    UserDIYDataManager.Instance:SetDIYUserDefined(this.userDefined)
 
     this.fileSavePop.gameObject:SetActive(false)
 end
@@ -378,7 +382,7 @@ end
 --- 删除 UserDefine
 this.deleteUserDefine = function(definedName)
     -- 通知 C# 存储侧删除该 UserDefine
-    CommonDataManager.Instance:DeleteDIYUserDefined(definedName)
+    UserDIYDataManager.Instance:DeleteDIYUserDefined(definedName)
 end
 
 --- 加载新的 UserDefine
@@ -400,7 +404,7 @@ this.loadNewUserDefine = function(userDefine)
             this.instanceMesh = instanceMesh
 
             for k, v in pairs(this.hullUIList) do
-                v.gameObject:SetActive(false)
+                v.gameObject:SetActive(this.userDefined.rules.Count == 0)
             end
 
             this.refreshInstallableEquipList()
@@ -418,7 +422,7 @@ this.refreshFileLoadList = function()
     this.fileLoadUIList = {}
 
     -- 遍历 UserDefine
-    local userDefines = CommonDataManager.Instance:GetDIYUserDefineds()
+    local userDefines = UserDIYDataManager.Instance:GetDIYUserDefineds()
 
     for k, v in pairs(userDefines) do
         --- @type DIYUserDefined
@@ -436,8 +440,15 @@ this.refreshFileLoadList = function()
         instance.transform:Find("DeleteBtn"):GetComponent("Button").onClick:AddListener(
             function()
                 -- 删除当前的 UserDefine
-                this.deleteUserDefine(userDefine.definedName)
-                this.refreshFileLoadList()
+                PopMessageManager.Instance:PushPopup(
+                    "是否确定删除当前的存档?",
+                    function(state)
+                        if state then
+                            this.deleteUserDefine(userDefine.definedName)
+                            this.refreshFileLoadList()
+                        end
+                    end
+                )
             end
         )
         instance.gameObject:SetActive(true)

@@ -80,7 +80,7 @@ MultiTurretGUI.bindEvent = function()
                                 vehicle.OnGameObjectDestroyed:AddListener(
                                     function()
                                         MultiTurretGUI.tankFireDict = {}
-                                        Destroy(ui_instance)
+                                        GameObject.Destroy(ui_instance)
                                     end
                                 )
                             end

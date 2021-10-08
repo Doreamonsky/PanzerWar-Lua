@@ -30,6 +30,7 @@ RenderPiplineType = CS.ShanghaiWindy.Core.VehicleInfo.RenderPiplineType
 GameDataManager = CS.ShanghaiWindy.Core.GameDataManager
 
 CommonDataManager = CS.ShanghaiWindy.Core.CommonDataManager
+UserDIYDataManager = CS.ShanghaiWindy.Core.UserDIYDataManager
 
 GameEventManager = CS.ShanghaiWindy.Core.GameEventManager
 
