@@ -1,16 +1,51 @@
 {
-    "modNames": [
-        "BuildPipline-Lua-MaskTexMgrCanvas",
-        "BuildPipline-Lua-MultiFireCanvas"
-    ],
-    "copyInfo": [
+    "infos": [
         {
-            "platform": "Android",
-            "dstDir": "D:/Projects/LuaProject/resources/android"
+            "modNames": [
+                "BuildPipline-Lua-MaskTexMgrCanvas",
+                "BuildPipline-Lua-MultiFireCanvas",
+                "BuildPipline-DIYCreateVehicleUtil"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/LuaProject/resources/android/modes"
+                },
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/LuaProject/resources/windows/modes"
+                }
+            ]
         },
         {
-            "platform": "StandaloneWindows64",
-            "dstDir": "D:/Projects/LuaProject/resources/windows"
+            "modNames": [
+                "BuildPipline-Vehicle-DIY-OfficialSets"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/LuaProject/resources/android/default/diy"
+                },
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/diy"
+                }
+            ]
+        },
+        {
+            "modNames": [
+                "BuildPipline-Map-CountrySide"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/LuaProject/resources/android/default/map"
+                },
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/map"
+                }
+            ]
         }
     ]
 }

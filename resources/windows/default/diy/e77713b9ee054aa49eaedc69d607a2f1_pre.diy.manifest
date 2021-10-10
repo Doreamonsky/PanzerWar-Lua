@@ -1,0 +1,23 @@
+ManifestFileVersion: 0
+CRC: 2331662901
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: da25dde4dfda18997ab9143ba4ba8fbf
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: f73c9562043c3f912603f83cc8ac90c2
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: a3be57bd72fa3de4a8b5f8e76c42d912, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Res/Vehicles/Ground/Data/DIY/Item/Middleware/e77713b9ee054aa49eaedc69d607a2f1_pre.prefab
+Dependencies: []

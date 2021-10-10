@@ -1,0 +1,45 @@
+ManifestFileVersion: 0
+CRC: 3687869023
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 1ba8d8da30f3362266dde276110b3469
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 5dc48eb3888ec3f7be16074c0d2a906a
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 54
+  Script: {instanceID: 0}
+- Class: 64
+  Script: {instanceID: 0}
+- Class: 65
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: d0d3b844f9319444587ff9ada0bbe5a3, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: ca1c23e6443768a4a85aa01441f758bb, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 2a82e77b679671049a9770567b7f7f15, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Res/Vehicles/Ground/Data/DIY/Turret/ee45c5823a2f4f50b67446bc62edf381_pre.prefab
+Dependencies: []

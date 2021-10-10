@@ -1,0 +1,10 @@
+ManifestFileVersion: 0
+CRC: 3742262423
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: countryside.scene
+      Dependencies: {}
+    Info_1:
+      Name: map-countryside.mapdata
+      Dependencies: {}

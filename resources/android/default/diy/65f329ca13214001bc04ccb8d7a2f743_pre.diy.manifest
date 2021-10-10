@@ -1,0 +1,45 @@
+ManifestFileVersion: 0
+CRC: 2272465161
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: dd38eeb09d885b16ab75779a17629bcf
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 9860a2762602ccde1834077a28a65b5a
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 54
+  Script: {instanceID: 0}
+- Class: 64
+  Script: {instanceID: 0}
+- Class: 65
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: d0d3b844f9319444587ff9ada0bbe5a3, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: ca1c23e6443768a4a85aa01441f758bb, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: aa256f2c0df830144adfee79e2880380, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Res/Vehicles/Ground/Data/DIY/Hull/C1-Ariete/65f329ca13214001bc04ccb8d7a2f743_pre.prefab
+Dependencies: []

@@ -1,0 +1,37 @@
+ManifestFileVersion: 0
+CRC: 3305988389
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: a8056e0e-58c5-4c6d-9e80-c3bec96c2529.diyassemble
+      Dependencies: {}
+    Info_1:
+      Name: 5c02c00951bc4260b00e4dbf26d9325e_pre.diy
+      Dependencies: {}
+    Info_2:
+      Name: 9488bcaafd1845d49fb5841261c3fc91_pre.diy
+      Dependencies: {}
+    Info_3:
+      Name: 03d28e89dba84fb385d69fe4e238efb6_pre.diy
+      Dependencies: {}
+    Info_4:
+      Name: 6ea2a0c1a1dc4dec92e22676d1adca3d_pre.diy
+      Dependencies: {}
+    Info_5:
+      Name: 65f329ca13214001bc04ccb8d7a2f743_pre.diy
+      Dependencies: {}
+    Info_6:
+      Name: 2155703253b9451b85140e9263cdd5e7_pre.diy
+      Dependencies: {}
+    Info_7:
+      Name: d526381df6e442fc9f6b548866c23241_pre.diy
+      Dependencies: {}
+    Info_8:
+      Name: e77713b9ee054aa49eaedc69d607a2f1_pre.diy
+      Dependencies: {}
+    Info_9:
+      Name: ee45c5823a2f4f50b67446bc62edf381_pre.diy
+      Dependencies: {}
+    Info_10:
+      Name: 03f1e1acc1fe477b85dccbb9a03add09_pre.diy
+      Dependencies: {}
