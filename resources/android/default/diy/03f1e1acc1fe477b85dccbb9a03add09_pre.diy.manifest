@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 3970477660
+CRC: 1166652936
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: a55e55e6f0d9561444635fa132381ef1
+    Hash: 2bc6ba31889aa1b09f9f303c99e6cd0d
   TypeTreeHash:
     serializedVersion: 2
     Hash: 5dc48eb3888ec3f7be16074c0d2a906a
@@ -41,5 +41,5 @@ ClassTypes:
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
-- Assets/Res/Vehicles/Ground/Data/DIY/Turret/03f1e1acc1fe477b85dccbb9a03add09_pre.prefab
+- Assets/Res/Vehicles/Ground/Data/DIY/Turret/KV-2/03f1e1acc1fe477b85dccbb9a03add09_pre.prefab
 Dependencies: []

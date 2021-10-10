@@ -29,7 +29,8 @@ SkirmishMode.onStartMode = function()
     local availableVehicleList =
         VehicleInfoManager.Instance:GetAllVehicleList():FindAll(
         function(x)
-            return playerVehicle.rank - lowerRank <= x.rank and x.rank <= playerVehicle.rank + upperRank
+            return playerVehicle:GetRank() - lowerRank <= x:GetRank() and
+                x:GetRank() <= playerVehicle:GetRank() + upperRank
         end
     )
 

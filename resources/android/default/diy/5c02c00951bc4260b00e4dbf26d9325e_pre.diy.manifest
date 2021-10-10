@@ -1,5 +1,5 @@
 ManifestFileVersion: 0
-CRC: 4079841589
+CRC: 1420525841
 Hashes:
   AssetFileHash:
     serializedVersion: 2
@@ -37,5 +37,5 @@ ClassTypes:
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
-- Assets/Res/Vehicles/Ground/Data/DIY/Gun/5c02c00951bc4260b00e4dbf26d9325e_pre.prefab
+- Assets/Res/Vehicles/Ground/Data/DIY/Gun/KV-2/5c02c00951bc4260b00e4dbf26d9325e_pre.prefab
 Dependencies: []

@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 3695734987
+CRC: 1642174309
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: ad99809b97d4a365ba2440c58f940f80
+    Hash: 5405aebc085ac30ccd91eaca9e36ed61
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 5dc48eb3888ec3f7be16074c0d2a906a
+    Hash: 9860a2762602ccde1834077a28a65b5a
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -36,10 +36,10 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 11500000, guid: ca1c23e6443768a4a85aa01441f758bb, type: 3}
 - Class: 114
-  Script: {fileID: 11500000, guid: 2a82e77b679671049a9770567b7f7f15, type: 3}
+  Script: {fileID: 11500000, guid: aa256f2c0df830144adfee79e2880380, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
-- Assets/Res/Vehicles/Ground/Data/DIY/Turret/KV-2/ee45c5823a2f4f50b67446bc62edf381_pre.prefab
+- Assets/Res/Vehicles/Ground/Data/DIY/Hull/M4A1/503b3afcbdb44eeda390df8553f8f195_pre.prefab
 Dependencies: []
