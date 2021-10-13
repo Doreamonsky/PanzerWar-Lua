@@ -28,6 +28,7 @@ this.onUtilCreated = function(root)
     this.slotModifyBtnTemplate = root.transform:Find("DIYCreateVehicleCanvas/Slots/SlotModifyBtn")
     this.slotModifyBtnTemplate.gameObject:SetActive(false)
 
+    this.equipList = root.transform:Find("DIYCreateVehicleCanvas/EquipList")
     this.equipTemplate = root.transform:Find("DIYCreateVehicleCanvas/EquipList/Scroll View/Viewport/Content/Template")
     this.equipTemplate.gameObject:SetActive(false)
 
@@ -46,6 +47,9 @@ this.onUtilCreated = function(root)
     this.fileLoadCloseBtn = this.fileLoadPop:Find("Scroll View/Viewport/Content/Title/CloseBtn"):GetComponent("Button")
     this.fileLoadTemplate = this.fileLoadPop:Find("Scroll View/Viewport/Content/Template")
     this.fileLoadTemplate.gameObject:SetActive(false)
+
+    this.upBtn = root.transform:Find("DIYCreateVehicleCanvas/CameraAction/UpBtn")
+    this.downBtn = root.transform:Find("DIYCreateVehicleCanvas/CameraAction/DownBtn")
 
     -- 按钮 Binding
     this.exitActionBtn.onClick:AddListener(
@@ -96,6 +100,25 @@ this.onUtilCreated = function(root)
         end
     )
 
+    this.upBtn:GetComponent("Button").onClick:AddListener(
+        function()
+            this.makeCameraTargetDelta(Vector3.up)
+        end
+    )
+
+    this.downBtn:GetComponent("Button").onClick:AddListener(
+        function()
+            this.makeCameraTargetDelta(-Vector3.up)
+        end
+    )
+
+    -- 场景数据
+    --- @type Transform 摄像机焦点 Transform
+    this.cameraTargetTrans = root.transform:Find("CameraPoint")
+    --- @type Vector3 摄像机焦点初始位置
+    this.cameraDelta = Vector3.zero
+    this.cameraTargetOriginalPos = root.transform:Find("CameraPoint").position
+
     -- 逻辑数据
 
     --- Slot 增加配件交互UI按钮列表
@@ -119,7 +142,32 @@ this.onUtilCreated = function(root)
     --- 实例载具模型
     this.instanceMesh = nil
 
+    this.toggleEquipListSize(true)
     this.createHullList()
+end
+
+--- 切换装备列表大小
+--- @param isExpand boolean 是否放大
+this.toggleEquipListSize = function(isExpand)
+    if isExpand then
+        this.equipList.transform.anchoredPosition = Vector2(0, 0)
+        this.equipList.transform.sizeDelta = Vector2(0, 0)
+    else
+        this.equipList.transform.anchoredPosition = Vector2(400, 0)
+        this.equipList.transform.sizeDelta = Vector2(-400, 0)
+    end
+end
+
+--- 调整摄像机聚焦位置
+--- @param delta Vector3 位置增量
+this.makeCameraTargetDelta = function(delta)
+    this.cameraDelta = this.cameraDelta + delta
+
+    if this.cameraDelta.y < 0 then
+        this.cameraDelta = Vector3(this.cameraDelta.x, 0, this.cameraDelta.z)
+    end
+
+    this.cameraTargetTrans.position = this.cameraDelta + this.cameraTargetOriginalPos
 end
 
 --- 创建右侧的配件显示
@@ -128,6 +176,7 @@ this.createEquipUIObject = function(baseData)
     instance.transform:Find("Title"):GetComponent("Text").text = baseData.displayName:GetDisplayName()
     instance.transform:Find("Description"):GetComponent("Text").text = baseData.description:GetDisplayName()
     instance.transform:Find("Type"):GetComponent("Text").text = this.getBaseDataTypeText(baseData:GetDataType())
+    instance.transform:Find("Type"):GetComponent("Text").color = this.getBaseDataTypeColor(baseData:GetDataType())
 
     if baseData.icon ~= nil then
         instance.transform:Find("Icon"):GetComponent("Image").sprite = baseData.icon
@@ -150,6 +199,22 @@ this.getBaseDataTypeText = function(dataType)
     end
 
     return text
+end
+
+this.getBaseDataTypeColor = function(dataType)
+    local color = Color(0.6213613, 1, 0)
+
+    if dataType == DIYDataEnum.Hull then
+        color = color
+    elseif dataType == DIYDataEnum.Turret then
+        color = Color(0, 0.451296, 0.9803922)
+    elseif dataType == DIYDataEnum.Gun then
+        color = Color(0.9811321, 0.1496851, 0)
+    elseif dataType == DIYDataEnum.Item then
+        color = Color(0, 0.9803922, 0.9395363)
+    end
+
+    return color
 end
 
 --- 刷新 Slot 添加的 Icon
@@ -260,8 +325,17 @@ this.refreshInstallableEquipList = function()
     end
 
     this.installableEquipUIList = {}
+    local installableEquips = DIYDataManager.Instance:GetEquipableDataList()
 
-    for index, baseData in pairs(DIYDataManager.Instance:GetEquipableDataList()) do
+    -- 根据类型排序
+    -- TODO: 简化排序 This type must add to CSharpCallLua: System.Comparison<ShanghaiWindy.Core.Data.DIYBaseData>
+    -- installableEquips:Sort(
+    --     function(a, b)
+    --         return a:GetDataType():CompareTo(b:GetDataType())
+    --     end
+    -- )
+
+    for index, baseData in pairs(installableEquips) do
         local instance = this.createEquipUIObject(baseData)
 
         instance.transform:Find("InstallBtn").gameObject:SetActive(true)
@@ -357,6 +431,7 @@ this.toggleEquipList = function(showInstalled)
     end
 
     this.slotDisableMask.gameObject:SetActive(not showInstalled)
+    this.toggleEquipListSize(not showInstalled)
 end
 
 this.saveUserDefine = function(defineName)
@@ -376,6 +451,7 @@ this.saveUserDefine = function(defineName)
     -- 若载具想可以正常运行，则必须拥有规范父子结构的 Hull,Turret,Gun.
     UserDIYDataManager.Instance:SetDIYUserDefined(this.userDefined)
 
+    -- CS.UnityEngine.GUIUtility.systemCopyBuffer = JsonUtility.ToJson(this.userDefined) TODO: 载具分享功能
     this.fileSavePop.gameObject:SetActive(false)
 end
 

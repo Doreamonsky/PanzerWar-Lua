@@ -1,0 +1,19 @@
+{
+    "infos": [
+        {
+            "modNames": [
+                "BuildPipline-Nameless-DIYSet"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/LuaProject/resources/android/default/diy-third"
+                },
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/diy-third"
+                }
+            ]
+        }
+    ]
+}

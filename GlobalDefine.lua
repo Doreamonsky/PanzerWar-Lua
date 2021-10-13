@@ -71,7 +71,13 @@ DIYDataEnum = CS.ShanghaiWindy.Core.Data.DIYDataEnum
 --- @field Destroy fun()
 GameObject = CS.UnityEngine.GameObject
 AudioListener = CS.UnityEngine.AudioListener
+Vector2 = CS.UnityEngine.Vector2
 Vector3 = CS.UnityEngine.Vector3
+Color = CS.UnityEngine.Color
+
+--- @class JsonUtility
+--- @field ToJson fun(object:obj) Generate a JSON representation of the public fields of an object.
+JsonUtility = CS.UnityEngine.JsonUtility
 
 -- UGUI
 Text = CS.UnityEngine.UI.Text
