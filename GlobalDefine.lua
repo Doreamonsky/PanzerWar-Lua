@@ -61,9 +61,13 @@ DIYUserDefined = CS.ShanghaiWindy.Core.Data.DIYUserDefined
 --- @field isMain boolean
 --- @field parentRuleGuid string
 --- @field targetSlotIndex number
+--- @field scaleSize SerializeVector3
+--- @field deltaPos SerializeVector3
+--- @field localEulerAngles SerializeVector3
 DIYRule = CS.ShanghaiWindy.Core.Data.DIYUserDefined.Rule
 
 DIYDataEnum = CS.ShanghaiWindy.Core.Data.DIYDataEnum
+SerializeVector3 = CS.ShanghaiWindy.Core.Data.SerializeVector3
 
 -- UnityEngine
 --- @class GameObject

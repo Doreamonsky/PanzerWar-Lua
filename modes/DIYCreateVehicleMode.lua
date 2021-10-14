@@ -48,8 +48,25 @@ this.onUtilCreated = function(root)
     this.fileLoadTemplate = this.fileLoadPop:Find("Scroll View/Viewport/Content/Template")
     this.fileLoadTemplate.gameObject:SetActive(false)
 
+    this.configProp = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp")
+    this.configProp.gameObject:SetActive(false)
+
     this.upBtn = root.transform:Find("DIYCreateVehicleCanvas/CameraAction/UpBtn")
     this.downBtn = root.transform:Find("DIYCreateVehicleCanvas/CameraAction/DownBtn")
+
+    this.configPropEquipText =
+        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/BaseInfo/EquipName"):GetComponent("Text")
+    this.configPropEquipDescriptionText =
+        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/BaseInfo/EquipDescription"):GetComponent("Text")
+    this.configPropEquipImg =
+        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/BaseInfo/Icon"):GetComponent("Image")
+    this.configPropEquipType =
+        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/BaseInfo/EquipType"):GetComponent("Text")
+
+    this.configPropPositionRect = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformInfo/Position")
+    this.configPropEulerAngleRect = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformInfo/EulerAngle")
+    this.configScaleRect = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformInfo/Scale")
+    this.configComfirmBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/ConfirmBtn"):GetComponent("Button")
 
     -- 按钮 Binding
     this.exitActionBtn.onClick:AddListener(
@@ -112,6 +129,17 @@ this.onUtilCreated = function(root)
         end
     )
 
+    this.configComfirmBtn:GetComponent("Button").onClick:AddListener(
+        function()
+            this.equipList.gameObject:SetActive(true)
+            this.configProp.gameObject:SetActive(false)
+
+            for k, v in pairs(this.slotModifyBtnList) do
+                v.gameObject:SetActive(true)
+            end
+        end
+    )
+
     -- 场景数据
     --- @type Transform 摄像机焦点 Transform
     this.cameraTargetTrans = root.transform:Find("CameraPoint")
@@ -124,7 +152,7 @@ this.onUtilCreated = function(root)
     --- Slot 增加配件交互UI按钮列表
     this.slotModifyBtnList = {}
 
-    --- 车体 UI 泪飙
+    --- 车体 UI 列表
     this.hullUIList = {}
 
     --- 可装的配件UI物体列表
@@ -141,6 +169,9 @@ this.onUtilCreated = function(root)
 
     --- 实例载具模型
     this.instanceMesh = nil
+
+    --- 当前编辑的规则 Id
+    this.curRuleId = nil
 
     this.toggleEquipListSize(true)
     this.createHullList()
@@ -368,6 +399,13 @@ this.refreshInstalledEquipList = function()
             end
         )
 
+        instance.transform:Find("DetailBtn").gameObject:SetActive(true)
+        instance.transform:Find("DetailBtn"):GetComponent("Button").onClick:AddListener(
+            function()
+                this.selectRule(rule.ruleGuid)
+            end
+        )
+
         table.insert(this.installedEquipUIList, instance)
     end
 end
@@ -398,7 +436,11 @@ end
 --- 安装配件
 this.equipSlot = function(itemGuid)
     this.addRule(CSharpAPI.GetGUID(), itemGuid, false, this.curSlotOwnerRuleId, this.curSlotIndex)
+    this.onModifyUserDefined()
+end
 
+--- 当修改 UserDefine 或 增加新的 Rule
+this.onModifyUserDefined = function()
     CSharpAPI.UpdateDIYVehicle(
         this.userDefined,
         this.bindingData,
@@ -531,6 +573,122 @@ this.refreshFileLoadList = function()
 
         table.insert(this.fileLoadUIList, instance)
     end
+end
+
+this.selectRule = function(ruleId)
+    this.curRuleId = ruleId
+
+    -- 界面切换
+    this.equipList.gameObject:SetActive(false)
+    this.configProp.gameObject:SetActive(true)
+
+    for k, v in pairs(this.slotModifyBtnList) do
+        v.gameObject:SetActive(false)
+    end
+
+    for k, v in pairs(this.userDefined.rules) do
+        --- @type DIYRule
+        local rule = v
+
+        if rule.ruleGuid == ruleId then
+            -- 界面基本信息
+            local baseData = DIYDataManager.Instance:GetData(rule.itemGuid)
+            this.configPropEquipText.text = baseData.displayName:GetDisplayName()
+            this.configPropEquipDescriptionText.text = baseData.description:GetDisplayName()
+            this.configPropEquipImg.sprite = baseData.icon
+            this.configPropEquipType.text = this.getBaseDataTypeText(baseData:GetDataType())
+            this.configPropEquipType.color = this.getBaseDataTypeText(baseData:GetDataType())
+
+            -- 坐标变化相关逻辑
+            local isHull = baseData:GetDataType() == DIYDataEnum.Hull -- 车体不允许调整大小之类的
+            this.configPropPositionRect.gameObject:SetActive(not isHull)
+            this.configPropEulerAngleRect.gameObject:SetActive(not isHull)
+            this.configScaleRect.gameObject:SetActive(not isHull)
+
+            if not isHull then
+                -- 先解绑
+                this.clearBindTransformInputField(this.configPropPositionRect)
+                this.clearBindTransformInputField(this.configPropEulerAngleRect)
+                this.clearBindTransformInputField(this.configScaleRect)
+
+                -- 再对界面赋值
+                this.Vector3ToTransformInputFields(this.configPropPositionRect, rule.deltaPos)
+                this.Vector3ToTransformInputFields(this.configPropEulerAngleRect, rule.localEulerAngles)
+                this.Vector3ToTransformInputFields(this.configScaleRect, rule.scaleSize)
+
+                -- 再绑定
+                this.bindTransformInputField(
+                    this.configPropPositionRect,
+                    function(val)
+                        rule.deltaPos = val
+                        this.onModifyUserDefined()
+                    end
+                )
+
+                this.bindTransformInputField(
+                    this.configPropEulerAngleRect,
+                    function(val)
+                        rule.localEulerAngles = val
+                        this.onModifyUserDefined()
+                    end
+                )
+
+                this.bindTransformInputField(
+                    this.configScaleRect,
+                    function(val)
+                        rule.scaleSize = val
+                        this.onModifyUserDefined()
+                    end
+                )
+            end
+        end
+    end
+end
+
+--- 将 Vector3 赋值给 InputField
+this.Vector3ToTransformInputFields = function(rectTransform, vec)
+    rectTransform:Find("XField"):GetComponent("InputField").text = string.format("%.3f", vec.x)
+    rectTransform:Find("YField"):GetComponent("InputField").text = string.format("%.3f", vec.y)
+    rectTransform:Find("ZField"):GetComponent("InputField").text = string.format("%.3f", vec.z)
+end
+
+--- 从 InputField 获得 Vector3
+--- @return Vector3
+this.fromTransformInputFieldToVector3 = function(rectTransform)
+    local vec = SerializeVector3()
+    vec.x = tonumber(rectTransform:Find("XField"):GetComponent("InputField").text)
+    vec.y = tonumber(rectTransform:Find("YField"):GetComponent("InputField").text)
+    vec.z = tonumber(rectTransform:Find("ZField"):GetComponent("InputField").text)
+    return vec
+end
+
+this.clearBindTransformInputField = function(rectTransform)
+    -- 清空上次事件的绑定
+    rectTransform:Find("XField"):GetComponent("InputField").onValueChanged:RemoveAllListeners()
+    rectTransform:Find("YField"):GetComponent("InputField").onValueChanged:RemoveAllListeners()
+    rectTransform:Find("ZField"):GetComponent("InputField").onValueChanged:RemoveAllListeners()
+end
+
+--- 绑定坐标变化事件
+this.bindTransformInputField = function(rectTransform, onValueChanged)
+    -- 新的事件绑定
+    rectTransform:Find("XField"):GetComponent("InputField").onValueChanged:AddListener(
+        function(text)
+            onValueChanged(this.fromTransformInputFieldToVector3(rectTransform))
+        end
+    )
+
+    rectTransform:Find("YField"):GetComponent("InputField").onValueChanged:AddListener(
+        function(text)
+            onValueChanged(this.fromTransformInputFieldToVector3(rectTransform))
+        end
+    )
+
+    rectTransform:Find("ZField"):GetComponent("InputField").onValueChanged:AddListener(
+        function(text)
+            onValueChanged(this.fromTransformInputFieldToVector3(rectTransform))
+        end
+    )
 end
 
 this.onExitMode = function()
