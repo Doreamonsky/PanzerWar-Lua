@@ -358,14 +358,6 @@ this.refreshInstallableEquipList = function()
     this.installableEquipUIList = {}
     local installableEquips = DIYDataManager.Instance:GetEquipableDataList()
 
-    -- 根据类型排序
-    -- TODO: 简化排序 This type must add to CSharpCallLua: System.Comparison<ShanghaiWindy.Core.Data.DIYBaseData>
-    -- installableEquips:Sort(
-    --     function(a, b)
-    --         return a:GetDataType():CompareTo(b:GetDataType())
-    --     end
-    -- )
-
     for index, baseData in pairs(installableEquips) do
         local instance = this.createEquipUIObject(baseData)
 
@@ -491,10 +483,37 @@ this.saveUserDefine = function(defineName)
 
     -- C# 侧会检查载具是否拥有并设置 MainTurret 与 MainGun.
     -- 若载具想可以正常运行，则必须拥有规范父子结构的 Hull,Turret,Gun.
-    UserDIYDataManager.Instance:SetDIYUserDefined(this.userDefined)
+
+    -- 实现存档的深复制，防止干扰以前的数据
+
+    UserDIYDataManager.Instance:SetDIYUserDefined(this.deepCopyUserDefine(this.userDefined))
 
     -- CS.UnityEngine.GUIUtility.systemCopyBuffer = JsonUtility.ToJson(this.userDefined) TODO: 载具分享功能
     this.fileSavePop.gameObject:SetActive(false)
+end
+
+--- 所有与存档相关的读写，都需要用深拷贝的规则，防止一些引用变化导致的 Bug
+--- @return DIYUserDefined
+this.deepCopyUserDefine = function(define)
+    local copiedUserDefine = DIYUserDefined()
+    copiedUserDefine.definedName = define.definedName
+    copiedUserDefine.overrideRank = define.overrideRank
+    copiedUserDefine.overrideHP = define.overrideHP
+
+    for k, v in pairs(define.rules) do
+        local savedRule = DIYRule()
+        savedRule.ruleGuid = v.ruleGuid
+        savedRule.itemGuid = v.itemGuid
+        savedRule.isMain = v.isMain
+        savedRule.parentRuleGuid = v.parentRuleGuid
+        savedRule.targetSlotIndex = v.targetSlotIndex
+        savedRule.scaleSize = v.scaleSize
+        savedRule.deltaPos = v.deltaPos
+        savedRule.localEulerAngles = v.localEulerAngles
+        copiedUserDefine.rules:Add(v)
+    end
+
+    return copiedUserDefine
 end
 
 --- 删除 UserDefine
@@ -550,8 +569,9 @@ this.refreshFileLoadList = function()
         instance.transform:Find("LoadBtn"):GetComponent("Button").onClick:AddListener(
             function()
                 -- 覆盖当前的 UserDefine
-                this.loadNewUserDefine(userDefine)
-                this.fileNameInput.text = userDefine.definedName
+                local loadedDefine = this.deepCopyUserDefine(userDefine)
+                this.loadNewUserDefine(loadedDefine)
+                this.fileNameInput.text = loadedDefine.definedName
                 this.fileLoadPop.gameObject:SetActive(false)
             end
         )

@@ -51,6 +51,7 @@ MouseLockModule = Core.MouseLockModule
 
 --- @class DIYUserDefined
 --- @field rules List<Rule>
+--- @field overrideRank number
 --- @field perferredRank number
 --- @field definedName string
 DIYUserDefined = CS.ShanghaiWindy.Core.Data.DIYUserDefined
