@@ -54,6 +54,7 @@ MouseLockModule = Core.MouseLockModule
 --- @field overrideRank number
 --- @field perferredRank number
 --- @field definedName string
+--- @field GetDeepCopied fun():DIYUserDefined 深拷贝自己
 DIYUserDefined = CS.ShanghaiWindy.Core.Data.DIYUserDefined
 
 --- @class DIYRule

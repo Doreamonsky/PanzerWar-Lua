@@ -493,27 +493,10 @@ this.saveUserDefine = function(defineName)
 end
 
 --- 所有与存档相关的读写，都需要用深拷贝的规则，防止一些引用变化导致的 Bug
+--- @param define DIYUserDefined
 --- @return DIYUserDefined
 this.deepCopyUserDefine = function(define)
-    local copiedUserDefine = DIYUserDefined()
-    copiedUserDefine.definedName = define.definedName
-    copiedUserDefine.overrideRank = define.overrideRank
-    copiedUserDefine.overrideHP = define.overrideHP
-
-    for k, v in pairs(define.rules) do
-        local savedRule = DIYRule()
-        savedRule.ruleGuid = v.ruleGuid
-        savedRule.itemGuid = v.itemGuid
-        savedRule.isMain = v.isMain
-        savedRule.parentRuleGuid = v.parentRuleGuid
-        savedRule.targetSlotIndex = v.targetSlotIndex
-        savedRule.scaleSize = v.scaleSize
-        savedRule.deltaPos = v.deltaPos
-        savedRule.localEulerAngles = v.localEulerAngles
-        copiedUserDefine.rules:Add(v)
-    end
-
-    return copiedUserDefine
+    return define:GetDeepCopied()
 end
 
 --- 删除 UserDefine
