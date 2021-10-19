@@ -82,6 +82,7 @@ Color = CS.UnityEngine.Color
 
 --- @class JsonUtility
 --- @field ToJson fun(object:obj) Generate a JSON representation of the public fields of an object.
+--- @field FromJsonOverwrite fun(json:string,overrideTarget:object)
 JsonUtility = CS.UnityEngine.JsonUtility
 
 -- UGUI

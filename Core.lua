@@ -2,6 +2,7 @@
 inspect = require("inspect")
 require("events.EventDefine")
 require("events.EventSystem")
+require("base64")
 
 table.indexOf = function(tab, value)
     for index, val in pairs(tab) do
