@@ -88,3 +88,7 @@ JsonUtility = CS.UnityEngine.JsonUtility
 -- UGUI
 Text = CS.UnityEngine.UI.Text
 Image = CS.UnityEngine.UI.Image
+
+-- Web
+WWWForm = CS.UnityEngine.WWWForm
+UnityWebRequest = CS.UnityEngine.Networking.UnityWebRequest

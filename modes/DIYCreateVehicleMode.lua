@@ -617,22 +617,7 @@ this.refreshFileLoadList = function()
         instance.transform:Find("ShareBtn"):GetComponent("Button").onClick:AddListener(
             function()
                 -- 设置分享
-                local shareCode = to_base64(JsonUtility.ToJson(userDefine))
-
-                PopMessageManager.Instance:PushPopup(
-                    "游戏将访问剪贴版，并将分享码复制进剪贴板",
-                    function(state)
-                        if state then
-                            CS.UnityEngine.GUIUtility.systemCopyBuffer = shareCode
-
-                            if CS.UnityEngine.Application.isMobilePlatform then
-                                PopMessageManager.Instance:PushNotice("复制成功。聊天软件长按输入框，点击粘贴即可分享给好友。", 4)
-                            else
-                                PopMessageManager.Instance:PushNotice("复制成功。点击 Ctrl + V 即可分享给好友。", 4)
-                            end
-                        end
-                    end
-                )
+                this.exportShareCode(userDefine)
             end
         )
 
@@ -758,13 +743,70 @@ this.bindTransformInputField = function(rectTransform, onValueChanged)
     )
 end
 
+this.exportShareCode = function(userDefine)
+    local shareCode = to_base64(JsonUtility.ToJson(userDefine))
+
+    local form = WWWForm()
+    form:AddField("base64", shareCode)
+
+    local webRequest = UnityWebRequest.Post("https://game.waroftanks.cn/backend/userDefine/Upload/", form)
+    local async = webRequest:SendWebRequest()
+
+    async:completed(
+        "+",
+        function(res)
+            local serverCode = webRequest.downloadHandler.text
+
+            PopMessageManager.Instance:PushPopup(
+                "游戏将访问剪贴版，并将分享码复制进剪贴板",
+                function(state)
+                    if state then
+                        CS.UnityEngine.GUIUtility.systemCopyBuffer = serverCode
+
+                        if CS.UnityEngine.Application.isMobilePlatform then
+                            PopMessageManager.Instance:PushNotice("复制成功。聊天软件长按输入框，点击粘贴即可分享给好友。", 4)
+                        else
+                            PopMessageManager.Instance:PushNotice("复制成功。点击 Ctrl + V 即可分享给好友。", 4)
+                        end
+                    end
+                end
+            )
+        end
+    )
+end
+
 this.importShareCode = function()
-    local shareJson = from_base64(this.shareCodeInput.text)
-    local shareUserDefine = DIYUserDefined()
-    JsonUtility.FromJsonOverwrite(shareJson, shareUserDefine)
-    UserDIYDataManager.Instance:SetDIYUserDefined(shareUserDefine)
-    this.refreshFileLoadList()
-    this.shareImportPop.gameObject:SetActive(false)
+    local serverCode = this.shareCodeInput.text
+    local form = WWWForm()
+    form:AddField("shareId", serverCode)
+
+    local webRequest = UnityWebRequest.Post("https://game.waroftanks.cn/backend/userDefine/Search/", form)
+    local async = webRequest:SendWebRequest()
+
+    async:completed(
+        "+",
+        function(res)
+            local res = webRequest.downloadHandler.text
+
+            if res ~= "" then
+                local shareJson = from_base64(res)
+                local shareUserDefine = DIYUserDefined()
+                JsonUtility.FromJsonOverwrite(shareJson, shareUserDefine)
+                UserDIYDataManager.Instance:SetDIYUserDefined(shareUserDefine)
+                this.refreshFileLoadList()
+            else
+                PopMessageManager.Instance:PushPopup(
+                    "错误的分享码",
+                    function(state)
+                    end,
+                    false
+                )
+            end
+
+            this.shareCodeInput.text = ""
+            this.shareImportPop.gameObject:SetActive(false)
+        end
+    )
 end
 
 this.onExitMode = function()
