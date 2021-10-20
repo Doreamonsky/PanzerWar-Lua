@@ -123,7 +123,12 @@ this.onUtilCreated = function(root)
 
     this.slotDisableMask:GetComponent("Button").onClick:AddListener(
         function()
-            this.toggleEquipList(true)
+            local isEmptyRuleCount = this.userDefined.rules.Count == 0
+
+            -- 只有有规则的时候，才显示已安装的配件
+            if not isEmptyRuleCount then
+                this.toggleEquipList(true)
+            end
         end
     )
 
@@ -757,20 +762,29 @@ this.exportShareCode = function(userDefine)
         function(res)
             local serverCode = webRequest.downloadHandler.text
 
-            PopMessageManager.Instance:PushPopup(
-                "游戏将访问剪贴版，并将分享码复制进剪贴板",
-                function(state)
-                    if state then
-                        CS.UnityEngine.GUIUtility.systemCopyBuffer = serverCode
+            if serverCode == "" then
+                PopMessageManager.Instance:PushPopup(
+                    "账号未登录，无法分享",
+                    function(state)
+                    end,
+                    false
+                )
+            else
+                PopMessageManager.Instance:PushPopup(
+                    "游戏将访问剪贴版，并将分享码: " .. serverCode .. " 复制进剪贴板",
+                    function(state)
+                        if state then
+                            CS.UnityEngine.GUIUtility.systemCopyBuffer = serverCode
 
-                        if CS.UnityEngine.Application.isMobilePlatform then
-                            PopMessageManager.Instance:PushNotice("复制成功。聊天软件长按输入框，点击粘贴即可分享给好友。", 4)
-                        else
-                            PopMessageManager.Instance:PushNotice("复制成功。点击 Ctrl + V 即可分享给好友。", 4)
+                            if CS.UnityEngine.Application.isMobilePlatform then
+                                PopMessageManager.Instance:PushNotice("复制成功。聊天软件长按输入框，点击粘贴即可分享给好友。", 4)
+                            else
+                                PopMessageManager.Instance:PushNotice("复制成功。点击 Ctrl + V 即可分享给好友。", 4)
+                            end
                         end
                     end
-                end
-            )
+                )
+            end
         end
     )
 end
@@ -792,11 +806,33 @@ this.importShareCode = function()
                 local shareJson = from_base64(res)
                 local shareUserDefine = DIYUserDefined()
                 JsonUtility.FromJsonOverwrite(shareJson, shareUserDefine)
-                UserDIYDataManager.Instance:SetDIYUserDefined(shareUserDefine)
-                this.refreshFileLoadList()
+
+                local validFlag = true
+                for k, v in pairs(shareUserDefine.rules) do
+                    --- @type DIYRule
+                    local rule = v
+
+                    local baseData = DIYDataManager.Instance:GetData(rule.itemGuid)
+
+                    if baseData:IsNull() then
+                        validFlag = false
+                    end
+                end
+
+                if validFlag then
+                    UserDIYDataManager.Instance:SetDIYUserDefined(shareUserDefine)
+                    this.refreshFileLoadList()
+                else
+                    PopMessageManager.Instance:PushPopup(
+                        "当前的分享码包含你未拥有的配件，所以无法导入",
+                        function(state)
+                        end,
+                        false
+                    )
+                end
             else
                 PopMessageManager.Instance:PushPopup(
-                    "错误的分享码",
+                    "错误的分享码，或游戏账号未登录",
                     function(state)
                     end,
                     false
