@@ -54,19 +54,22 @@ this.onUtilCreated = function(root)
     this.upBtn = root.transform:Find("DIYCreateVehicleCanvas/CameraAction/UpBtn")
     this.downBtn = root.transform:Find("DIYCreateVehicleCanvas/CameraAction/DownBtn")
 
-    this.configPropEquipText =
-        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/BaseInfo/EquipName"):GetComponent("Text")
-    this.configPropEquipDescriptionText =
-        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/BaseInfo/EquipDescription"):GetComponent("Text")
-    this.configPropEquipImg =
-        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/BaseInfo/Icon"):GetComponent("Image")
-    this.configPropEquipType =
-        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/BaseInfo/EquipType"):GetComponent("Text")
+    this.configRoot = this.configProp:Find("Scroll View/Viewport/Content")
+    this.configPropEquipText = this.configRoot:Find("BaseInfo/EquipName"):GetComponent("Text")
+    this.configPropEquipDescriptionText = this.configRoot:Find("BaseInfo/EquipDescription"):GetComponent("Text")
+    this.configPropEquipImg = this.configRoot:Find("BaseInfo/Icon"):GetComponent("Image")
+    this.configPropEquipType = this.configRoot:Find("BaseInfo/EquipType"):GetComponent("Text")
 
-    this.configPropPositionRect = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformInfo/Position")
-    this.configPropEulerAngleRect = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformInfo/EulerAngle")
-    this.configScaleRect = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformInfo/Scale")
-    this.configComfirmBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/ConfirmBtn"):GetComponent("Button")
+    this.configPropTransformInfo = this.configRoot:Find("TransformInfo")
+    this.configPropPositionRect = this.configRoot:Find("TransformInfo/Position")
+    this.configPropEulerAngleRect = this.configRoot:Find("TransformInfo/EulerAngle")
+    this.configScaleRect = this.configRoot:Find("TransformInfo/Scale")
+    this.configComfirmBtn = this.configProp:Find("Title/ConfirmBtn"):GetComponent("Button")
+    this.configCustomPropertyTemplate =
+        root.transform:Find(
+        "DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/FloatToggleablePropertyTemplate"
+    )
+    this.configCustomPropertyTemplate.gameObject:SetActive(false)
 
     this.loadShareBtn =
         root.transform:Find("DIYCreateVehicleCanvas/FileLoadPop/Scroll View/Viewport/Content/Title/LoadShareBtn"):GetComponent(
@@ -193,6 +196,9 @@ this.onUtilCreated = function(root)
 
     --- 已装配件UI物体列表
     this.installedEquipUIList = {}
+
+    --- 配件属性UI物体列表
+    this.propertyUIList = {}
 
     --- 加载UI物件列表
     this.fileLoadUIList = {}
@@ -641,9 +647,7 @@ this.selectRule = function(ruleId)
 
             -- 坐标变化相关逻辑
             local isHull = baseData:GetDataType() == DIYDataEnum.Hull -- 车体不允许调整大小之类的
-            this.configPropPositionRect.gameObject:SetActive(not isHull)
-            this.configPropEulerAngleRect.gameObject:SetActive(not isHull)
-            this.configScaleRect.gameObject:SetActive(not isHull)
+            this.configPropTransformInfo.gameObject:SetActive(not isHull)
 
             if not isHull then
                 -- 先解绑
@@ -680,6 +684,52 @@ this.selectRule = function(ruleId)
                         this.onModifyUserDefined()
                     end
                 )
+            end
+
+            local customProperty = baseData:CreateCustomizeProperty()
+
+            if rule.customPropertiesJson ~= "" then
+                JsonUtility.FromJsonOverwrite(rule.customPropertiesJson, customProperty)
+            end
+
+            for p, q in pairs(this.propertyUIList) do
+                GameObject.Destroy(q.gameObject)
+            end
+
+            this.propertyUIList = {}
+
+            for p, q in pairs(customProperty:GetEdittableFields()) do
+                local instance =
+                    GameObject.Instantiate(
+                    this.configCustomPropertyTemplate,
+                    this.configCustomPropertyTemplate.transform.parent,
+                    true
+                )
+
+                local toggleableProperty = customProperty:GetField(q)
+                local propertyName = uGUI_Localsize.GetContent(q)
+                local propertyValue = toggleableProperty:GetValue()
+                local propertyIsEnable = toggleableProperty.isEnabled
+
+                instance.transform:Find("PropertyName"):GetComponent("Text").text = propertyName
+                instance.transform:Find("PropertyField"):GetComponent("InputField").text = propertyValue
+                instance.transform:Find("PropertyField"):GetComponent("InputField").onValueChanged:AddListener(
+                    function(text)
+                        toggleableProperty:SetValue(tonumber(text))
+                        rule.customPropertiesJson = JsonUtility.ToJson(customProperty)
+                    end
+                )
+
+                instance.transform:Find("PropertyEnable"):GetComponent("Toggle").isOn = propertyIsEnable
+                instance.transform:Find("PropertyEnable"):GetComponent("Toggle").onValueChanged:AddListener(
+                    function(isEnabled)
+                        toggleableProperty.isEnabled = isEnabled
+                        rule.customPropertiesJson = JsonUtility.ToJson(customProperty)
+                    end
+                )
+
+                instance.gameObject:SetActive(true)
+                table.insert(this.propertyUIList, instance)
             end
         end
     end

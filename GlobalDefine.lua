@@ -50,7 +50,7 @@ Core = CS.ShanghaiWindy.Core
 MouseLockModule = Core.MouseLockModule
 
 --- @class DIYUserDefined
---- @field rules List<Rule>
+--- @field rules List<DIYRule>
 --- @field overrideRank number
 --- @field perferredRank number
 --- @field definedName string
@@ -66,11 +66,16 @@ DIYUserDefined = CS.ShanghaiWindy.Core.Data.DIYUserDefined
 --- @field scaleSize SerializeVector3
 --- @field deltaPos SerializeVector3
 --- @field localEulerAngles SerializeVector3
+--- @field customPropertiesJson string
 DIYRule = CS.ShanghaiWindy.Core.Data.DIYUserDefined.Rule
 
 DIYDataEnum = CS.ShanghaiWindy.Core.Data.DIYDataEnum
 SerializeVector3 = CS.ShanghaiWindy.Core.Data.SerializeVector3
+uGUI_Localization = CS.ShanghaiWindy.Core.uGUI_Localization
 
+--- @class uGUI_Localsize
+--- @field GetContent fun(_Key:string):void
+uGUI_Localsize = CS.ShanghaiWindy.Core.uGUI_Localsize
 -- UnityEngine
 --- @class GameObject
 --- @field Instantiate fun() 实例化
