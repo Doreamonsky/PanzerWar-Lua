@@ -1,0 +1,19 @@
+{
+    "infos": [
+        {
+            "modNames": [
+                "BuildPipline-Map-CountrySide"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/LuaProject/resources/android/default/map"
+                },
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/map"
+                }
+            ]
+        }
+    ]
+}

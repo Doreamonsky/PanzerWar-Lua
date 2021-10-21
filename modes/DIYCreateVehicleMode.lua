@@ -68,6 +68,16 @@ this.onUtilCreated = function(root)
     this.configScaleRect = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformInfo/Scale")
     this.configComfirmBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/ConfirmBtn"):GetComponent("Button")
 
+    this.loadShareBtn =
+        root.transform:Find("DIYCreateVehicleCanvas/FileLoadPop/Scroll View/Viewport/Content/Title/LoadShareBtn"):GetComponent(
+        "Button"
+    )
+    this.shareImportPop = root.transform:Find("DIYCreateVehicleCanvas/ShareImportPop")
+    this.shareImportCancelBtn = this.shareImportPop:GetComponent("Button")
+    this.shareCodeInput =
+        root.transform:Find("DIYCreateVehicleCanvas/ShareImportPop/ShareCodeInput"):GetComponent("InputField")
+    this.shareImportBtn = root.transform:Find("DIYCreateVehicleCanvas/ShareImportPop/ImportBtn"):GetComponent("Button")
+
     -- 按钮 Binding
     this.exitActionBtn.onClick:AddListener(
         function()
@@ -113,7 +123,12 @@ this.onUtilCreated = function(root)
 
     this.slotDisableMask:GetComponent("Button").onClick:AddListener(
         function()
-            this.toggleEquipList(true)
+            local isEmptyRuleCount = this.userDefined.rules.Count == 0
+
+            -- 只有有规则的时候，才显示已安装的配件
+            if not isEmptyRuleCount then
+                this.toggleEquipList(true)
+            end
         end
     )
 
@@ -137,6 +152,24 @@ this.onUtilCreated = function(root)
             for k, v in pairs(this.slotModifyBtnList) do
                 v.gameObject:SetActive(true)
             end
+        end
+    )
+
+    this.loadShareBtn.onClick:AddListener(
+        function()
+            this.shareImportPop.gameObject:SetActive(true)
+        end
+    )
+
+    this.shareImportCancelBtn.onClick:AddListener(
+        function()
+            this.shareImportPop.gameObject:SetActive(false)
+        end
+    )
+
+    this.shareImportBtn.onClick:AddListener(
+        function()
+            this.importShareCode()
         end
     )
 
@@ -173,8 +206,10 @@ this.onUtilCreated = function(root)
     --- 当前编辑的规则 Id
     this.curRuleId = nil
 
-    this.toggleEquipListSize(true)
     this.createHullList()
+    this.createInstallableEquipList()
+
+    this.toggleEquipList(false)
 end
 
 --- 切换装备列表大小
@@ -334,11 +369,6 @@ this.createHullList = function()
 
                         this.instanceMesh = instanceMesh
 
-                        for k, v in pairs(this.hullUIList) do
-                            v.gameObject:SetActive(false)
-                        end
-
-                        this.refreshInstallableEquipList()
                         this.refreshInstalledEquipList()
                         this.toggleEquipList(true)
                     end
@@ -350,12 +380,7 @@ this.createHullList = function()
     end
 end
 
-this.refreshInstallableEquipList = function()
-    for k, v in pairs(this.installableEquipUIList) do
-        GameObject.Destroy(v.gameObject)
-    end
-
-    this.installableEquipUIList = {}
+this.createInstallableEquipList = function()
     local installableEquips = DIYDataManager.Instance:GetEquipableDataList()
 
     for index, baseData in pairs(installableEquips) do
@@ -456,12 +481,20 @@ end
 --- 切换是否显示已安装的配件
 --- @param showInstalled boolean true 则显示已安装的，false 则显示当前插槽可安装的配件
 this.toggleEquipList = function(showInstalled)
-    for k, v in pairs(this.installedEquipUIList) do
-        v.gameObject:SetActive(showInstalled)
+    local isEmptyRuleCount = this.userDefined.rules.Count == 0
+
+    -- 没配件，显示可装配件情况下，显示车体
+    for k, v in pairs(this.hullUIList) do
+        v.gameObject:SetActive(isEmptyRuleCount and not showInstalled)
     end
 
+    -- 有配件，显示可装配件情况下，显示非车体
     for k, v in pairs(this.installableEquipUIList) do
-        v.gameObject:SetActive(not showInstalled)
+        v.gameObject:SetActive(not isEmptyRuleCount and not showInstalled)
+    end
+
+    for k, v in pairs(this.installedEquipUIList) do
+        v.gameObject:SetActive(showInstalled)
     end
 
     this.slotDisableMask.gameObject:SetActive(not showInstalled)
@@ -519,17 +552,13 @@ this.loadNewUserDefine = function(userDefine)
         this.userDefined,
         function(instanceMesh, textData, bindingData)
             this.bindingData = bindingData
-            this.refreshEquipSlotInteractBtn()
-
             this.instanceMesh = instanceMesh
 
-            for k, v in pairs(this.hullUIList) do
-                v.gameObject:SetActive(this.userDefined.rules.Count == 0)
-            end
-
-            this.refreshInstallableEquipList()
+            this.refreshEquipSlotInteractBtn()
             this.refreshInstalledEquipList()
-            this.toggleEquipList(true)
+
+            local isEmptyRuleCount = this.userDefined.rules.Count == 0
+            this.toggleEquipList(not isEmptyRuleCount)
         end
     )
 end
@@ -572,6 +601,14 @@ this.refreshFileLoadList = function()
                 )
             end
         )
+
+        instance.transform:Find("ShareBtn"):GetComponent("Button").onClick:AddListener(
+            function()
+                -- 设置分享
+                this.exportShareCode(userDefine)
+            end
+        )
+
         instance.gameObject:SetActive(true)
 
         table.insert(this.fileLoadUIList, instance)
@@ -690,6 +727,103 @@ this.bindTransformInputField = function(rectTransform, onValueChanged)
     rectTransform:Find("ZField"):GetComponent("InputField").onValueChanged:AddListener(
         function(text)
             onValueChanged(this.fromTransformInputFieldToVector3(rectTransform))
+        end
+    )
+end
+
+this.exportShareCode = function(userDefine)
+    local shareCode = to_base64(JsonUtility.ToJson(userDefine))
+
+    local form = WWWForm()
+    form:AddField("base64", shareCode)
+
+    local webRequest = UnityWebRequest.Post("https://game.waroftanks.cn/backend/userDefine/Upload/", form)
+    local async = webRequest:SendWebRequest()
+
+    async:completed(
+        "+",
+        function(res)
+            local serverCode = webRequest.downloadHandler.text
+
+            if serverCode == "" then
+                PopMessageManager.Instance:PushPopup(
+                    "账号未登录，无法分享",
+                    function(state)
+                    end,
+                    false
+                )
+            else
+                PopMessageManager.Instance:PushPopup(
+                    "游戏将访问剪贴版，并将分享码: " .. serverCode .. " 复制进剪贴板",
+                    function(state)
+                        if state then
+                            CS.UnityEngine.GUIUtility.systemCopyBuffer = serverCode
+
+                            if CS.UnityEngine.Application.isMobilePlatform then
+                                PopMessageManager.Instance:PushNotice("复制成功。聊天软件长按输入框，点击粘贴即可分享给好友。", 4)
+                            else
+                                PopMessageManager.Instance:PushNotice("复制成功。点击 Ctrl + V 即可分享给好友。", 4)
+                            end
+                        end
+                    end
+                )
+            end
+        end
+    )
+end
+
+this.importShareCode = function()
+    local serverCode = this.shareCodeInput.text
+    local form = WWWForm()
+    form:AddField("shareId", serverCode)
+
+    local webRequest = UnityWebRequest.Post("https://game.waroftanks.cn/backend/userDefine/Search/", form)
+    local async = webRequest:SendWebRequest()
+
+    async:completed(
+        "+",
+        function(res)
+            local res = webRequest.downloadHandler.text
+
+            if res ~= "" then
+                local shareJson = from_base64(res)
+                local shareUserDefine = DIYUserDefined()
+                JsonUtility.FromJsonOverwrite(shareJson, shareUserDefine)
+
+                local validFlag = true
+                for k, v in pairs(shareUserDefine.rules) do
+                    --- @type DIYRule
+                    local rule = v
+
+                    local baseData = DIYDataManager.Instance:GetData(rule.itemGuid)
+
+                    if baseData:IsNull() then
+                        validFlag = false
+                    end
+                end
+
+                if validFlag then
+                    UserDIYDataManager.Instance:SetDIYUserDefined(shareUserDefine)
+                    this.refreshFileLoadList()
+                else
+                    PopMessageManager.Instance:PushPopup(
+                        "当前的分享码包含你未拥有的配件，所以无法导入",
+                        function(state)
+                        end,
+                        false
+                    )
+                end
+            else
+                PopMessageManager.Instance:PushPopup(
+                    "错误的分享码，或游戏账号未登录",
+                    function(state)
+                    end,
+                    false
+                )
+            end
+
+            this.shareCodeInput.text = ""
+            this.shareImportPop.gameObject:SetActive(false)
         end
     )
 end
