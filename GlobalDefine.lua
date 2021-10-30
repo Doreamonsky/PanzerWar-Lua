@@ -12,6 +12,7 @@
 ---@field RequestScene fun(sceneName:string,onLoaded:System.Action):void 异步加载场景
 ---@field CreateDIYVehicle fun(userDefined:DIYUserDefined,onLoaded:System.Action<GameObject, VehicleTextData>):void 异步加载DIY载具
 ---@field GetGUID fun():string 创建 GUID
+---@field SetRuleAsMain fun(userDefined:DIYUserDefined,mainRuleGuid:string) 设置 Rule 为 Main
 ---@field OnLuaExitModeReq UnityEvent
 CSharpAPI = CS.ShanghaiWindy.Core.LuaCallCSharpHelper
 
@@ -98,3 +99,10 @@ Image = CS.UnityEngine.UI.Image
 -- Web
 WWWForm = CS.UnityEngine.WWWForm
 UnityWebRequest = CS.UnityEngine.Networking.UnityWebRequest
+
+-- Common
+--- @class Application
+--- @field lowMemory Action
+Application = CS.UnityEngine.Application
+
+Time = CS.UnityEngine.Time

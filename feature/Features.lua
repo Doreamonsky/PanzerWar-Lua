@@ -1,5 +1,6 @@
 require("feature.MultiTurretGUI")
 require("feature.BlueprintVehicles")
+require("modes.DIYCreateVehicleMode")
 
 luaCommonMods = {
     {
@@ -33,6 +34,27 @@ luaCommonMods = {
             BlueprintVehicles.onStarted()
         end,
         onUpdated = function()
+        end,
+        onFixedUpdated = function()
+        end,
+        onGUI = function()
+        end,
+        onLateUpdated = function()
+        end,
+        onDestroyed = function()
+        end,
+        onSceneLoaded = function(levelName)
+        end
+    },
+    {
+        modName = "载具DIY - 更新",
+        author = "超级哆啦酱",
+        description = "Update Loop",
+        luaLibVersion = LibVersion,
+        onStarted = function()
+        end,
+        onUpdated = function()
+            DIYCreateVehicleMode.onUpdate()
         end,
         onFixedUpdated = function()
         end,

@@ -1,12 +1,12 @@
 DIYCreateVehicleMode = {}
 
---- TODO:
---- DIY Finalize Created
---- 检查哪个是 Main Hull Main Turret Main Gun
-
 local this = DIYCreateVehicleMode
 this.onStartMode = function()
     this.userDefined = DIYUserDefined()
+    this.isDirty = false
+    this.lastdirtyTime = 0
+    this.dirtyCount = 0
+    this.isEditMode = true
 
     CSharpAPI.RequestScene(
         "Physic-Play",
@@ -22,7 +22,39 @@ this.onStartMode = function()
             )
         end
     )
+
+    -- Application.lowMemory("+", this.onLowMemory)
 end
+
+this.onUpdate = function()
+    if this.isEditMode then
+        if this.isDirty and Time.time - this.lastdirtyTime > 0.05 then
+            if this.bindingData then
+                this.onModifyUserDefined()
+                this.isDirty = false
+                this.lastdirtyTime = Time.time
+
+                this.dirtyCount = this.dirtyCount + 1
+
+                if this.dirtyCount > 50 then
+                    CS.UnityEngine.Resources.UnloadUnusedAssets()
+                    this.dirtyCount = 0
+                end
+            end
+        end
+    end
+end
+
+--- 设置数据为脏，Lazy 更新
+this.markDirty = function()
+    this.isDirty = true
+end
+
+--- 内存少的时候取消加载资源
+-- this.onLowMemory = function()
+--     print("Low memory clean resources")
+--     CS.UnityEngine.Resources.UnloadUnusedAssets()
+-- end
 
 this.onUtilCreated = function(root)
     this.slotModifyBtnTemplate = root.transform:Find("DIYCreateVehicleCanvas/Slots/SlotModifyBtn")
@@ -48,11 +80,18 @@ this.onUtilCreated = function(root)
     this.fileLoadTemplate = this.fileLoadPop:Find("Scroll View/Viewport/Content/Template")
     this.fileLoadTemplate.gameObject:SetActive(false)
 
+    this.setMainBtn =
+        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Main/SetMainBtn"):GetComponent(
+        "Button"
+    )
+
     this.configProp = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp")
     this.configProp.gameObject:SetActive(false)
 
-    this.upBtn = root.transform:Find("DIYCreateVehicleCanvas/CameraAction/UpBtn")
-    this.downBtn = root.transform:Find("DIYCreateVehicleCanvas/CameraAction/DownBtn")
+    this.upBtn = root.transform:Find("DIYCreateVehicleCanvas/CameraAction/UpBtn"):GetComponent("Button")
+    this.downBtn = root.transform:Find("DIYCreateVehicleCanvas/CameraAction/DownBtn"):GetComponent("Button")
+    this.forwardBtn = root.transform:Find("DIYCreateVehicleCanvas/CameraAction/ForwardBtn"):GetComponent("Button")
+    this.backwardBtn = root.transform:Find("DIYCreateVehicleCanvas/CameraAction/BackwardBtn"):GetComponent("Button")
 
     this.configRoot = this.configProp:Find("Scroll View/Viewport/Content")
     this.configPropEquipText = this.configRoot:Find("BaseInfo/EquipName"):GetComponent("Text")
@@ -81,12 +120,28 @@ this.onUtilCreated = function(root)
         root.transform:Find("DIYCreateVehicleCanvas/ShareImportPop/ShareCodeInput"):GetComponent("InputField")
     this.shareImportBtn = root.transform:Find("DIYCreateVehicleCanvas/ShareImportPop/ImportBtn"):GetComponent("Button")
 
+    this.slotMultiObjectsToggle =
+        root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/SlotMultiObjectsToggle"):GetComponent("Toggle")
+
+    this.copyBtn =
+        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Main/CopyBtn"):GetComponent(
+        "Button"
+    )
+
+    ------------------------------------------------------
     -- 按钮 Binding
     this.exitActionBtn.onClick:AddListener(
         function()
-            CSharpAPI.RequestScene(
-                "Garage",
-                function()
+            PopMessageManager.Instance:PushPopup(
+                "是否退出坦克工坊?",
+                function(state)
+                    if state then
+                        CSharpAPI.RequestScene(
+                            "Garage",
+                            function()
+                            end
+                        )
+                    end
                 end
             )
         end
@@ -135,26 +190,42 @@ this.onUtilCreated = function(root)
         end
     )
 
-    this.upBtn:GetComponent("Button").onClick:AddListener(
+    -- 复制一份当前的配件
+    this.copyBtn.onClick:AddListener(
+        function()
+            this.duplicateRule(this.curRuleId)
+        end
+    )
+    ---------------------摄像机操控--------------------------
+    this.upBtn.onClick:AddListener(
         function()
             this.makeCameraTargetDelta(Vector3.up)
         end
     )
 
-    this.downBtn:GetComponent("Button").onClick:AddListener(
+    this.downBtn.onClick:AddListener(
         function()
             this.makeCameraTargetDelta(-Vector3.up)
         end
     )
 
+    this.forwardBtn.onClick:AddListener(
+        function()
+            this.makeCameraTargetDelta(Vector3.forward)
+        end
+    )
+
+    this.backwardBtn.onClick:AddListener(
+        function()
+            this.makeCameraTargetDelta(-Vector3.forward)
+        end
+    )
+    ------------------------------------------------------
+
+    -- 退出详情编辑
     this.configComfirmBtn:GetComponent("Button").onClick:AddListener(
         function()
-            this.equipList.gameObject:SetActive(true)
-            this.configProp.gameObject:SetActive(false)
-
-            for k, v in pairs(this.slotModifyBtnList) do
-                v.gameObject:SetActive(true)
-            end
+            this.closeConfig()
         end
     )
 
@@ -173,6 +244,22 @@ this.onUtilCreated = function(root)
     this.shareImportBtn.onClick:AddListener(
         function()
             this.importShareCode()
+        end
+    )
+
+    this.setMainBtn.onClick:AddListener(
+        function()
+            CSharpAPI.SetRuleAsMain(this.userDefined, this.curRuleId)
+
+            print("this.setMainBtn")
+        end
+    )
+
+    this.slotMultiObjectsToggle.isOn = false
+    this.slotMultiObjectsToggle.onValueChanged:AddListener(
+        function(isEnabled)
+            this.isSlotMultiObjects = isEnabled
+            this.refreshEquipSlotInteractBtn()
         end
     )
 
@@ -209,8 +296,14 @@ this.onUtilCreated = function(root)
     --- 实例载具模型
     this.instanceMesh = nil
 
+    --- 是否在编辑规则
+    this.isEditingRule = false
+
     --- 当前编辑的规则 Id
     this.curRuleId = nil
+
+    --- 插槽是否支持多物体
+    this.isSlotMultiObjects = false
 
     this.createHullList()
     this.createInstallableEquipList()
@@ -291,68 +384,70 @@ end
 
 --- 刷新 Slot 添加的 Icon
 this.refreshEquipSlotInteractBtn = function()
-    -- 删除之前的按钮
-    for k, v in pairs(this.slotModifyBtnList) do
-        GameObject.Destroy(v.gameObject)
-    end
-
-    this.slotModifyBtnList = {}
-
-    -- 获取配件安装的状态
-    --- @type table<string,boolean[]>
-    local slotStatus = {}
-    local slotInfoCache = {}
-
-    -- 获取配件的插槽信息
-    for index, x in pairs(this.userDefined.rules) do
-        --- @type DIYRule
-        local rule = x
-        local slotInfos = DIYDataManager.Instance:GetData(rule.itemGuid).slotInfos
-
-        local status = {}
-
-        for i = 0, slotInfos.Length - 1 do
-            table.insert(status, false)
+    if not this.isEditingRule then
+        -- 删除之前的按钮
+        for k, v in pairs(this.slotModifyBtnList) do
+            GameObject.Destroy(v.gameObject)
         end
 
-        slotStatus[rule.ruleGuid] = status
-        slotInfoCache[rule.ruleGuid] = slotInfos
-    end
+        this.slotModifyBtnList = {}
 
-    -- 获取配件插槽的占用信息
-    for index, x in pairs(this.userDefined.rules) do
-        --- @type DIYRule
-        local rule = x
+        -- 获取配件安装的状态
+        --- @type table<string,boolean[]>
+        local slotStatus = {}
+        local slotInfoCache = {}
 
-        if rule.parentRuleGuid and rule.parentRuleGuid ~= "" then
-            slotStatus[rule.parentRuleGuid][rule.targetSlotIndex + 1] = true -- 注意 Lua index 比 c# +1
+        -- 获取配件的插槽信息
+        for index, x in pairs(this.userDefined.rules) do
+            --- @type DIYRule
+            local rule = x
+            local slotInfos = DIYDataManager.Instance:GetData(rule.itemGuid).slotInfos
+
+            local status = {}
+
+            for i = 0, slotInfos.Length - 1 do
+                table.insert(status, false)
+            end
+
+            slotStatus[rule.ruleGuid] = status
+            slotInfoCache[rule.ruleGuid] = slotInfos
         end
-    end
 
-    for ruleGuid, statusArray in pairs(slotStatus) do
-        for j, status in pairs(statusArray) do
-            if not status then
-                local slotIndex = j - 1
-                local slotOwnerRuleId = ruleGuid
+        -- 获取配件插槽的占用信息
+        for index, x in pairs(this.userDefined.rules) do
+            --- @type DIYRule
+            local rule = x
 
-                local iconPos = CSharpAPI.GetSlotPosFromBinding(slotOwnerRuleId, slotIndex, this.bindingData)
+            if rule.parentRuleGuid and rule.parentRuleGuid ~= "" then
+                slotStatus[rule.parentRuleGuid][rule.targetSlotIndex + 1] = true -- 注意 Lua index 比 c# +1
+            end
+        end
 
-                local instance =
-                    GameObject.Instantiate(
-                    this.slotModifyBtnTemplate,
-                    this.slotModifyBtnTemplate.transform.parent,
-                    true
-                )
+        for ruleGuid, statusArray in pairs(slotStatus) do
+            for j, status in pairs(statusArray) do
+                if not status or this.isSlotMultiObjects then -- 如果插槽支持多个物体，则无视此规则
+                    local slotIndex = j - 1
+                    local slotOwnerRuleId = ruleGuid
 
-                instance:GetComponent(typeof(CS.ShanghaiWindy.Core.IconScreenPositionCtrl)).worldPos = iconPos
-                instance:GetComponent("Button").onClick:AddListener(
-                    function()
-                        this.selectSlot(slotOwnerRuleId, slotIndex)
-                    end
-                )
-                instance.gameObject:SetActive(true)
+                    local iconPos = CSharpAPI.GetSlotPosFromBinding(slotOwnerRuleId, slotIndex, this.bindingData)
 
-                table.insert(this.slotModifyBtnList, instance)
+                    local instance =
+                        GameObject.Instantiate(
+                        this.slotModifyBtnTemplate,
+                        this.slotModifyBtnTemplate.transform.parent,
+                        true
+                    )
+
+                    instance:GetComponent(typeof(CS.ShanghaiWindy.Core.IconScreenPositionCtrl)).worldPos = iconPos
+                    instance:GetComponent("Button").onClick:AddListener(
+                        function()
+                            this.selectSlot(slotOwnerRuleId, slotIndex)
+                        end
+                    )
+                    instance.gameObject:SetActive(true)
+
+                    table.insert(this.slotModifyBtnList, instance)
+                end
             end
         end
     end
@@ -621,8 +716,10 @@ this.refreshFileLoadList = function()
     end
 end
 
+--- 选择当前聚焦编辑的规则
 this.selectRule = function(ruleId)
     this.curRuleId = ruleId
+    this.isEditingRule = true
 
     -- 界面切换
     this.equipList.gameObject:SetActive(false)
@@ -646,8 +743,9 @@ this.selectRule = function(ruleId)
             this.configPropEquipType.color = this.getBaseDataTypeText(baseData:GetDataType())
 
             -- 坐标变化相关逻辑
-            local isHull = baseData:GetDataType() == DIYDataEnum.Hull -- 车体不允许调整大小之类的
-            this.configPropTransformInfo.gameObject:SetActive(not isHull)
+            local isHull = baseData:GetDataType() == DIYDataEnum.Hull
+            this.configPropTransformInfo.gameObject:SetActive(not isHull) -- 车体不允许调整大小之类
+            this.copyBtn.gameObject:SetActive(not isHull) -- 车体不允许复制
 
             if not isHull then
                 -- 先解绑
@@ -665,7 +763,8 @@ this.selectRule = function(ruleId)
                     this.configPropPositionRect,
                     function(val)
                         rule.deltaPos = val
-                        this.onModifyUserDefined()
+                        -- this.onModifyUserDefined()
+                        this.markDirty()
                     end
                 )
 
@@ -673,7 +772,8 @@ this.selectRule = function(ruleId)
                     this.configPropEulerAngleRect,
                     function(val)
                         rule.localEulerAngles = val
-                        this.onModifyUserDefined()
+                        -- this.onModifyUserDefined()
+                        this.markDirty()
                     end
                 )
 
@@ -681,7 +781,8 @@ this.selectRule = function(ruleId)
                     this.configScaleRect,
                     function(val)
                         rule.scaleSize = val
-                        this.onModifyUserDefined()
+                        -- this.onModifyUserDefined()
+                        this.markDirty()
                     end
                 )
             end
@@ -712,19 +813,35 @@ this.selectRule = function(ruleId)
                 local propertyIsEnable = toggleableProperty.isEnabled
 
                 instance.transform:Find("PropertyName"):GetComponent("Text").text = propertyName
-                instance.transform:Find("PropertyField"):GetComponent("InputField").text = propertyValue
-                instance.transform:Find("PropertyField"):GetComponent("InputField").onValueChanged:AddListener(
-                    function(text)
-                        toggleableProperty:SetValue(tonumber(text))
-                        rule.customPropertiesJson = JsonUtility.ToJson(customProperty)
-                    end
-                )
+
+                local inputField = instance.transform:Find("PropertyField"):GetComponent("InputField")
+                if toggleableProperty:IsInputFieldRequired() then
+                    inputField.text = propertyValue
+                    inputField.interactable = toggleableProperty.isEnabled
+                    inputField.onValueChanged:AddListener(
+                        function(text)
+                            -- 赋值修改参数，并保存
+                            toggleableProperty:SetValue(tonumber(text))
+                            rule.customPropertiesJson = JsonUtility.ToJson(customProperty)
+
+                            -- 刷新用户数据
+                            this.markDirty()
+                        end
+                    )
+                else
+                    inputField.gameObject:SetActive(false)
+                end
 
                 instance.transform:Find("PropertyEnable"):GetComponent("Toggle").isOn = propertyIsEnable
                 instance.transform:Find("PropertyEnable"):GetComponent("Toggle").onValueChanged:AddListener(
                     function(isEnabled)
+                        -- 开关参数，并保存
                         toggleableProperty.isEnabled = isEnabled
+                        inputField.interactable = isEnabled
                         rule.customPropertiesJson = JsonUtility.ToJson(customProperty)
+
+                        -- 刷新用户数据
+                        this.markDirty()
                     end
                 )
 
@@ -733,6 +850,32 @@ this.selectRule = function(ruleId)
             end
         end
     end
+end
+
+--- 深拷贝规则，加入规则中，并刷新载具
+this.duplicateRule = function(ruleId)
+    -- 深复制此规则
+    --- @type DIYRule
+    local copiedRule = nil
+    for k, v in pairs(this.userDefined.rules) do
+        --- @type DIYRule
+        local rule = v
+
+        if rule.ruleGuid == ruleId then
+            -- 界面基本信息
+            copiedRule = rule:GetDeepCopied()
+            copiedRule.ruleGuid = CSharpAPI.GetGUID()
+            copiedRule.deltaPos = copiedRule.deltaPos + SerializeVector3(0.2, 0, 0)
+            copiedRule.isMain = false
+        end
+    end
+
+    if copiedRule then
+        this.userDefined.rules:Add(copiedRule)
+    end
+
+    this.onModifyUserDefined()
+    this.closeConfig()
 end
 
 --- 将 Vector3 赋值给 InputField
@@ -781,6 +924,7 @@ this.bindTransformInputField = function(rectTransform, onValueChanged)
     )
 end
 
+--- 导出分享码
 this.exportShareCode = function(userDefine)
     local shareCode = to_base64(JsonUtility.ToJson(userDefine))
 
@@ -822,6 +966,7 @@ this.exportShareCode = function(userDefine)
     )
 end
 
+--- 导入分享码
 this.importShareCode = function()
     local serverCode = this.shareCodeInput.text
     local form = WWWForm()
@@ -878,5 +1023,19 @@ this.importShareCode = function()
     )
 end
 
+--- 关闭配件详情页面
+this.closeConfig = function()
+    this.equipList.gameObject:SetActive(true)
+    this.configProp.gameObject:SetActive(false)
+
+    this.curRuleId = nil
+    this.isEditingRule = false
+
+    -- 显示被隐藏的插槽
+    this.refreshEquipSlotInteractBtn()
+end
+
 this.onExitMode = function()
+    this.isEditMode = false
+    -- Application.lowMemory("-", this.onLowMemory)
 end
