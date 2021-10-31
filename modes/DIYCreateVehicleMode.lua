@@ -61,6 +61,8 @@ this.onUtilCreated = function(root)
     this.slotModifyBtnTemplate.gameObject:SetActive(false)
 
     this.equipList = root.transform:Find("DIYCreateVehicleCanvas/EquipList")
+    this.equipScrollRect =
+        root.transform:Find("DIYCreateVehicleCanvas/EquipList/Scroll View/"):GetComponent("ScrollRect")
     this.equipTemplate = root.transform:Find("DIYCreateVehicleCanvas/EquipList/Scroll View/Viewport/Content/Template")
     this.equipTemplate.gameObject:SetActive(false)
 
@@ -250,8 +252,7 @@ this.onUtilCreated = function(root)
     this.setMainBtn.onClick:AddListener(
         function()
             CSharpAPI.SetRuleAsMain(this.userDefined, this.curRuleId)
-
-            print("this.setMainBtn")
+            PopMessageManager.Instance:PushNotice("当前配件已被设置为主要", 1)
         end
     )
 
@@ -305,6 +306,14 @@ this.onUtilCreated = function(root)
     --- 插槽是否支持多物体
     this.isSlotMultiObjects = false
 
+    --- 已安装配件滑动插槽值
+    this.expandedScrollValue = -1
+
+    --- 可安装配件滑动插槽值
+    this.unexpandedScrollValue = -1
+
+    this.equipList.gameObject:SetActive(true)
+
     this.createHullList()
     this.createInstallableEquipList()
 
@@ -314,12 +323,31 @@ end
 --- 切换装备列表大小
 --- @param isExpand boolean 是否放大
 this.toggleEquipListSize = function(isExpand)
+    -- 保存 Scroll View 的位置
+    if isExpand then
+        this.unexpandedScrollValue = this.equipScrollRect.verticalNormalizedPosition
+    else
+        this.expandedScrollValue = this.equipScrollRect.verticalNormalizedPosition
+    end
+
+    -- 调整大小
     if isExpand then
         this.equipList.transform.anchoredPosition = Vector2(0, 0)
         this.equipList.transform.sizeDelta = Vector2(0, 0)
     else
         this.equipList.transform.anchoredPosition = Vector2(400, 0)
         this.equipList.transform.sizeDelta = Vector2(-400, 0)
+    end
+
+    Canvas.ForceUpdateCanvases()
+
+    -- 还原 Scroll View 的位置
+    if isExpand and this.expandedScrollValue ~= -1 then
+        this.equipScrollRect.verticalNormalizedPosition = this.expandedScrollValue
+    end
+
+    if not isExpand and this.unexpandedScrollValue ~= -1 then
+        this.equipScrollRect.verticalNormalizedPosition = this.unexpandedScrollValue
     end
 end
 
@@ -340,8 +368,11 @@ this.createEquipUIObject = function(baseData)
     local instance = GameObject.Instantiate(this.equipTemplate, this.equipTemplate.transform.parent, true)
     instance.transform:Find("Title"):GetComponent("Text").text = baseData.displayName:GetDisplayName()
     instance.transform:Find("Description"):GetComponent("Text").text = baseData.description:GetDisplayName()
+    instance.transform:Find("Rank"):GetComponent("Text").text = tostring(baseData.rank)
     instance.transform:Find("Type"):GetComponent("Text").text = this.getBaseDataTypeText(baseData:GetDataType())
     instance.transform:Find("Type"):GetComponent("Text").color = this.getBaseDataTypeColor(baseData:GetDataType())
+
+    instance.transform:Find("Module").gameObject:SetActive(baseData.isModuleReady)
 
     if baseData.icon ~= nil then
         instance.transform:Find("Icon"):GetComponent("Image").sprite = baseData.icon
@@ -513,7 +544,14 @@ this.refreshInstalledEquipList = function()
         instance.transform:Find("UninstallBtn").gameObject:SetActive(true)
         instance.transform:Find("UninstallBtn"):GetComponent("Button").onClick:AddListener(
             function()
-                this.unequipSlot(rule.ruleGuid)
+                PopMessageManager.Instance:PushPopup(
+                    "是否删除当前配件?",
+                    function(state)
+                        if state then
+                            this.unequipSlot(rule.ruleGuid)
+                        end
+                    end
+                )
             end
         )
 
@@ -582,6 +620,7 @@ end
 --- 切换是否显示已安装的配件
 --- @param showInstalled boolean true 则显示已安装的，false 则显示当前插槽可安装的配件
 this.toggleEquipList = function(showInstalled)
+    -- 存滑动条信息
     local isEmptyRuleCount = this.userDefined.rules.Count == 0
 
     -- 没配件，显示可装配件情况下，显示车体
@@ -865,7 +904,7 @@ this.duplicateRule = function(ruleId)
             -- 界面基本信息
             copiedRule = rule:GetDeepCopied()
             copiedRule.ruleGuid = CSharpAPI.GetGUID()
-            copiedRule.deltaPos = copiedRule.deltaPos + SerializeVector3(0.2, 0, 0)
+            copiedRule.deltaPos = copiedRule.deltaPos + SerializeVector3(0, 1, 0)
             copiedRule.isMain = false
         end
     end

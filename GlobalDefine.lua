@@ -95,6 +95,7 @@ JsonUtility = CS.UnityEngine.JsonUtility
 -- UGUI
 Text = CS.UnityEngine.UI.Text
 Image = CS.UnityEngine.UI.Image
+Canvas = CS.UnityEngine.Canvas
 
 -- Web
 WWWForm = CS.UnityEngine.WWWForm
