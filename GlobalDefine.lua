@@ -74,6 +74,10 @@ DIYDataEnum = CS.ShanghaiWindy.Core.Data.DIYDataEnum
 SerializeVector3 = CS.ShanghaiWindy.Core.Data.SerializeVector3
 uGUI_Localization = CS.ShanghaiWindy.Core.uGUI_Localization
 
+OutlineHelper = CS.OutlineHelper
+HitBox = CS.ShanghaiWindy.Core.HitBox
+InternalModule = CS.ShanghaiWindy.Core.InternalModule
+
 --- @class uGUI_Localsize
 --- @field GetContent fun(_Key:string):void
 uGUI_Localsize = CS.ShanghaiWindy.Core.uGUI_Localsize
@@ -107,3 +111,5 @@ UnityWebRequest = CS.UnityEngine.Networking.UnityWebRequest
 Application = CS.UnityEngine.Application
 
 Time = CS.UnityEngine.Time
+
+MeshRenderer = CS.UnityEngine.MeshRenderer

@@ -312,6 +312,8 @@ this.onUtilCreated = function(root)
     --- 可安装配件滑动插槽值
     this.unexpandedScrollValue = -1
 
+    this.outlinableComponents = {}
+
     this.equipList.gameObject:SetActive(true)
 
     this.createHullList()
@@ -768,6 +770,25 @@ this.selectRule = function(ruleId)
         v.gameObject:SetActive(false)
     end
 
+    -- 高亮选择的物体
+    for i = 0, this.bindingData.Length - 1 do
+        local data = this.bindingData[i]
+        if data.rule.ruleGuid == ruleId then
+            if data.hasInstanceObject then
+                for j = 0, data.reference.renderers.Length - 1 do
+                    local render = data.reference.renderers[j]
+                    if not render:IsNull() then
+                        local go = render.gameObject
+                        OutlineHelper.CreateOutlineWithDefaultParams(go, render, Color(1, 0, 0, 1))
+
+                        local outline = go:GetComponent(typeof(CS.EPOOutline.Outlinable))
+                        table.insert(this.outlinableComponents, outline)
+                    end
+                end
+            end
+        end
+    end
+
     for k, v in pairs(this.userDefined.rules) do
         --- @type DIYRule
         local rule = v
@@ -1072,6 +1093,12 @@ this.closeConfig = function()
 
     -- 显示被隐藏的插槽
     this.refreshEquipSlotInteractBtn()
+
+    for k, v in pairs(this.outlinableComponents) do
+        GameObject.Destroy(v)
+    end
+
+    this.outlinableComponents = {}
 end
 
 this.onExitMode = function()
