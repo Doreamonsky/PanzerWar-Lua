@@ -1,5 +1,12 @@
 DIYCreateVehicleMode = {}
 
+ModuleFilterType = {
+    All = 1,
+    Turret = 2,
+    Gun = 3,
+    Item = 4
+}
+
 local this = DIYCreateVehicleMode
 this.onStartMode = function()
     this.userDefined = DIYUserDefined()
@@ -129,6 +136,22 @@ this.onUtilCreated = function(root)
         root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Main/CopyBtn"):GetComponent(
         "Button"
     )
+
+    this.filterGo = root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/Filter").gameObject
+    this.filterGo:SetActive(false)
+
+    this.allFilterBtn =
+        root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/Filter/AllBtn"):GetComponent("Button")
+    this.turretFilterBtn =
+        root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/Filter/TurretBtn"):GetComponent("Button")
+    this.gunFilterBtn =
+        root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/Filter/GunBtn"):GetComponent("Button")
+    this.itemFilterBtn =
+        root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/Filter/ItemBtn"):GetComponent("Button")
+
+    this.filterSearchField =
+        root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/FilterSearchField"):GetComponent("InputField")
+    this.filterSearchField.gameObject:SetActive(false)
 
     ------------------------------------------------------
     -- 按钮 Binding
@@ -264,6 +287,38 @@ this.onUtilCreated = function(root)
         end
     )
 
+    this.allFilterBtn.onClick:AddListener(
+        function()
+            this.installableEquipFilter = ModuleFilterType.All
+            this.refreshInstallableEquipList()
+        end
+    )
+    this.turretFilterBtn.onClick:AddListener(
+        function()
+            this.installableEquipFilter = ModuleFilterType.Turret
+            this.refreshInstallableEquipList()
+        end
+    )
+
+    this.gunFilterBtn.onClick:AddListener(
+        function()
+            this.installableEquipFilter = ModuleFilterType.Gun
+            this.refreshInstallableEquipList()
+        end
+    )
+
+    this.itemFilterBtn.onClick:AddListener(
+        function()
+            this.installableEquipFilter = ModuleFilterType.Item
+            this.refreshInstallableEquipList()
+        end
+    )
+
+    this.filterSearchField.onValueChanged:AddListener(
+        function(text)
+            this.refreshInstallableEquipList()
+        end
+    )
     -- 场景数据
     --- @type Transform 摄像机焦点 Transform
     this.cameraTargetTrans = root.transform:Find("CameraPoint")
@@ -316,6 +371,9 @@ this.onUtilCreated = function(root)
 
     this.equipList.gameObject:SetActive(true)
 
+    --- 所有显示的配件
+    this.installableEquipFilter = ModuleFilterType.All
+
     this.createHullList()
     this.createInstallableEquipList()
 
@@ -351,6 +409,11 @@ this.toggleEquipListSize = function(isExpand)
     if not isExpand and this.unexpandedScrollValue ~= -1 then
         this.equipScrollRect.verticalNormalizedPosition = this.unexpandedScrollValue
     end
+
+    --- 只有安装配件，且包含车体配件时候，显示过滤器
+    local hasEquips = this.userDefined.rules.Count > 0
+    this.filterGo:SetActive(isExpand and hasEquips)
+    this.filterSearchField.gameObject:SetActive(isExpand and hasEquips)
 end
 
 --- 调整摄像机聚焦位置
@@ -515,11 +578,16 @@ this.createHullList = function()
 end
 
 this.createInstallableEquipList = function()
+    for k, v in pairs(this.installableEquipUIList) do
+        GameObject.Destroy(v.gameObject)
+    end
+
+    this.installableEquipUIList = {}
+
     local installableEquips = DIYDataManager.Instance:GetEquipableDataList()
 
     for index, baseData in pairs(installableEquips) do
         local instance = this.createEquipUIObject(baseData)
-
         instance.transform:Find("InstallBtn").gameObject:SetActive(true)
         instance.transform:Find("InstallBtn"):GetComponent("Button").onClick:AddListener(
             function()
@@ -528,6 +596,38 @@ this.createInstallableEquipList = function()
         )
 
         table.insert(this.installableEquipUIList, instance)
+    end
+end
+
+--- 刷新配件列表
+this.refreshInstallableEquipList = function()
+    local installableEquips = DIYDataManager.Instance:GetEquipableDataList()
+
+    for k, v in pairs(this.installableEquipUIList) do
+        local flag = false
+        local baseData = installableEquips[k - 1]
+
+        -- 条件过滤
+        if this.installableEquipFilter == ModuleFilterType.All then
+            flag = true
+        elseif this.installableEquipFilter == ModuleFilterType.Gun and baseData:GetDataType() == DIYDataEnum.Gun then
+            flag = true
+        elseif this.installableEquipFilter == ModuleFilterType.Turret and baseData:GetDataType() == DIYDataEnum.Turret then
+            flag = true
+        elseif this.installableEquipFilter == ModuleFilterType.Item and baseData:GetDataType() == DIYDataEnum.Item then
+            flag = true
+        end
+
+        -- 搜索关键词
+        if flag and this.filterSearchField.text ~= "" then
+            local displayName = baseData.displayName:GetDisplayName()
+            local strStart, strEnd = string.find(displayName, this.filterSearchField.text)
+            if strStart == strEnd then
+                flag = false
+            end
+        end
+
+        v.gameObject:SetActive(flag)
     end
 end
 
@@ -631,8 +731,14 @@ this.toggleEquipList = function(showInstalled)
     end
 
     -- 有配件，显示可装配件情况下，显示非车体
-    for k, v in pairs(this.installableEquipUIList) do
-        v.gameObject:SetActive(not isEmptyRuleCount and not showInstalled)
+    local showInstallableEquips = not isEmptyRuleCount and not showInstalled
+
+    if showInstallableEquips then
+        this.refreshInstallableEquipList()
+    else
+        for k, v in pairs(this.installableEquipUIList) do
+            v.gameObject:SetActive(false)
+        end
     end
 
     for k, v in pairs(this.installedEquipUIList) do
