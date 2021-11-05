@@ -1092,19 +1092,9 @@ end
 
 --- 导出分享码
 this.exportShareCode = function(userDefine)
-    local shareCode = to_base64(JsonUtility.ToJson(userDefine))
-
-    local form = WWWForm()
-    form:AddField("base64", shareCode)
-
-    local webRequest = UnityWebRequest.Post("https://game.waroftanks.cn/backend/userDefine/Upload/", form)
-    local async = webRequest:SendWebRequest()
-
-    async:completed(
-        "+",
-        function(res)
-            local serverCode = webRequest.downloadHandler.text
-
+    CSharpAPI.ExportShareCode(
+        userDefine,
+        function(serverCode)
             if serverCode == "" then
                 PopMessageManager.Instance:PushPopup(
                     "账号未登录，无法分享",
@@ -1134,46 +1124,14 @@ end
 
 --- 导入分享码
 this.importShareCode = function()
-    local serverCode = this.shareCodeInput.text
-    local form = WWWForm()
-    form:AddField("shareId", serverCode)
+    local shareCode = this.shareCodeInput.text
 
-    local webRequest = UnityWebRequest.Post("https://game.waroftanks.cn/backend/userDefine/Search/", form)
-    local async = webRequest:SendWebRequest()
-
-    async:completed(
-        "+",
-        function(res)
-            local res = webRequest.downloadHandler.text
-
-            if res ~= "" then
-                local shareJson = from_base64(res)
-                local shareUserDefine = DIYUserDefined()
-                JsonUtility.FromJsonOverwrite(shareJson, shareUserDefine)
-
-                local validFlag = true
-                for k, v in pairs(shareUserDefine.rules) do
-                    --- @type DIYRule
-                    local rule = v
-
-                    local baseData = DIYDataManager.Instance:GetData(rule.itemGuid)
-
-                    if baseData:IsNull() then
-                        validFlag = false
-                    end
-                end
-
-                if validFlag then
-                    UserDIYDataManager.Instance:SetDIYUserDefined(shareUserDefine)
-                    this.refreshFileLoadList()
-                else
-                    PopMessageManager.Instance:PushPopup(
-                        "当前的分享码包含你未拥有的配件，所以无法导入",
-                        function(state)
-                        end,
-                        false
-                    )
-                end
+    CSharpAPI.ImportShareCode(
+        shareCode,
+        function(shareUserDefine)
+            if shareUserDefine ~= nil then
+                UserDIYDataManager.Instance:SetDIYUserDefined(shareUserDefine)
+                this.refreshFileLoadList()
             else
                 PopMessageManager.Instance:PushPopup(
                     "错误的分享码，或游戏账号未登录",

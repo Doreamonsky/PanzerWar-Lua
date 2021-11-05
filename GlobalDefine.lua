@@ -13,6 +13,8 @@
 ---@field CreateDIYVehicle fun(userDefined:DIYUserDefined,onLoaded:System.Action<GameObject, VehicleTextData>):void 异步加载DIY载具
 ---@field GetGUID fun():string 创建 GUID
 ---@field SetRuleAsMain fun(userDefined:DIYUserDefined,mainRuleGuid:string) 设置 Rule 为 Main
+---@field ExportShareCode fun(userDefined:DIYUserDefined,onComplete:System.Action<string>)
+---@field ImportShareCode fun(shareId:string,onComplete:System.Action<DIYUserDefined>)
 ---@field OnLuaExitModeReq UnityEvent
 CSharpAPI = CS.ShanghaiWindy.Core.LuaCallCSharpHelper
 
