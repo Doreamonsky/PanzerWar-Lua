@@ -1,12 +1,5 @@
 DIYCreateVehicleMode = {}
 
-ModuleFilterType = {
-    All = 1,
-    Turret = 2,
-    Gun = 3,
-    Item = 4
-}
-
 local this = DIYCreateVehicleMode
 this.onStartMode = function()
     this.userDefined = DIYUserDefined()
@@ -68,10 +61,6 @@ this.onUtilCreated = function(root)
     this.slotModifyBtnTemplate.gameObject:SetActive(false)
 
     this.equipList = root.transform:Find("DIYCreateVehicleCanvas/EquipList")
-    this.equipScrollRect =
-        root.transform:Find("DIYCreateVehicleCanvas/EquipList/Scroll View/"):GetComponent("ScrollRect")
-    this.equipTemplate = root.transform:Find("DIYCreateVehicleCanvas/EquipList/Scroll View/Viewport/Content/Template")
-    this.equipTemplate.gameObject:SetActive(false)
 
     this.slotDisableMask = root.transform:Find("DIYCreateVehicleCanvas/SlotDisableMask")
     this.slotDisableMask.gameObject:SetActive(false)
@@ -137,28 +126,24 @@ this.onUtilCreated = function(root)
         "Button"
     )
 
-    this.filterGo = root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/Filter").gameObject
-    this.filterGo:SetActive(false)
-
+    this.allEquipGo = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll").gameObject
     this.allFilterBtn =
-        root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/Filter/AllBtn"):GetComponent("Button")
+        root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/AllBtn"):GetComponent("Button")
     this.turretFilterBtn =
-        root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/Filter/TurretBtn"):GetComponent("Button")
+        root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/TurretBtn"):GetComponent("Button")
     this.gunFilterBtn =
-        root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/Filter/GunBtn"):GetComponent("Button")
+        root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/GunBtn"):GetComponent("Button")
     this.itemFilterBtn =
-        root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/Filter/ItemBtn"):GetComponent("Button")
-
+        root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/ItemBtn"):GetComponent("Button")
     this.filterSearchField =
-        root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/FilterSearchField"):GetComponent("InputField")
-    this.filterSearchField.gameObject:SetActive(false)
+        root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/FilterSearchField"):GetComponent("InputField")
 
     ------------------------------------------------------
     -- 按钮 Binding
     this.exitActionBtn.onClick:AddListener(
         function()
             PopMessageManager.Instance:PushPopup(
-                "是否退出坦克工坊?",
+                "是否退出坦克工坊? Exit tank workshop?",
                 function(state)
                     if state then
                         CSharpAPI.RequestScene(
@@ -289,36 +274,35 @@ this.onUtilCreated = function(root)
 
     this.allFilterBtn.onClick:AddListener(
         function()
-            this.installableEquipFilter = ModuleFilterType.All
-            this.refreshInstallableEquipList()
+            CSharpAPI.SetEquipTypeFilter(DIYDataEnum.Undefined)
         end
     )
     this.turretFilterBtn.onClick:AddListener(
         function()
-            this.installableEquipFilter = ModuleFilterType.Turret
-            this.refreshInstallableEquipList()
+            CSharpAPI.SetEquipTypeFilter(DIYDataEnum.Turret)
         end
     )
 
     this.gunFilterBtn.onClick:AddListener(
         function()
-            this.installableEquipFilter = ModuleFilterType.Gun
-            this.refreshInstallableEquipList()
+            CSharpAPI.SetEquipTypeFilter(DIYDataEnum.Gun)
         end
     )
 
     this.itemFilterBtn.onClick:AddListener(
         function()
-            this.installableEquipFilter = ModuleFilterType.Item
-            this.refreshInstallableEquipList()
+            CSharpAPI.SetEquipTypeFilter(DIYDataEnum.Item)
         end
     )
 
     this.filterSearchField.onValueChanged:AddListener(
         function(text)
-            this.refreshInstallableEquipList()
+            CSharpAPI.SetEquipKeywordFilter(text)
         end
     )
+    -- 缓存数据
+    this.slotModifyBtnPools = GameObjectPool()
+    this.slotModifyBtnPools:Init(this.slotModifyBtnTemplate.gameObject, 20)
     -- 场景数据
     --- @type Transform 摄像机焦点 Transform
     this.cameraTargetTrans = root.transform:Find("CameraPoint")
@@ -371,49 +355,11 @@ this.onUtilCreated = function(root)
 
     this.equipList.gameObject:SetActive(true)
 
-    --- 所有显示的配件
-    this.installableEquipFilter = ModuleFilterType.All
-
-    this.createHullList()
-    this.createInstallableEquipList()
+    CSharpAPI.OnEquipUninstallClicked:AddListener(this.OnEquipUninstallClicked)
+    CSharpAPI.OnEquipDetailClicked:AddListener(this.OnEquipDetailClicked)
+    CSharpAPI.OnEquipInstallClicked:AddListener(this.OnEquipInstallClicked)
 
     this.toggleEquipList(false)
-end
-
---- 切换装备列表大小
---- @param isExpand boolean 是否放大
-this.toggleEquipListSize = function(isExpand)
-    -- 保存 Scroll View 的位置
-    if isExpand then
-        this.unexpandedScrollValue = this.equipScrollRect.verticalNormalizedPosition
-    else
-        this.expandedScrollValue = this.equipScrollRect.verticalNormalizedPosition
-    end
-
-    -- 调整大小
-    if isExpand then
-        this.equipList.transform.anchoredPosition = Vector2(0, 0)
-        this.equipList.transform.sizeDelta = Vector2(0, 0)
-    else
-        this.equipList.transform.anchoredPosition = Vector2(400, 0)
-        this.equipList.transform.sizeDelta = Vector2(-400, 0)
-    end
-
-    Canvas.ForceUpdateCanvases()
-
-    -- 还原 Scroll View 的位置
-    if isExpand and this.expandedScrollValue ~= -1 then
-        this.equipScrollRect.verticalNormalizedPosition = this.expandedScrollValue
-    end
-
-    if not isExpand and this.unexpandedScrollValue ~= -1 then
-        this.equipScrollRect.verticalNormalizedPosition = this.unexpandedScrollValue
-    end
-
-    --- 只有安装配件，且包含车体配件时候，显示过滤器
-    local hasEquips = this.userDefined.rules.Count > 0
-    this.filterGo:SetActive(isExpand and hasEquips)
-    this.filterSearchField.gameObject:SetActive(isExpand and hasEquips)
 end
 
 --- 调整摄像机聚焦位置
@@ -426,24 +372,6 @@ this.makeCameraTargetDelta = function(delta)
     end
 
     this.cameraTargetTrans.position = this.cameraDelta + this.cameraTargetOriginalPos
-end
-
---- 创建右侧的配件显示
-this.createEquipUIObject = function(baseData)
-    local instance = GameObject.Instantiate(this.equipTemplate, this.equipTemplate.transform.parent, true)
-    instance.transform:Find("Title"):GetComponent("Text").text = baseData.displayName:GetDisplayName()
-    instance.transform:Find("Description"):GetComponent("Text").text = baseData.description:GetDisplayName()
-    instance.transform:Find("Rank"):GetComponent("Text").text = tostring(baseData.rank)
-    instance.transform:Find("Type"):GetComponent("Text").text = this.getBaseDataTypeText(baseData:GetDataType())
-    instance.transform:Find("Type"):GetComponent("Text").color = this.getBaseDataTypeColor(baseData:GetDataType())
-
-    instance.transform:Find("Module").gameObject:SetActive(baseData.isModuleReady)
-
-    if baseData.icon ~= nil then
-        instance.transform:Find("Icon"):GetComponent("Image").sprite = baseData.icon
-    end
-    instance.gameObject:SetActive(true)
-    return instance
 end
 
 this.getBaseDataTypeText = function(dataType)
@@ -483,7 +411,7 @@ this.refreshEquipSlotInteractBtn = function()
     if not this.isEditingRule then
         -- 删除之前的按钮
         for k, v in pairs(this.slotModifyBtnList) do
-            GameObject.Destroy(v.gameObject)
+            this.slotModifyBtnPools:DestroyObject(v)
         end
 
         this.slotModifyBtnList = {}
@@ -527,12 +455,7 @@ this.refreshEquipSlotInteractBtn = function()
 
                     local iconPos = CSharpAPI.GetSlotPosFromBinding(slotOwnerRuleId, slotIndex, this.bindingData)
 
-                    local instance =
-                        GameObject.Instantiate(
-                        this.slotModifyBtnTemplate,
-                        this.slotModifyBtnTemplate.transform.parent,
-                        true
-                    )
+                    local instance = this.slotModifyBtnPools:InstantiateObject()
 
                     instance:GetComponent(typeof(CS.ShanghaiWindy.Core.IconScreenPositionCtrl)).worldPos = iconPos
                     instance:GetComponent("Button").onClick:AddListener(
@@ -549,123 +472,50 @@ this.refreshEquipSlotInteractBtn = function()
     end
 end
 
-this.createHullList = function()
-    for index, baseData in pairs(DIYDataManager.Instance:GetHullDataList()) do
-        local instance = this.createEquipUIObject(baseData)
+--- 处理 UI 点击安装配件事件
+this.OnEquipInstallClicked = function(baseData)
+    local isHull = baseData:GetDataType() == DIYDataEnum.Hull
 
-        instance.transform:Find("InstallBtn").gameObject:SetActive(true)
-        instance.transform:Find("InstallBtn"):GetComponent("Button").onClick:AddListener(
-            function()
-                this.addRule(CSharpAPI.GetGUID(), baseData.itemGUID, true, nil, 0)
+    if isHull then
+        this.addRule(CSharpAPI.GetGUID(), baseData.itemGUID, true, nil, 0)
 
-                CSharpAPI.CreateNewDIYVehicle(
-                    this.userDefined,
-                    function(instanceMesh, textData, bindingData)
-                        this.bindingData = bindingData
-                        this.refreshEquipSlotInteractBtn()
+        CSharpAPI.CreateNewDIYVehicle(
+            this.userDefined,
+            function(instanceMesh, textData, bindingData)
+                this.bindingData = bindingData
+                this.refreshEquipSlotInteractBtn()
 
-                        this.instanceMesh = instanceMesh
+                this.instanceMesh = instanceMesh
 
-                        this.refreshInstalledEquipList()
-                        this.toggleEquipList(true)
-                    end
-                )
+                this.refreshInstalledEquipList()
+                this.toggleEquipList(true)
             end
         )
-
-        table.insert(this.hullUIList, instance)
+    else
+        this.equipSlot(baseData.itemGUID)
     end
 end
 
-this.createInstallableEquipList = function()
-    for k, v in pairs(this.installableEquipUIList) do
-        GameObject.Destroy(v.gameObject)
-    end
-
-    this.installableEquipUIList = {}
-
-    local installableEquips = DIYDataManager.Instance:GetEquipableDataList()
-
-    for index, baseData in pairs(installableEquips) do
-        local instance = this.createEquipUIObject(baseData)
-        instance.transform:Find("InstallBtn").gameObject:SetActive(true)
-        instance.transform:Find("InstallBtn"):GetComponent("Button").onClick:AddListener(
-            function()
-                this.equipSlot(baseData.itemGUID)
+--- 处理 UI 点击卸载配件事件
+this.OnEquipUninstallClicked = function(rule)
+    PopMessageManager.Instance:PushPopup(
+        "是否删除当前配件? Delete Current Equipment?",
+        function(state)
+            if state then
+                this.unequipSlot(rule.ruleGuid)
             end
-        )
-
-        table.insert(this.installableEquipUIList, instance)
-    end
+        end
+    )
 end
 
---- 刷新配件列表
-this.refreshInstallableEquipList = function()
-    local installableEquips = DIYDataManager.Instance:GetEquipableDataList()
-
-    for k, v in pairs(this.installableEquipUIList) do
-        local flag = false
-        local baseData = installableEquips[k - 1]
-
-        -- 条件过滤
-        if this.installableEquipFilter == ModuleFilterType.All then
-            flag = true
-        elseif this.installableEquipFilter == ModuleFilterType.Gun and baseData:GetDataType() == DIYDataEnum.Gun then
-            flag = true
-        elseif this.installableEquipFilter == ModuleFilterType.Turret and baseData:GetDataType() == DIYDataEnum.Turret then
-            flag = true
-        elseif this.installableEquipFilter == ModuleFilterType.Item and baseData:GetDataType() == DIYDataEnum.Item then
-            flag = true
-        end
-
-        -- 搜索关键词
-        if flag and this.filterSearchField.text ~= "" then
-            local displayName = baseData.displayName:GetDisplayName()
-            local strStart, strEnd = string.find(displayName, this.filterSearchField.text)
-            if strStart == strEnd then
-                flag = false
-            end
-        end
-
-        v.gameObject:SetActive(flag)
-    end
+--- 处理 UI 点击详情配件事件
+this.OnEquipDetailClicked = function(rule)
+    this.selectRule(rule.ruleGuid)
 end
 
 --- 根据 Rule 刷新已安装的配件 UI 列表
 this.refreshInstalledEquipList = function()
-    for k, v in pairs(this.installedEquipUIList) do
-        GameObject.Destroy(v.gameObject)
-    end
-
-    this.installedEquipUIList = {}
-
-    for index, x in pairs(this.userDefined.rules) do
-        --- @type DIYRule
-        local rule = x
-        local instance = this.createEquipUIObject(DIYDataManager.Instance:GetData(rule.itemGuid))
-        instance.transform:Find("UninstallBtn").gameObject:SetActive(true)
-        instance.transform:Find("UninstallBtn"):GetComponent("Button").onClick:AddListener(
-            function()
-                PopMessageManager.Instance:PushPopup(
-                    "是否删除当前配件?",
-                    function(state)
-                        if state then
-                            this.unequipSlot(rule.ruleGuid)
-                        end
-                    end
-                )
-            end
-        )
-
-        instance.transform:Find("DetailBtn").gameObject:SetActive(true)
-        instance.transform:Find("DetailBtn"):GetComponent("Button").onClick:AddListener(
-            function()
-                this.selectRule(rule.ruleGuid)
-            end
-        )
-
-        table.insert(this.installedEquipUIList, instance)
-    end
+    CSharpAPI.SetEquipRule(this.userDefined)
 end
 
 --- 增加规则 （比较简单）
@@ -722,38 +572,22 @@ end
 --- 切换是否显示已安装的配件
 --- @param showInstalled boolean true 则显示已安装的，false 则显示当前插槽可安装的配件
 this.toggleEquipList = function(showInstalled)
-    -- 存滑动条信息
-    local isEmptyRuleCount = this.userDefined.rules.Count == 0
+    this.allEquipGo:SetActive(not showInstalled)
 
-    -- 没配件，显示可装配件情况下，显示车体
-    for k, v in pairs(this.hullUIList) do
-        v.gameObject:SetActive(isEmptyRuleCount and not showInstalled)
-    end
-
-    -- 有配件，显示可装配件情况下，显示非车体
-    local showInstallableEquips = not isEmptyRuleCount and not showInstalled
-
-    if showInstallableEquips then
-        this.refreshInstallableEquipList()
-    else
-        for k, v in pairs(this.installableEquipUIList) do
-            v.gameObject:SetActive(false)
-        end
-    end
-
-    for k, v in pairs(this.installedEquipUIList) do
-        v.gameObject:SetActive(showInstalled)
+    if not showInstalled then
+        -- 没配件情况下，显示车体的选项
+        local isEmptyRuleCount = this.userDefined.rules.Count == 0
+        CSharpAPI.SetEquipHullToggle(isEmptyRuleCount)
     end
 
     this.slotDisableMask.gameObject:SetActive(not showInstalled)
-    this.toggleEquipListSize(not showInstalled)
 end
 
 this.saveUserDefine = function(defineName)
     -- 保存名称检查
     if not defineName or defineName == "" then
         PopMessageManager.Instance:PushPopup(
-            "请输入存档名称.",
+            "请输入存档名称。Input the saving name.",
             function()
             end
         )
@@ -762,14 +596,8 @@ this.saveUserDefine = function(defineName)
 
     this.userDefined.definedName = defineName
 
-    -- C# 侧会检查载具是否拥有并设置 MainTurret 与 MainGun.
-    -- 若载具想可以正常运行，则必须拥有规范父子结构的 Hull,Turret,Gun.
-
-    -- 实现存档的深复制，防止干扰以前的数据
-
     UserDIYDataManager.Instance:SetDIYUserDefined(this.deepCopyUserDefine(this.userDefined))
 
-    -- CS.UnityEngine.GUIUtility.systemCopyBuffer = JsonUtility.ToJson(this.userDefined) TODO: 载具分享功能
     this.fileSavePop.gameObject:SetActive(false)
 end
 
@@ -839,7 +667,7 @@ this.refreshFileLoadList = function()
             function()
                 -- 删除当前的 UserDefine
                 PopMessageManager.Instance:PushPopup(
-                    "是否确定删除当前的存档?",
+                    "是否确定删除当前的存档? Delete current saving?",
                     function(state)
                         if state then
                             this.deleteUserDefine(userDefine.definedName)
@@ -1097,7 +925,7 @@ this.exportShareCode = function(userDefine)
         function(serverCode)
             if serverCode == "" then
                 PopMessageManager.Instance:PushPopup(
-                    "账号未登录，无法分享",
+                    "分享异常。Share failed.",
                     function(state)
                     end,
                     false
@@ -1134,7 +962,7 @@ this.importShareCode = function()
                 this.refreshFileLoadList()
             else
                 PopMessageManager.Instance:PushPopup(
-                    "错误的分享码，或游戏账号未登录",
+                    "错误的分享码。 Invalid Share Code.",
                     function(state)
                     end,
                     false
@@ -1167,5 +995,10 @@ end
 
 this.onExitMode = function()
     this.isEditMode = false
-    -- Application.lowMemory("-", this.onLowMemory)
+
+    CSharpAPI.OnEquipUninstallClicked:RemoveListener(this.OnEquipUninstallClicked)
+    CSharpAPI.OnEquipDetailClicked:RemoveListener(this.OnEquipDetailClicked)
+    CSharpAPI.OnEquipInstallClicked:RemoveListener(this.OnEquipInstallClicked)
+
+    this.slotModifyBtnPools:Dispose()
 end
