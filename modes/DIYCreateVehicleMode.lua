@@ -8,6 +8,9 @@ this.onStartMode = function()
     this.dirtyCount = 0
     this.isEditMode = true
 
+    --- @type boolean 是否在加载配件
+    this.isInstallPart = false
+
     CSharpAPI.RequestScene(
         "Physic-Play",
         function()
@@ -121,6 +124,9 @@ this.onUtilCreated = function(root)
     this.slotMultiObjectsToggle =
         root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/SlotMultiObjectsToggle"):GetComponent("Toggle")
 
+    this.ApplyParentScaleToggle =
+        root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/ApplyParentScaleToggle"):GetComponent("Toggle")
+
     this.copyBtn =
         root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Main/CopyBtn"):GetComponent(
         "Button"
@@ -146,6 +152,7 @@ this.onUtilCreated = function(root)
                 "是否退出坦克工坊? Exit tank workshop?",
                 function(state)
                     if state then
+                        this.onExitMode()
                         CSharpAPI.RequestScene(
                             "Garage",
                             function()
@@ -269,6 +276,13 @@ this.onUtilCreated = function(root)
         function(isEnabled)
             this.isSlotMultiObjects = isEnabled
             this.refreshEquipSlotInteractBtn()
+        end
+    )
+
+    this.ApplyParentScaleToggle.onValueChanged:AddListener(
+        function(isEnable)
+            this.userDefined.isApplyParentScale = isEnable
+            this.forceReloadUserDefined()
         end
     )
 
@@ -474,6 +488,12 @@ end
 
 --- 处理 UI 点击安装配件事件
 this.OnEquipInstallClicked = function(baseData)
+    if this.isInstallPart then
+        return
+    end
+
+    this.isInstallPart = true
+
     local isHull = baseData:GetDataType() == DIYDataEnum.Hull
 
     if isHull then
@@ -489,6 +509,8 @@ this.OnEquipInstallClicked = function(baseData)
 
                 this.refreshInstalledEquipList()
                 this.toggleEquipList(true)
+
+                this.isInstallPart = false
             end
         )
     else
@@ -559,10 +581,32 @@ this.onModifyUserDefined = function()
             this.refreshInstalledEquipList()
 
             this.toggleEquipList(true)
+
+            this.isInstallPart = false
         end
     )
 end
 
+-- 强制刷新当前载具
+function this.forceReloadUserDefined()
+    -- 删除当前的预览
+    if this.instanceMesh ~= nil then
+        GameObject.Destroy(this.instanceMesh)
+    end
+
+    CSharpAPI.CreateNewDIYVehicle(
+        this.userDefined,
+        function(instanceMesh, textData, bindingData)
+            this.instanceMesh = instanceMesh
+            this.bindingData = bindingData
+
+            this.refreshEquipSlotInteractBtn()
+            this.refreshInstalledEquipList()
+
+            this.toggleEquipList(true)
+        end
+    )
+end
 --- 删除配件
 this.unequipSlot = function(itemGuid)
     this.deleteRule(itemGuid)
@@ -635,6 +679,8 @@ this.loadNewUserDefine = function(userDefine)
 
             local isEmptyRuleCount = this.userDefined.rules.Count == 0
             this.toggleEquipList(not isEmptyRuleCount)
+
+            this.ApplyParentScaleToggle.isOn = userDefine.isApplyParentScale
         end
     )
 end
@@ -996,7 +1042,7 @@ end
 this.onExitMode = function()
     this.isEditMode = false
 
-    CSharpAPI.OnEquipUninstallClicked:RemoveListener(this.OnEquipUninstallClicked)
+    CSharpAPI.OnEquipUninstallClicked:RemoveAllListeners(this.OnEquipUninstallClicked)
     CSharpAPI.OnEquipDetailClicked:RemoveListener(this.OnEquipDetailClicked)
     CSharpAPI.OnEquipInstallClicked:RemoveListener(this.OnEquipInstallClicked)
 

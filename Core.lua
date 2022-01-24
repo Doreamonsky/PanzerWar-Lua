@@ -9,7 +9,7 @@ table.indexOf = function(tab, value)
         if value == val then
             return index
         else
-            return -1
+            return false
         end
     end
 end
