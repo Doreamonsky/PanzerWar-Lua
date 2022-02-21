@@ -17,21 +17,6 @@
                     "dstDir": "D:/Projects/LuaProject/resources/windows/modes"
                 }
             ]
-        },
-        {
-            "modNames": [
-                "BuildPipline-Vehicle-DIY-OfficialSets"
-            ],
-            "copyInfo": [
-                {
-                    "platform": "Android",
-                    "dstDir": "D:/Projects/LuaProject/resources/android/default/diy"
-                },
-                {
-                    "platform": "StandaloneWindows64",
-                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/diy"
-                }
-            ]
         }
     ]
 }
