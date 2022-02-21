@@ -123,6 +123,7 @@ UnityWebRequest = CS.UnityEngine.Networking.UnityWebRequest
 --- @class Application
 --- @field lowMemory Action
 Application = CS.UnityEngine.Application
+LogType = CS.UnityEngine.LogType
 
 Time = CS.UnityEngine.Time
 

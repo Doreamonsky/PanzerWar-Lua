@@ -27,6 +27,14 @@ this.onStartMode = function()
     )
 
     -- Application.lowMemory("+", this.onLowMemory)
+    -- Application.logMessageReceived("+", this.onLogCallBack) 下个版本，更新 lua lib 时候启用
+end
+
+--- 显示出错的异常，方便追踪问题
+this.onLogCallBack = function(logString, stackTrace, type)
+    if type == LogType.Exception then
+        PopMessageManager.Instance:PushPopup("报错 / Exception:" .. logString .. "堆栈 / Stack:" .. stackTrace,nil,false)
+    end
 end
 
 this.onUpdate = function()
@@ -1047,4 +1055,6 @@ this.onExitMode = function()
     CSharpAPI.OnEquipInstallClicked:RemoveListener(this.OnEquipInstallClicked)
 
     this.slotModifyBtnPools:Dispose()
+
+    -- Application.logMessageReceived("-", this.onLogCallBack)
 end
