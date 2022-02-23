@@ -189,11 +189,11 @@ this.CreatePlayerVehicle = function(vehicleInfo)
             if vehicleInfo.type == VehicleInfo.Type.Ground then
                 local tankInitSystem =
                     CSharpAPI.CreateTankPlayer(vehicleInfo.vehicleName, trans.position, trans.rotation)
-                tankInitSystem.OnVehicleLoaded:AddListener(this.ClosePlayerUI)
+                    tankInitSystem.OnVehicleLoaded:AddListener(this.ClosePlayerUI)
             elseif vehicleInfo.type == VehicleInfo.Type.Aviation then
                 local flightInitSystem =
                     CSharpAPI.CreateFlightPlayer(vehicleInfo.vehicleName, trans.position, trans.rotation, false)
-                flightInitSystem.OnVehicleLoaded:AddListener(this.ClosePlayerUI)
+                    flightInitSystem.OnVehicleLoaded:AddListener(this.ClosePlayerUI)
             end
         end,
         0,
@@ -227,4 +227,5 @@ this.ClosePlayerUI = function()
     AudioListener.volume = 1
     URPMainUIManager.Instance.audioListener.enabled = false
     URPMainUIManager.Instance.backgroundCamera.enabled = false
+    MouseLockModule.Instance:OnHide()
 end

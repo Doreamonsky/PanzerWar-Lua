@@ -9,7 +9,7 @@ this.onStartMode = function()
     this.isEditMode = true
 
     --- @type boolean 是否在加载配件
-    this.isInstallPart = false
+    this.isLoadingParts = false
 
     CSharpAPI.RequestScene(
         "Physic-Play",
@@ -33,7 +33,7 @@ end
 --- 显示出错的异常，方便追踪问题
 this.onLogCallBack = function(logString, stackTrace, type)
     if type == LogType.Exception then
-        PopMessageManager.Instance:PushPopup("报错 / Exception:" .. logString .. "堆栈 / Stack:" .. stackTrace,nil,false)
+        PopMessageManager.Instance:PushPopup("报错 / Exception:" .. logString .. "堆栈 / Stack:" .. stackTrace, nil, false)
     end
 end
 
@@ -101,6 +101,8 @@ this.onUtilCreated = function(root)
     this.downBtn = root.transform:Find("DIYCreateVehicleCanvas/CameraAction/DownBtn"):GetComponent("Button")
     this.forwardBtn = root.transform:Find("DIYCreateVehicleCanvas/CameraAction/ForwardBtn"):GetComponent("Button")
     this.backwardBtn = root.transform:Find("DIYCreateVehicleCanvas/CameraAction/BackwardBtn"):GetComponent("Button")
+    this.leftBtn = root.transform:Find("DIYCreateVehicleCanvas/CameraAction/LeftBtn"):GetComponent("Button")
+    this.rightBtn = root.transform:Find("DIYCreateVehicleCanvas/CameraAction/RightBtn"):GetComponent("Button")
 
     this.configRoot = this.configProp:Find("Scroll View/Viewport/Content")
     this.configPropEquipText = this.configRoot:Find("BaseInfo/EquipName"):GetComponent("Text")
@@ -156,6 +158,10 @@ this.onUtilCreated = function(root)
     -- 按钮 Binding
     this.exitActionBtn.onClick:AddListener(
         function()
+            if this.isLoadingParts then
+                return
+            end
+
             PopMessageManager.Instance:PushPopup(
                 "是否退出坦克工坊? Exit tank workshop?",
                 function(state)
@@ -174,12 +180,20 @@ this.onUtilCreated = function(root)
 
     this.saveActionBtn.onClick:AddListener(
         function()
+            if this.isLoadingParts then
+                return
+            end
+
             this.fileSavePop.gameObject:SetActive(true)
         end
     )
 
     this.loadActionBtn.onClick:AddListener(
         function()
+            if this.isLoadingParts then
+                return
+            end
+
             this.refreshFileLoadList()
             this.fileLoadPop.gameObject:SetActive(true)
         end
@@ -187,12 +201,20 @@ this.onUtilCreated = function(root)
 
     this.fileSavePop:GetComponent("Button").onClick:AddListener(
         function()
+            if this.isLoadingParts then
+                return
+            end
+
             this.fileSavePop.gameObject:SetActive(false)
         end
     )
 
     this.saveBtn.onClick:AddListener(
         function()
+            if this.isLoadingParts then
+                return
+            end
+
             local definedName = this.fileNameInput.text
             this.saveUserDefine(definedName)
         end
@@ -230,7 +252,7 @@ this.onUtilCreated = function(root)
 
     this.downBtn.onClick:AddListener(
         function()
-            this.makeCameraTargetDelta(-Vector3.up)
+            this.makeCameraTargetDelta(Vector3.down)
         end
     )
 
@@ -242,9 +264,22 @@ this.onUtilCreated = function(root)
 
     this.backwardBtn.onClick:AddListener(
         function()
-            this.makeCameraTargetDelta(-Vector3.forward)
+            this.makeCameraTargetDelta(Vector3.back)
         end
     )
+
+    this.leftBtn.onClick:AddListener(
+        function()
+            this.makeCameraTargetDelta(Vector3.left)
+        end
+    )
+
+    this.rightBtn.onClick:AddListener(
+        function()
+            this.makeCameraTargetDelta(Vector3.right)
+        end
+    )
+
     ------------------------------------------------------
 
     -- 退出详情编辑
@@ -324,7 +359,8 @@ this.onUtilCreated = function(root)
     )
     -- 缓存数据
     this.slotModifyBtnPools = GameObjectPool()
-    this.slotModifyBtnPools:Init(this.slotModifyBtnTemplate.gameObject, 20)
+    this.slotModifyBtnPools:Init(this.slotModifyBtnTemplate.gameObject, 200)
+
     -- 场景数据
     --- @type Transform 摄像机焦点 Transform
     this.cameraTargetTrans = root.transform:Find("CameraPoint")
@@ -496,16 +532,15 @@ end
 
 --- 处理 UI 点击安装配件事件
 this.OnEquipInstallClicked = function(baseData)
-    if this.isInstallPart then
+    if this.isLoadingParts then
         return
     end
-
-    this.isInstallPart = true
 
     local isHull = baseData:GetDataType() == DIYDataEnum.Hull
 
     if isHull then
         this.addRule(CSharpAPI.GetGUID(), baseData.itemGUID, true, nil, 0)
+        this.isLoadingParts = true
 
         CSharpAPI.CreateNewDIYVehicle(
             this.userDefined,
@@ -518,7 +553,7 @@ this.OnEquipInstallClicked = function(baseData)
                 this.refreshInstalledEquipList()
                 this.toggleEquipList(true)
 
-                this.isInstallPart = false
+                this.isLoadingParts = false
             end
         )
     else
@@ -579,6 +614,8 @@ end
 
 --- 当修改 UserDefine 或 增加新的 Rule
 this.onModifyUserDefined = function()
+    this.isLoadingParts = true
+
     CSharpAPI.UpdateDIYVehicle(
         this.userDefined,
         this.bindingData,
@@ -590,13 +627,15 @@ this.onModifyUserDefined = function()
 
             this.toggleEquipList(true)
 
-            this.isInstallPart = false
+            this.isLoadingParts = false
         end
     )
 end
 
 -- 强制刷新当前载具
 function this.forceReloadUserDefined()
+    this.isLoadingParts = true
+
     -- 删除当前的预览
     if this.instanceMesh ~= nil then
         GameObject.Destroy(this.instanceMesh)
@@ -605,6 +644,8 @@ function this.forceReloadUserDefined()
     CSharpAPI.CreateNewDIYVehicle(
         this.userDefined,
         function(instanceMesh, textData, bindingData)
+            this.isLoadingParts = false
+
             this.instanceMesh = instanceMesh
             this.bindingData = bindingData
 
@@ -669,6 +710,8 @@ end
 --- 加载新的 UserDefine
 --- @param userDefine DIYUserDefined
 this.loadNewUserDefine = function(userDefine)
+    this.isLoadingParts = true
+
     -- 删除当前的预览
     if this.instanceMesh ~= nil then
         GameObject.Destroy(this.instanceMesh)
@@ -676,9 +719,22 @@ this.loadNewUserDefine = function(userDefine)
 
     this.userDefined = userDefine
 
+    for k, v in pairs(this.userDefined.rules) do
+        --- @type DIYRule
+        local rule = v
+
+        if DIYDataManager.Instance:GetData(rule.itemGuid) == nil then
+            this.isLoadingParts = false
+            PopMessageManager.Instance:PushPopup("缺少部件。 Missing Item. GUID:" .. tostring(rule.itemGuid), nil, false)
+            return
+        end
+    end
+
     CSharpAPI.CreateNewDIYVehicle(
         this.userDefined,
         function(instanceMesh, textData, bindingData)
+            this.isLoadingParts = false
+
             this.bindingData = bindingData
             this.instanceMesh = instanceMesh
 
