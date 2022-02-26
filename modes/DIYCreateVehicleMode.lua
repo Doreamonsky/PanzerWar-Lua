@@ -7,6 +7,9 @@ this.onStartMode = function()
     this.lastdirtyTime = 0
     this.dirtyCount = 0
     this.isEditMode = true
+    this.controlType = eDIYControlType.Position
+    --- @type Transform Binding 的 Transform，方便转 local position
+    this.bindingTransform = nil
 
     --- @type boolean 是否在加载配件
     this.isLoadingParts = false
@@ -154,6 +157,14 @@ this.onUtilCreated = function(root)
     this.filterSearchField =
         root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/FilterSearchField"):GetComponent("InputField")
 
+    this.noneBtn =
+        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/NoneBtn"):GetComponent("Button")
+    this.moveBtn =
+        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/MoveBtn"):GetComponent("Button")
+    this.rotateBtn =
+        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/RotateBtn"):GetComponent("Button")
+    this.scaleBtn =
+        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/ScaleBtn"):GetComponent("Button")
     ------------------------------------------------------
     -- 按钮 Binding
     this.exitActionBtn.onClick:AddListener(
@@ -281,6 +292,34 @@ this.onUtilCreated = function(root)
     )
 
     ------------------------------------------------------
+
+    this.noneBtn.onClick:AddListener(
+        function()
+            this.controlType = eDIYControlType.None
+            CSharpAPI.SetDIYControlType(this.controlType)
+        end
+    )
+
+    this.moveBtn.onClick:AddListener(
+        function()
+            this.controlType = eDIYControlType.Position
+            CSharpAPI.SetDIYControlType(this.controlType)
+        end
+    )
+
+    this.rotateBtn.onClick:AddListener(
+        function()
+            this.controlType = eDIYControlType.EulerAngles
+            CSharpAPI.SetDIYControlType(this.controlType)
+        end
+    )
+
+    this.scaleBtn.onClick:AddListener(
+        function()
+            this.controlType = eDIYControlType.Scale
+            CSharpAPI.SetDIYControlType(this.controlType)
+        end
+    )
 
     -- 退出详情编辑
     this.configComfirmBtn:GetComponent("Button").onClick:AddListener(
@@ -416,6 +455,7 @@ this.onUtilCreated = function(root)
     CSharpAPI.OnEquipUninstallClicked:AddListener(this.OnEquipUninstallClicked)
     CSharpAPI.OnEquipDetailClicked:AddListener(this.OnEquipDetailClicked)
     CSharpAPI.OnEquipInstallClicked:AddListener(this.OnEquipInstallClicked)
+    CSharpAPI.OnDIYPickItem:AddListener(this.OnDIYPickItem)
 
     this.toggleEquipList(false)
 end
@@ -578,6 +618,11 @@ this.OnEquipDetailClicked = function(rule)
     this.selectRule(rule.ruleGuid)
 end
 
+-- 处理 C# 侧拾取器选中的物体
+this.OnDIYPickItem = function(ruleGuid)
+    this.selectRule(ruleGuid)
+end
+
 --- 根据 Rule 刷新已安装的配件 UI 列表
 this.refreshInstalledEquipList = function()
     CSharpAPI.SetEquipRule(this.userDefined)
@@ -628,6 +673,11 @@ this.onModifyUserDefined = function()
             this.toggleEquipList(true)
 
             this.isLoadingParts = false
+
+            if this.bindingTransform ~= nil then
+                CSharpAPI.SetDIYPosition(this.bindingTransform.position)
+                CSharpAPI.SetDIYEulerAngles(CSharpAPI.RotToEuler(this.bindingTransform.rotation))
+            end
         end
     )
 end
@@ -814,11 +864,15 @@ this.selectRule = function(ruleId)
         v.gameObject:SetActive(false)
     end
 
+
+
     -- 高亮选择的物体
     for i = 0, this.bindingData.Length - 1 do
         local data = this.bindingData[i]
         if data.rule.ruleGuid == ruleId then
             if data.hasInstanceObject then
+                this.bindingTransform = data.instanceObject.transform
+
                 for j = 0, data.reference.renderers.Length - 1 do
                     local render = data.reference.renderers[j]
                     if not render:IsNull() then
@@ -852,6 +906,59 @@ this.selectRule = function(ruleId)
             this.copyBtn.gameObject:SetActive(not isHull) -- 车体不允许复制
 
             if not isHull then
+                ------------------------------------------------------
+                -- 可视化
+                CSharpAPI.SetDIYControlType(this.controlType)
+
+                CSharpAPI.OnDIYPositionHandleChanged:RemoveAllListeners()
+                CSharpAPI.SetDIYPosition(this.bindingTransform.position)
+                CSharpAPI.OnDIYPositionHandleChanged:AddListener(
+                    function(pos)
+                        local localPos = this.bindingTransform.parent:InverseTransformPoint(pos) -- 得到插槽上的相对位置
+                        local localVec = SerializeVector3()
+                        localVec.x = localPos.x
+                        localVec.y = localPos.y
+                        localVec.z = localPos.z
+
+                        this.Vector3ToTransformInputFields(this.configPropPositionRect, localVec)
+                    end
+                )
+
+                CSharpAPI.OnDIYEulerAnglesHandleChanged:RemoveAllListeners()
+                CSharpAPI.SetDIYEulerAngles(CSharpAPI.RotToEuler(this.bindingTransform.rotation))
+                CSharpAPI.OnDIYEulerAnglesHandleChanged:AddListener(
+                    function(eulerAngles)
+                        local localRot =
+                            CSharpAPI.WorldToRelateiveRotation(
+                            this.bindingTransform.parent.rotation,
+                            CSharpAPI.EulerToRot(eulerAngles)
+                        ) -- 得到插槽上的相对旋转
+
+                        local localEuler = CSharpAPI.RotToEuler(localRot)
+                        local localVec = SerializeVector3()
+                        localVec.x = localEuler.x
+                        localVec.y = localEuler.y
+                        localVec.z = localEuler.z
+
+                        this.Vector3ToTransformInputFields(this.configPropEulerAngleRect, localVec)
+                    end
+                )
+
+                CSharpAPI.OnDIYScaleHandleChanged:RemoveAllListeners()
+                CSharpAPI.SetDIYScale(this.bindingTransform.localScale)
+                CSharpAPI.OnDIYScaleHandleChanged:AddListener(
+                    function(localScale)
+                        local localVec = SerializeVector3()
+                        localVec.x = localScale.x
+                        localVec.y = localScale.y
+                        localVec.z = localScale.z
+
+                        this.Vector3ToTransformInputFields(this.configScaleRect, localVec)
+                    end
+                )
+
+                ------------------------------------------------------
+
                 -- 先解绑
                 this.clearBindTransformInputField(this.configPropPositionRect)
                 this.clearBindTransformInputField(this.configPropEulerAngleRect)
@@ -867,7 +974,6 @@ this.selectRule = function(ruleId)
                     this.configPropPositionRect,
                     function(val)
                         rule.deltaPos = val
-                        -- this.onModifyUserDefined()
                         this.markDirty()
                     end
                 )
@@ -876,7 +982,6 @@ this.selectRule = function(ruleId)
                     this.configPropEulerAngleRect,
                     function(val)
                         rule.localEulerAngles = val
-                        -- this.onModifyUserDefined()
                         this.markDirty()
                     end
                 )
@@ -885,7 +990,6 @@ this.selectRule = function(ruleId)
                     this.configScaleRect,
                     function(val)
                         rule.scaleSize = val
-                        -- this.onModifyUserDefined()
                         this.markDirty()
                     end
                 )
@@ -1101,6 +1205,7 @@ this.closeConfig = function()
     end
 
     this.outlinableComponents = {}
+    CSharpAPI.SetDIYControlType(eDIYControlType.None)
 end
 
 this.onExitMode = function()
@@ -1109,6 +1214,7 @@ this.onExitMode = function()
     CSharpAPI.OnEquipUninstallClicked:RemoveAllListeners(this.OnEquipUninstallClicked)
     CSharpAPI.OnEquipDetailClicked:RemoveListener(this.OnEquipDetailClicked)
     CSharpAPI.OnEquipInstallClicked:RemoveListener(this.OnEquipInstallClicked)
+    CSharpAPI.OnDIYPickItem:RemoveListener(this.OnDIYPickItem)
 
     this.slotModifyBtnPools:Dispose()
 

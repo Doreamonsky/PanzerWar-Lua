@@ -88,6 +88,9 @@ InternalModule = CS.ShanghaiWindy.Core.InternalModule
 --- @field GetContent fun(_Key:string):void
 uGUI_Localsize = CS.ShanghaiWindy.Core.uGUI_Localsize
 
+
+eDIYControlType = CS.ShanghaiWindy.Core.eDIYControlType
+
 --- @class GameObjectPool
 --- @field Init fun(prototype:GameObject,count:int):void
 --- @field InstantiateObject fun():GameObject
