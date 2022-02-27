@@ -165,6 +165,8 @@ this.onUtilCreated = function(root)
         root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/RotateBtn"):GetComponent("Button")
     this.scaleBtn =
         root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/ScaleBtn"):GetComponent("Button")
+
+    this.dragInfo = root.transform:Find("DIYCreateVehicleCanvas/DragInfo").gameObject
     ------------------------------------------------------
     -- 按钮 Binding
     this.exitActionBtn.onClick:AddListener(
@@ -859,6 +861,7 @@ this.selectRule = function(ruleId)
     -- 界面切换
     this.equipList.gameObject:SetActive(false)
     this.configProp.gameObject:SetActive(true)
+    this.dragInfo.gameObject:SetActive(false)
 
     for k, v in pairs(this.slotModifyBtnList) do
         v.gameObject:SetActive(false)
@@ -1193,6 +1196,7 @@ end
 this.closeConfig = function()
     this.equipList.gameObject:SetActive(true)
     this.configProp.gameObject:SetActive(false)
+    this.dragInfo.gameObject:SetActive(true)
 
     this.curRuleId = nil
     this.isEditingRule = false
