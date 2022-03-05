@@ -3,6 +3,7 @@ require("events.EventDefine") -- 事件定义
 require("events.EventSystem") -- 事件系统
 require("lib.base64") -- base64
 require("lib.configIO") -- IO 相关
+require("util.Util")
 
 inspect = require("lib.inspect")
 json = require("lib.dkjson")
@@ -16,4 +17,14 @@ table.indexOf = function(tab, value)
             return false
         end
     end
+end
+
+function enum(tbl)
+    local length = #tbl
+    for i = 1, length do
+        local v = tbl[i]
+        tbl[v] = i
+    end
+
+    return tbl
 end

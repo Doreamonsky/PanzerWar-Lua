@@ -1,5 +1,14 @@
 DIYCreateVehicleMode = {}
 
+SymmetryAxis =
+    enum(
+    {
+        "XAxis",
+        "YAxis",
+        "ZAxis"
+    }
+)
+
 local this = DIYCreateVehicleMode
 this.onStartMode = function()
     this.userDefined = DIYUserDefined()
@@ -145,6 +154,21 @@ this.onUtilCreated = function(root)
         "Button"
     )
 
+    this.symmetryXBtn =
+        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Symmetry/XAxisBtn"):GetComponent(
+        "Button"
+    )
+
+    this.symmetryYBtn =
+        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Symmetry/YAxisBtn"):GetComponent(
+        "Button"
+    )
+
+    this.symmetryZBtn =
+        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Symmetry/ZAxisBtn"):GetComponent(
+        "Button"
+    )
+
     this.allEquipGo = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll").gameObject
     this.allFilterBtn =
         root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/AllBtn"):GetComponent("Button")
@@ -165,6 +189,9 @@ this.onUtilCreated = function(root)
         root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/RotateBtn"):GetComponent("Button")
     this.scaleBtn =
         root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/ScaleBtn"):GetComponent("Button")
+
+    this.detailDeleteBtn =
+        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Title/DeleteBtn"):GetComponent("Button")
 
     this.dragInfo = root.transform:Find("DIYCreateVehicleCanvas/DragInfo").gameObject
     ------------------------------------------------------
@@ -256,6 +283,32 @@ this.onUtilCreated = function(root)
             this.duplicateRule(this.curRuleId)
         end
     )
+
+    this.symmetryXBtn.onClick:AddListener(
+        function()
+            this.symmetry(this.curRuleId, SymmetryAxis.XAxis)
+        end
+    )
+
+    this.symmetryYBtn.onClick:AddListener(
+        function()
+            this.symmetry(this.curRuleId, SymmetryAxis.YAxis)
+        end
+    )
+
+    this.symmetryZBtn.onClick:AddListener(
+        function()
+            this.symmetry(this.curRuleId, SymmetryAxis.ZAxis)
+        end
+    )
+
+    this.detailDeleteBtn.onClick:AddListener(
+        function()
+            this.unequipSlot(this.curRuleId)
+            this.closeConfig()
+        end
+    )
+
     ---------------------摄像机操控--------------------------
     this.upBtn.onClick:AddListener(
         function()
@@ -605,14 +658,7 @@ end
 
 --- 处理 UI 点击卸载配件事件
 this.OnEquipUninstallClicked = function(rule)
-    PopMessageManager.Instance:PushPopup(
-        "是否删除当前配件? Delete Current Equipment?",
-        function(state)
-            if state then
-                this.unequipSlot(rule.ruleGuid)
-            end
-        end
-    )
+    this.unequipSlot(rule.ruleGuid)
 end
 
 --- 处理 UI 点击详情配件事件
@@ -710,8 +756,16 @@ function this.forceReloadUserDefined()
 end
 --- 删除配件
 this.unequipSlot = function(itemGuid)
-    this.deleteRule(itemGuid)
-    this.loadNewUserDefine(this.userDefined)
+    -- 进行删除操作，都要进行询问
+    PopMessageManager.Instance:PushPopup(
+        "是否删除当前配件? Delete Current Equipment?",
+        function(state)
+            if state then
+                this.deleteRule(itemGuid)
+                this.loadNewUserDefine(this.userDefined)
+            end
+        end
+    )
 end
 
 --- 切换是否显示已安装的配件
@@ -867,8 +921,6 @@ this.selectRule = function(ruleId)
         v.gameObject:SetActive(false)
     end
 
-
-
     -- 高亮选择的物体
     for i = 0, this.bindingData.Length - 1 do
         local data = this.bindingData[i]
@@ -918,11 +970,7 @@ this.selectRule = function(ruleId)
                 CSharpAPI.OnDIYPositionHandleChanged:AddListener(
                     function(pos)
                         local localPos = this.bindingTransform.parent:InverseTransformPoint(pos) -- 得到插槽上的相对位置
-                        local localVec = SerializeVector3()
-                        localVec.x = localPos.x
-                        localVec.y = localPos.y
-                        localVec.z = localPos.z
-
+                        local localVec = SerializeVector3(localPos.x, localPos.y, localPos.z)
                         this.Vector3ToTransformInputFields(this.configPropPositionRect, localVec)
                     end
                 )
@@ -938,10 +986,7 @@ this.selectRule = function(ruleId)
                         ) -- 得到插槽上的相对旋转
 
                         local localEuler = CSharpAPI.RotToEuler(localRot)
-                        local localVec = SerializeVector3()
-                        localVec.x = localEuler.x
-                        localVec.y = localEuler.y
-                        localVec.z = localEuler.z
+                        local localVec = SerializeVector3(localEuler.x, localEuler.y, localEuler.z)
 
                         this.Vector3ToTransformInputFields(this.configPropEulerAngleRect, localVec)
                     end
@@ -951,11 +996,7 @@ this.selectRule = function(ruleId)
                 CSharpAPI.SetDIYScale(this.bindingTransform.localScale)
                 CSharpAPI.OnDIYScaleHandleChanged:AddListener(
                     function(localScale)
-                        local localVec = SerializeVector3()
-                        localVec.x = localScale.x
-                        localVec.y = localScale.y
-                        localVec.z = localScale.z
-
+                        local localVec = SerializeVector3(localScale.x, localScale.y, localScale.z)
                         this.Vector3ToTransformInputFields(this.configScaleRect, localVec)
                     end
                 )
@@ -1077,6 +1118,56 @@ this.duplicateRule = function(ruleId)
             copiedRule = rule:GetDeepCopied()
             copiedRule.ruleGuid = CSharpAPI.GetGUID()
             copiedRule.deltaPos = copiedRule.deltaPos + SerializeVector3(0, 1, 0)
+            copiedRule.isMain = false
+        end
+    end
+
+    if copiedRule then
+        this.userDefined.rules:Add(copiedRule)
+    end
+
+    this.onModifyUserDefined()
+    this.closeConfig()
+end
+
+--- 镜像
+--- @param ruleId string
+--- @param axis SymmetryAxis
+this.symmetry = function(ruleId, axis)
+    local copiedRule = nil
+    for k, v in pairs(this.userDefined.rules) do
+        --- @type DIYRule
+        local rule = v
+
+        if rule.ruleGuid == ruleId then
+            -- 界面基本信息
+            --- @type DIYRule
+            copiedRule = rule:GetDeepCopied()
+            copiedRule.ruleGuid = CSharpAPI.GetGUID()
+
+            -- 镜像
+            if axis == SymmetryAxis.XAxis then
+                copiedRule.deltaPos =
+                    SerializeVector3(-copiedRule.deltaPos.x, copiedRule.deltaPos.y, copiedRule.deltaPos.z)
+
+                local rot = TransformUtil.SerializeVectorToQuaternion(copiedRule.localEulerAngles)
+                local symmetryRot = Quaternion(rot.x * -1, rot.y, rot.z, rot.w * -1)
+                copiedRule.localEulerAngles = TransformUtil.QuaternionToSeralizeVector(symmetryRot)
+            elseif axis == SymmetryAxis.YAxis then
+                copiedRule.deltaPos =
+                    SerializeVector3(copiedRule.deltaPos.x, -copiedRule.deltaPos.y, copiedRule.deltaPos.z)
+
+                local rot = TransformUtil.SerializeVectorToQuaternion(copiedRule.localEulerAngles)
+                local symmetryRot = Quaternion(rot.x, rot.y * -1, rot.z, rot.w * -1)
+                copiedRule.localEulerAngles = TransformUtil.QuaternionToSeralizeVector(symmetryRot)
+            elseif axis == SymmetryAxis.ZAxis then
+                copiedRule.deltaPos =
+                    SerializeVector3(copiedRule.deltaPos.x, copiedRule.deltaPos.y, -copiedRule.deltaPos.z)
+
+                local rot = TransformUtil.SerializeVectorToQuaternion(copiedRule.localEulerAngles)
+                local symmetryRot = Quaternion(rot.x, rot.y, rot.z * -1, rot.w * -1)
+                copiedRule.localEulerAngles = TransformUtil.QuaternionToSeralizeVector(symmetryRot)
+            end
             copiedRule.isMain = false
         end
     end
