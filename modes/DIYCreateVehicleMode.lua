@@ -1,3 +1,5 @@
+require("modes.DIYCreateVehicleMode.GizmoConfigCtrl")
+
 DIYCreateVehicleMode = {}
 
 SymmetryAxis =
@@ -80,6 +82,8 @@ end
 -- end
 
 this.onUtilCreated = function(root)
+    GizmoConfigCtrl.onInit(root)
+    
     this.slotModifyBtnTemplate = root.transform:Find("DIYCreateVehicleCanvas/Slots/SlotModifyBtn")
     this.slotModifyBtnTemplate.gameObject:SetActive(false)
 
@@ -609,6 +613,7 @@ this.refreshEquipSlotInteractBtn = function()
                     local iconPos = CSharpAPI.GetSlotPosFromBinding(slotOwnerRuleId, slotIndex, this.bindingData)
 
                     local instance = this.slotModifyBtnPools:InstantiateObject()
+                    GizmoConfigCtrl.applySlotScale(instance.transform) -- 设置插槽的大小
 
                     instance:GetComponent(typeof(CS.ShanghaiWindy.Core.IconScreenPositionCtrl)).worldPos = iconPos
                     instance:GetComponent("Button").onClick:AddListener(

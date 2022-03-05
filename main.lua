@@ -9,6 +9,11 @@ require("GlobalDefine") -- 方便调用 C#
 require("feature.Features")
 require("modes.GameModes")
 
+Config.loadAllConfigs()
+
+-- 测试一下 Config 系统
+GizmoConfig.config.AxisScale = 2
+GizmoConfig.saveConfig()
 
 -- print(GetLuaDataFolder())
 

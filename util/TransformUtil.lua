@@ -14,4 +14,16 @@ this.QuaternionToSeralizeVector = function(rot)
     return SerializeVector3(vec.x, vec.y, vec.z)
 end
 
+--- 序列化坐标 -> Unity 坐标
+--- @param vec SerializeVector3
+this.SerializeVectorToUnityVector = function(vec)
+    return Vector3(vec.x, vec.y, vec.z)
+end
+
+--- Unity 坐标 -> 序列化坐标
+--- @param vec Vector3
+this.UnityVectorToSerializeVector = function(vec)
+    return SerializeVector3(vec.x, vec.y, vec.z)
+end
+
 return this

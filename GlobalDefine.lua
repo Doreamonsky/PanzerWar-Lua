@@ -98,6 +98,10 @@ eDIYControlType = CS.ShanghaiWindy.Core.eDIYControlType
 --- @field Dispose fun():void
 GameObjectPool = CS.ShanghaiWindy.Core.Utils.GameObjectPool
 
+--- @class RuntimeHandlesComponent
+--- @field HandleScale float
+RuntimeHandlesComponent = CS.Battlehub.RTHandles.RuntimeHandlesComponent
+
 -- UnityEngine
 --- @class GameObject
 --- @field Instantiate fun() 实例化

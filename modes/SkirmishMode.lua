@@ -14,17 +14,29 @@ this.initData = function()
     this.TeamBMaxNumber = 5
     this.FriendScore = 0
     this.EnemyScore = 0
+    this.isPopEnd = false -- 防止结算界面重复出现
 end
 
 --- 初始化界面
 this.initUI = function(uiTransform)
+    -- 开战界面绑定
     this.friendNumberInput = uiTransform:Find("Startup/Options/FriendNumber/InputField"):GetComponent("InputField")
     this.enemyNumberInput = uiTransform:Find("Startup/Options/EnemyNumber/InputField"):GetComponent("InputField")
     this.upperRankInput = uiTransform:Find("Startup/Options/UpperRank/InputField"):GetComponent("InputField")
     this.lowerRankInput = uiTransform:Find("Startup/Options/LowerRank/InputField"):GetComponent("InputField")
+    this.scoreToFinishInput = uiTransform:Find("Startup/Options/ScoreToFinish/InputField"):GetComponent("InputField")
     this.startBattleBtn = uiTransform:Find("Startup/Options/StartBattle/Button"):GetComponent("Button")
     this.startupGo = uiTransform:Find("Startup").gameObject
+
+    -- 比分绑定
     this.scoreText = uiTransform:Find("ScoreBar/Score"):GetComponent("Text")
+
+    -- 结算绑定
+    this.continueBtn = uiTransform:Find("FinishBar/ContinueBtn"):GetComponent("Button")
+    this.endBtn = uiTransform:Find("FinishBar/EndBtn"):GetComponent("Button")
+    this.finishGo = uiTransform:Find("FinishBar").gameObject
+    this.finishWinGo = uiTransform:Find("FinishBar/WinText").gameObject
+    this.finishLoseGo = uiTransform:Find("FinishBar/LoseText").gameObject
 end
 
 --- 初始化模式逻辑
@@ -35,6 +47,9 @@ this.initMode = function()
 
     URPMainUIManager.Instance.audioListener.enabled = true -- 打开界面 Audio Listener 防止警告
     URPMainUIManager.Instance.selectVehicleBar:SetActive(true) -- 打开选车界面
+
+    -- 结束战斗比分
+    this.scoreToFinish = tonumber(this.scoreToFinishInput.text)
 
     -- 设置敌我最大人数
     local firendNumber = tonumber(this.friendNumberInput.text)
@@ -123,6 +138,7 @@ this.onStartMode = function()
         function(asset)
             if asset ~= nil then
                 local go = GameObject.Instantiate(asset)
+                this.instanceGo = go
                 this.initUI(go.transform)
                 this.startBattleBtn.onClick:AddListener(
                     function()
@@ -138,6 +154,39 @@ end
 this.onExitMode = function()
 end
 
+--- Logic 战斗结束
+--- @param isWin boolean 是否胜利
+this.onBattleEnd = function(isWin)
+    if not this.isPopEnd then
+        Time.timeScale = 0
+
+        this.finishGo:SetActive(true)
+
+        if isWin then
+            this.finishWinGo:SetActive(true)
+        else
+            this.finishLoseGo:SetActive(true)
+        end
+
+        this.continueBtn.onClick:AddListener(
+            function()
+                Time.timeScale = 1
+                this.finishGo:SetActive(false)
+            end
+        )
+
+        this.endBtn.onClick:AddListener(
+            function()
+                Time.timeScale = 1
+                CSharpAPI.OnLuaExitModeReq:Invoke()
+                GameObject.Destroy(this.instanceGo)
+            end
+        )
+    end
+
+    this.isPopEnd = true
+end
+
 --- 更新比分
 this.UpdateScore = function(destroyedVehicle)
     local ownerTeam = destroyedVehicle.ownerTeam
@@ -149,6 +198,15 @@ this.UpdateScore = function(destroyedVehicle)
     end
 
     this.scoreText.text = tostring(this.FriendScore) .. ":" .. tostring(this.EnemyScore)
+
+    -- 胜负条件
+    if this.FriendScore >= this.scoreToFinish then
+        this.onBattleEnd(true)
+    end
+
+    if this.EnemyScore >= this.scoreToFinish then
+        this.onBattleEnd(false)
+    end
 end
 
 --- 模式核心逻辑，循环遍历人数，补充缺失人数
@@ -189,11 +247,11 @@ this.CreatePlayerVehicle = function(vehicleInfo)
             if vehicleInfo.type == VehicleInfo.Type.Ground then
                 local tankInitSystem =
                     CSharpAPI.CreateTankPlayer(vehicleInfo.vehicleName, trans.position, trans.rotation)
-                    tankInitSystem.OnVehicleLoaded:AddListener(this.ClosePlayerUI)
+                tankInitSystem.OnVehicleLoaded:AddListener(this.ClosePlayerUI)
             elseif vehicleInfo.type == VehicleInfo.Type.Aviation then
                 local flightInitSystem =
                     CSharpAPI.CreateFlightPlayer(vehicleInfo.vehicleName, trans.position, trans.rotation, false)
-                    flightInitSystem.OnVehicleLoaded:AddListener(this.ClosePlayerUI)
+                flightInitSystem.OnVehicleLoaded:AddListener(this.ClosePlayerUI)
             end
         end,
         0,

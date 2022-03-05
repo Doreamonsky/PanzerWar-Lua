@@ -4,6 +4,7 @@ require("events.EventSystem") -- 事件系统
 require("lib.base64") -- base64
 require("lib.configIO") -- IO 相关
 require("util.Util")
+require("conifg.Config")
 
 inspect = require("lib.inspect")
 json = require("lib.dkjson")
