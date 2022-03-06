@@ -24,7 +24,7 @@ this.onInit = function(root)
     this.confirmBtn =
         root.transform:Find("DIYCreateVehicleCanvas/GizmoConfig/Bar/Title/ConfirmBtn"):GetComponent("Button")
 
-    this.settingBtn = root.transform:Find("DIYCreateVehicleCanvas/FileAction/SettingBtn"):GetComponent("Button")
+    this.settingBtn = root.transform:Find("DIYCreateVehicleCanvas/ToolAction/SettingBtn"):GetComponent("Button")
     this.settingGo = root.transform:Find("DIYCreateVehicleCanvas/GizmoConfig").gameObject
     -------- Bind UI End --------
     -- 插槽大小

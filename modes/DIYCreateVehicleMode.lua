@@ -83,7 +83,7 @@ end
 
 this.onUtilCreated = function(root)
     GizmoConfigCtrl.onInit(root)
-    
+
     this.slotModifyBtnTemplate = root.transform:Find("DIYCreateVehicleCanvas/Slots/SlotModifyBtn")
     this.slotModifyBtnTemplate.gameObject:SetActive(false)
 
@@ -198,6 +198,12 @@ this.onUtilCreated = function(root)
         root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Title/DeleteBtn"):GetComponent("Button")
 
     this.dragInfo = root.transform:Find("DIYCreateVehicleCanvas/DragInfo").gameObject
+    this.pauseTimeBtn = root.transform:Find("DIYCreateVehicleCanvas/ToolAction/PauseTimeBtn"):GetComponent("Button")
+    this.recoveryTimeBtn =
+        root.transform:Find("DIYCreateVehicleCanvas/TimeScaleInfo/RecoverTimeBtn"):GetComponent("Button")
+    this.timeScaleInfoGo = root.transform:Find("DIYCreateVehicleCanvas/TimeScaleInfo").gameObject
+
+    this.cameraTransform = root.transform:Find("Main Camera").transform
     ------------------------------------------------------
     -- 按钮 Binding
     this.exitActionBtn.onClick:AddListener(
@@ -316,37 +322,37 @@ this.onUtilCreated = function(root)
     ---------------------摄像机操控--------------------------
     this.upBtn.onClick:AddListener(
         function()
-            this.makeCameraTargetDelta(Vector3.up)
+            this.makeCameraTargetDelta(Vector3.up, false)
         end
     )
 
     this.downBtn.onClick:AddListener(
         function()
-            this.makeCameraTargetDelta(Vector3.down)
+            this.makeCameraTargetDelta(Vector3.down, false)
         end
     )
 
     this.forwardBtn.onClick:AddListener(
         function()
-            this.makeCameraTargetDelta(Vector3.forward)
+            this.makeCameraTargetDelta(Vector3.forward, true)
         end
     )
 
     this.backwardBtn.onClick:AddListener(
         function()
-            this.makeCameraTargetDelta(Vector3.back)
+            this.makeCameraTargetDelta(Vector3.back, true)
         end
     )
 
     this.leftBtn.onClick:AddListener(
         function()
-            this.makeCameraTargetDelta(Vector3.left)
+            this.makeCameraTargetDelta(Vector3.left, true)
         end
     )
 
     this.rightBtn.onClick:AddListener(
         function()
-            this.makeCameraTargetDelta(Vector3.right)
+            this.makeCameraTargetDelta(Vector3.right, true)
         end
     )
 
@@ -455,6 +461,18 @@ this.onUtilCreated = function(root)
             CSharpAPI.SetEquipKeywordFilter(text)
         end
     )
+
+    this.pauseTimeBtn.onClick:AddListener(
+        function()
+            this.updateTimeScale()
+        end
+    )
+
+    this.recoveryTimeBtn.onClick:AddListener(
+        function()
+            this.updateTimeScale()
+        end
+    )
     -- 缓存数据
     this.slotModifyBtnPools = GameObjectPool()
     this.slotModifyBtnPools:Init(this.slotModifyBtnTemplate.gameObject, 200)
@@ -521,7 +539,11 @@ end
 
 --- 调整摄像机聚焦位置
 --- @param delta Vector3 位置增量
-this.makeCameraTargetDelta = function(delta)
+this.makeCameraTargetDelta = function(delta, isProjectPlane)
+    if isProjectPlane then
+        delta = Vector3.ProjectOnPlane(this.cameraTransform:TransformVector(delta), Vector3.up)
+    end
+
     this.cameraDelta = this.cameraDelta + delta
 
     if this.cameraDelta.y < 0 then
@@ -965,6 +987,10 @@ this.selectRule = function(ruleId)
             this.configPropTransformInfo.gameObject:SetActive(not isHull) -- 车体不允许调整大小之类
             this.copyBtn.gameObject:SetActive(not isHull) -- 车体不允许复制
 
+            this.symmetryXBtn.gameObject:SetActive(not isHull)
+            this.symmetryYBtn.gameObject:SetActive(not isHull)
+            this.symmetryZBtn.gameObject:SetActive(not isHull)
+
             if not isHull then
                 ------------------------------------------------------
                 -- 可视化
@@ -1306,6 +1332,19 @@ this.closeConfig = function()
 
     this.outlinableComponents = {}
     CSharpAPI.SetDIYControlType(eDIYControlType.None)
+end
+
+this.updateTimeScale = function()
+    local curTimeScale = Time.timeScale
+
+    if curTimeScale == 0 then
+        curTimeScale = 1
+    else
+        curTimeScale = 0
+    end
+
+    Time.timeScale = curTimeScale
+    this.timeScaleInfoGo:SetActive(curTimeScale == 0)
 end
 
 this.onExitMode = function()
