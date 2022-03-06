@@ -24,7 +24,7 @@ this.onStartMode = function()
 
     --- @type boolean 是否在加载配件
     this.isLoadingParts = false
-
+    this.keyboardCameraMoveSpeed = 5 -- 摄像机移动速度，按 Shift 会加快
     CSharpAPI.RequestScene(
         "Physic-Play",
         function()
@@ -66,6 +66,41 @@ this.onUpdate = function()
                     this.dirtyCount = 0
                 end
             end
+        end
+    end
+
+    -- PC 输入
+    if not Application.isMobile then
+        if Input.GetKey(KeyCode.W) then
+            this.makeCameraTargetDelta(Vector3.forward * Time.deltaTime * this.keyboardCameraMoveSpeed, true)
+        end
+
+        if Input.GetKey(KeyCode.A) then
+            this.makeCameraTargetDelta(Vector3.left * Time.deltaTime * this.keyboardCameraMoveSpeed, true)
+        end
+
+        if Input.GetKey(KeyCode.S) then
+            this.makeCameraTargetDelta(Vector3.back * Time.deltaTime * this.keyboardCameraMoveSpeed, true)
+        end
+
+        if Input.GetKey(KeyCode.D) then
+            this.makeCameraTargetDelta(Vector3.right * Time.deltaTime * this.keyboardCameraMoveSpeed, true)
+        end
+
+        if Input.GetKey(KeyCode.E) then
+            this.makeCameraTargetDelta(Vector3.up * Time.deltaTime * this.keyboardCameraMoveSpeed, false)
+        end
+
+        if Input.GetKey(KeyCode.Q) then
+            this.makeCameraTargetDelta(Vector3.down * Time.deltaTime * this.keyboardCameraMoveSpeed, false)
+        end
+
+        if Input.GetKeyDown(KeyCode.LeftShift) then
+            this.keyboardCameraMoveSpeed = 10
+        end
+
+        if Input.GetKeyUp(KeyCode.LeftShift) then
+            this.keyboardCameraMoveSpeed = 5
         end
     end
 end
@@ -204,6 +239,7 @@ this.onUtilCreated = function(root)
     this.timeScaleInfoGo = root.transform:Find("DIYCreateVehicleCanvas/TimeScaleInfo").gameObject
 
     this.cameraTransform = root.transform:Find("Main Camera").transform
+    this.quickImportShareBtn = root.transform:Find("DIYCreateVehicleCanvas/ToolAction/ImportBtn"):GetComponent("Button")
     ------------------------------------------------------
     -- 按钮 Binding
     this.exitActionBtn.onClick:AddListener(
@@ -273,6 +309,37 @@ this.onUtilCreated = function(root)
     this.fileLoadCloseBtn.onClick:AddListener(
         function()
             this.fileLoadPop.gameObject:SetActive(false)
+        end
+    )
+
+    this.quickImportShareBtn.onClick:AddListener(
+        function()
+            -- 快速导入分享码
+            if this.isLoadingParts then
+                return
+            end
+
+            this.refreshFileLoadList()
+            this.fileLoadPop.gameObject:SetActive(true)
+            this.shareImportPop.gameObject:SetActive(true)
+        end
+    )
+
+    this.loadShareBtn.onClick:AddListener(
+        function()
+            this.shareImportPop.gameObject:SetActive(true)
+        end
+    )
+
+    this.shareImportCancelBtn.onClick:AddListener(
+        function()
+            this.shareImportPop.gameObject:SetActive(false)
+        end
+    )
+
+    this.shareImportBtn.onClick:AddListener(
+        function()
+            this.importShareCode()
         end
     )
 
@@ -393,23 +460,6 @@ this.onUtilCreated = function(root)
         end
     )
 
-    this.loadShareBtn.onClick:AddListener(
-        function()
-            this.shareImportPop.gameObject:SetActive(true)
-        end
-    )
-
-    this.shareImportCancelBtn.onClick:AddListener(
-        function()
-            this.shareImportPop.gameObject:SetActive(false)
-        end
-    )
-
-    this.shareImportBtn.onClick:AddListener(
-        function()
-            this.importShareCode()
-        end
-    )
 
     this.setMainBtn.onClick:AddListener(
         function()

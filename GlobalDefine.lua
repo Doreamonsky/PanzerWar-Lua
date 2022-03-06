@@ -136,3 +136,6 @@ LogType = CS.UnityEngine.LogType
 Time = CS.UnityEngine.Time
 
 MeshRenderer = CS.UnityEngine.MeshRenderer
+
+Input = CS.UnityEngine.Input
+KeyCode = CS.UnityEngine.KeyCode

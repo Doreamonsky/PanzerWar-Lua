@@ -7,7 +7,8 @@ local this = SkirmishMode
 this.initData = function()
     this.TeamAStartPoints = {}
     this.TeamBStartPoints = {}
-    this.BotVehicleList = {}
+    this.FriendBotVehicleList = {}
+    this.EnemyBotVehicleList = {}
     this.TeamACount = 0
     this.TeamBCount = 0
     this.TeamAMaxNumber = 5
@@ -26,6 +27,10 @@ this.initUI = function(uiTransform)
     this.lowerRankInput = uiTransform:Find("Startup/Options/LowerRank/InputField"):GetComponent("InputField")
     this.scoreToFinishInput = uiTransform:Find("Startup/Options/ScoreToFinish/InputField"):GetComponent("InputField")
     this.startBattleBtn = uiTransform:Find("Startup/Options/StartBattle/Button"):GetComponent("Button")
+    this.maxRandomPoolInputField =
+        uiTransform:Find("Startup/Options/MaxRandomPool/InputField"):GetComponent("InputField")
+    this.enemyRankOffsetInputField =
+        uiTransform:Find("Startup/Options/EnemyRankOffSet/InputField"):GetComponent("InputField")
     this.startupGo = uiTransform:Find("Startup").gameObject
 
     -- 比分绑定
@@ -68,7 +73,7 @@ this.initMode = function()
     local upperRank = tonumber(this.upperRankInput.text)
 
     local playerVehicle = VehicleInfoManager.Instance:GetVehicleInfo(URPCustomModeOfflineManager.PlayerVehicleName) -- 玩家的坦克
-    local maxRandomPoolCount = 25 -- 坦克池，资源预热防止战斗卡顿，越大越吃内存
+    local maxRandomPoolCount = tonumber(this.maxRandomPoolInputField.text) -- 坦克池，资源预热防止战斗卡顿，越大越吃内存
 
     -- 寻找合适的载具
     --- @type VehicleInfo[]
@@ -77,6 +82,15 @@ this.initMode = function()
         function(x)
             return playerVehicle:GetRank() - lowerRank <= x:GetRank() and
                 x:GetRank() <= playerVehicle:GetRank() + upperRank
+        end
+    )
+
+    local enemyRank = playerVehicle:GetRank() + tonumber(this.enemyRankOffsetInputField.text)
+
+    local enemyAvailableVehicleList =
+        VehicleInfoManager.Instance:GetAllDriveableVehicleList():FindAll(
+        function(x)
+            return enemyRank - lowerRank <= x:GetRank() and x:GetRank() <= enemyRank + upperRank
         end
     )
 
@@ -125,7 +139,8 @@ this.initMode = function()
     )
 
     -- Bot 列表
-    this.BotVehicleList = CSharpAPI.GetBotVehicleList(availableVehicleList, maxRandomPoolCount)
+    this.FriendBotVehicleList = CSharpAPI.GetBotVehicleList(availableVehicleList, maxRandomPoolCount)
+    this.EnemyBotVehicleList = CSharpAPI.GetBotVehicleList(enemyAvailableVehicleList, maxRandomPoolCount)
     this.UpdateModeLogic()
 end
 
@@ -211,7 +226,7 @@ end
 
 --- 模式核心逻辑，循环遍历人数，补充缺失人数
 this.UpdateModeLogic = function()
-    if this.BotVehicleList.Count ~= 0 then
+    if this.FriendBotVehicleList.Count ~= 0 and this.EnemyBotVehicleList.Count ~= 0 then
         if this.TeamACount < this.TeamAMaxNumber then
             local delta = this.TeamAMaxNumber - this.TeamACount - 1
             for i = 1, 1 + delta do
@@ -271,7 +286,14 @@ this.CreateBotVehicle = function(team)
     URPCustomModeOfflineManager.Instance.respawnPointModule:RequestTrans(
         startPoints,
         function(trans)
-            local vehicleInfo = CSharpAPI.RandomVehicleFromList(this.BotVehicleList)
+            local vehicleInfo = nil
+
+            if team == GameDataManager.PlayerTeam then
+                vehicleInfo = CSharpAPI.RandomVehicleFromList(this.FriendBotVehicleList)
+            else
+                vehicleInfo = CSharpAPI.RandomVehicleFromList(this.EnemyBotVehicleList)
+            end
+
             if vehicleInfo.type == VehicleInfo.Type.Ground then
                 CSharpAPI.CreateTankBot(vehicleInfo.vehicleName, trans.position, trans.rotation, team)
             end
