@@ -2,6 +2,7 @@ require("modes.SkirmishMode")
 require("modes.FreeCameraMode")
 require("modes.MaskTextureMgrMode")
 require("modes.DIYCreateVehicleMode")
+require("modes.LuaModeSetting")
 
 -- 装甲纷争 自定义模式
 luaGameModes = {
@@ -57,6 +58,20 @@ luaGameModes = {
         end,
         onStartMode = DIYCreateVehicleMode.onStartMode,
         onExitMode = DIYCreateVehicleMode.onExitMode,
+        isProxyBattle = function()
+            return false
+        end
+    },
+    {
+        modName = "Lua 模式设置",
+        author = "超级哆啦酱",
+        description = "模式参数设置",
+        luaLibVersion = LibVersion,
+        getModeName = function(userLang)
+            return "Lua 模式设置 / Lua Mode Setting"
+        end,
+        onStartMode = LuaModeSetting.onStartMode,
+        onExitMode = LuaModeSetting.onExitMode,
         isProxyBattle = function()
             return false
         end

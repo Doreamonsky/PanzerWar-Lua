@@ -14,6 +14,10 @@ end
 MultiTurretGUI.bindEvent = function()
     GameEventManager.OnNewVehicleSpawned:AddListener(
         function(vehicle)
+            if not LuaModeConfig.config.MultiTurretGUI then
+                return
+            end
+
             if CSharpAPI.isLocalPlayer(vehicle) then
                 MultiTurretGUI.tankFireDict = {}
 
@@ -93,6 +97,10 @@ MultiTurretGUI.bindEvent = function()
 end
 
 MultiTurretGUI.onUpdated = function()
+    if not LuaModeConfig.config.MultiTurretGUI then
+        return
+    end
+    
     for key, val in pairs(MultiTurretGUI.tankFireDict) do
         local fillAmount = val.tankFireComponet:GetReloadPercentage()
         val.imgComponent.fillAmount = fillAmount

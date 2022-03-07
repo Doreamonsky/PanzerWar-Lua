@@ -2,10 +2,7 @@
     "infos": [
         {
             "modNames": [
-                "BuildPipline-Lua-MaskTexMgrCanvas",
-                "BuildPipline-Lua-MultiFireCanvas",
-                "BuildPipline-DIYCreateVehicleUtil",
-                "BuildPipline-Lua-SkirmishCanvas"
+                "BuildPipline-Lua-ModeRes"
             ],
             "copyInfo": [
                 {
