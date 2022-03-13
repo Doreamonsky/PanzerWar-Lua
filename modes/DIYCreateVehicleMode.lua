@@ -67,40 +67,40 @@ this.onUpdate = function()
                 end
             end
         end
-    end
 
-    -- PC 输入
-    if not Application.isMobile then
-        if Input.GetKey(KeyCode.W) then
-            this.makeCameraTargetDelta(Vector3.forward * Time.deltaTime * this.keyboardCameraMoveSpeed, true)
-        end
+        -- PC 输入
+        if not Application.isMobile then
+            if Input.GetKey(KeyCode.W) then
+                this.makeCameraTargetDelta(Vector3.forward * Time.deltaTime * this.keyboardCameraMoveSpeed, true)
+            end
 
-        if Input.GetKey(KeyCode.A) then
-            this.makeCameraTargetDelta(Vector3.left * Time.deltaTime * this.keyboardCameraMoveSpeed, true)
-        end
+            if Input.GetKey(KeyCode.A) then
+                this.makeCameraTargetDelta(Vector3.left * Time.deltaTime * this.keyboardCameraMoveSpeed, true)
+            end
 
-        if Input.GetKey(KeyCode.S) then
-            this.makeCameraTargetDelta(Vector3.back * Time.deltaTime * this.keyboardCameraMoveSpeed, true)
-        end
+            if Input.GetKey(KeyCode.S) then
+                this.makeCameraTargetDelta(Vector3.back * Time.deltaTime * this.keyboardCameraMoveSpeed, true)
+            end
 
-        if Input.GetKey(KeyCode.D) then
-            this.makeCameraTargetDelta(Vector3.right * Time.deltaTime * this.keyboardCameraMoveSpeed, true)
-        end
+            if Input.GetKey(KeyCode.D) then
+                this.makeCameraTargetDelta(Vector3.right * Time.deltaTime * this.keyboardCameraMoveSpeed, true)
+            end
 
-        if Input.GetKey(KeyCode.E) then
-            this.makeCameraTargetDelta(Vector3.up * Time.deltaTime * this.keyboardCameraMoveSpeed, false)
-        end
+            if Input.GetKey(KeyCode.E) then
+                this.makeCameraTargetDelta(Vector3.up * Time.deltaTime * this.keyboardCameraMoveSpeed, false)
+            end
 
-        if Input.GetKey(KeyCode.Q) then
-            this.makeCameraTargetDelta(Vector3.down * Time.deltaTime * this.keyboardCameraMoveSpeed, false)
-        end
+            if Input.GetKey(KeyCode.Q) then
+                this.makeCameraTargetDelta(Vector3.down * Time.deltaTime * this.keyboardCameraMoveSpeed, false)
+            end
 
-        if Input.GetKeyDown(KeyCode.LeftShift) then
-            this.keyboardCameraMoveSpeed = 10
-        end
+            if Input.GetKeyDown(KeyCode.LeftShift) then
+                this.keyboardCameraMoveSpeed = 10
+            end
 
-        if Input.GetKeyUp(KeyCode.LeftShift) then
-            this.keyboardCameraMoveSpeed = 5
+            if Input.GetKeyUp(KeyCode.LeftShift) then
+                this.keyboardCameraMoveSpeed = 5
+            end
         end
     end
 end
@@ -459,7 +459,6 @@ this.onUtilCreated = function(root)
             this.closeConfig()
         end
     )
-
 
     this.setMainBtn.onClick:AddListener(
         function()
