@@ -1,3 +1,7 @@
+--- lua 侧面向对象
+--- @param classname string 类名称
+--- @param super string 父类名称
+--- 调用 .new(...) 实例化 ... 为 :ctor 的初始化参数
 function class(classname, super)
     local cls
 
@@ -7,7 +11,7 @@ function class(classname, super)
 
     if super then
         cls = {}
-        setmetatable(cls, {__index = super})
+        setmetatable(cls, { __index = super })
         cls.super = super
     else
         cls = {
@@ -25,5 +29,6 @@ function class(classname, super)
         instance:ctor(...)
         return instance
     end
+
     return cls
 end

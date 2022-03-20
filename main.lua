@@ -1,6 +1,7 @@
 -- Lua 的入口， xlua 初始化调用
 
 -- Base 基础相关
+require("Class")
 require("LibVersion") -- Lua C# 交互版本
 require("Core") -- 框架
 require("GlobalDefine") -- 方便调用 C#

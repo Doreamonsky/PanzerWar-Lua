@@ -1,9 +1,9 @@
 require("modes.DIYCreateVehicleMode.GizmoConfigCtrl")
+require("modes.Common.CameraController")
 
 DIYCreateVehicleMode = {}
 
-SymmetryAxis =
-    enum(
+SymmetryAxis = enum(
     {
         "XAxis",
         "YAxis",
@@ -14,6 +14,7 @@ SymmetryAxis =
 local this = DIYCreateVehicleMode
 this.onStartMode = function()
     this.userDefined = DIYUserDefined()
+    this.cameraController = CameraController.new()
     this.isDirty = false
     this.lastdirtyTime = 0
     this.dirtyCount = 0
@@ -24,7 +25,7 @@ this.onStartMode = function()
 
     --- @type boolean 是否在加载配件
     this.isLoadingParts = false
-    this.keyboardCameraMoveSpeed = 5 -- 摄像机移动速度，按 Shift 会加快
+
     CSharpAPI.RequestScene(
         "Physic-Play",
         function()
@@ -67,41 +68,6 @@ this.onUpdate = function()
                 end
             end
         end
-
-        -- PC 输入
-        if not Application.isMobile then
-            if Input.GetKey(KeyCode.W) then
-                this.makeCameraTargetDelta(Vector3.forward * Time.deltaTime * this.keyboardCameraMoveSpeed, true)
-            end
-
-            if Input.GetKey(KeyCode.A) then
-                this.makeCameraTargetDelta(Vector3.left * Time.deltaTime * this.keyboardCameraMoveSpeed, true)
-            end
-
-            if Input.GetKey(KeyCode.S) then
-                this.makeCameraTargetDelta(Vector3.back * Time.deltaTime * this.keyboardCameraMoveSpeed, true)
-            end
-
-            if Input.GetKey(KeyCode.D) then
-                this.makeCameraTargetDelta(Vector3.right * Time.deltaTime * this.keyboardCameraMoveSpeed, true)
-            end
-
-            if Input.GetKey(KeyCode.E) then
-                this.makeCameraTargetDelta(Vector3.up * Time.deltaTime * this.keyboardCameraMoveSpeed, false)
-            end
-
-            if Input.GetKey(KeyCode.Q) then
-                this.makeCameraTargetDelta(Vector3.down * Time.deltaTime * this.keyboardCameraMoveSpeed, false)
-            end
-
-            if Input.GetKeyDown(KeyCode.LeftShift) then
-                this.keyboardCameraMoveSpeed = 10
-            end
-
-            if Input.GetKeyUp(KeyCode.LeftShift) then
-                this.keyboardCameraMoveSpeed = 5
-            end
-        end
     end
 end
 
@@ -140,20 +106,12 @@ this.onUtilCreated = function(root)
     this.fileLoadTemplate = this.fileLoadPop:Find("Scroll View/Viewport/Content/Template")
     this.fileLoadTemplate.gameObject:SetActive(false)
 
-    this.setMainBtn =
-        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Main/SetMainBtn"):GetComponent(
+    this.setMainBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Main/SetMainBtn"):GetComponent(
         "Button"
     )
 
     this.configProp = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp")
     this.configProp.gameObject:SetActive(false)
-
-    this.upBtn = root.transform:Find("DIYCreateVehicleCanvas/CameraAction/UpBtn"):GetComponent("Button")
-    this.downBtn = root.transform:Find("DIYCreateVehicleCanvas/CameraAction/DownBtn"):GetComponent("Button")
-    this.forwardBtn = root.transform:Find("DIYCreateVehicleCanvas/CameraAction/ForwardBtn"):GetComponent("Button")
-    this.backwardBtn = root.transform:Find("DIYCreateVehicleCanvas/CameraAction/BackwardBtn"):GetComponent("Button")
-    this.leftBtn = root.transform:Find("DIYCreateVehicleCanvas/CameraAction/LeftBtn"):GetComponent("Button")
-    this.rightBtn = root.transform:Find("DIYCreateVehicleCanvas/CameraAction/RightBtn"):GetComponent("Button")
 
     this.configRoot = this.configProp:Find("Scroll View/Viewport/Content")
     this.configPropEquipText = this.configRoot:Find("BaseInfo/EquipName"):GetComponent("Text")
@@ -166,79 +124,57 @@ this.onUtilCreated = function(root)
     this.configPropEulerAngleRect = this.configRoot:Find("TransformInfo/EulerAngle")
     this.configScaleRect = this.configRoot:Find("TransformInfo/Scale")
     this.configComfirmBtn = this.configProp:Find("Title/ConfirmBtn"):GetComponent("Button")
-    this.configCustomPropertyTemplate =
-        root.transform:Find(
+    this.configCustomPropertyTemplate = root.transform:Find(
         "DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/FloatToggleablePropertyTemplate"
     )
     this.configCustomPropertyTemplate.gameObject:SetActive(false)
 
-    this.loadShareBtn =
-        root.transform:Find("DIYCreateVehicleCanvas/FileLoadPop/Scroll View/Viewport/Content/Title/LoadShareBtn"):GetComponent(
+    this.loadShareBtn = root.transform:Find("DIYCreateVehicleCanvas/FileLoadPop/Scroll View/Viewport/Content/Title/LoadShareBtn"):GetComponent(
         "Button"
     )
     this.shareImportPop = root.transform:Find("DIYCreateVehicleCanvas/ShareImportPop")
     this.shareImportCancelBtn = this.shareImportPop:GetComponent("Button")
-    this.shareCodeInput =
-        root.transform:Find("DIYCreateVehicleCanvas/ShareImportPop/ShareCodeInput"):GetComponent("InputField")
+    this.shareCodeInput = root.transform:Find("DIYCreateVehicleCanvas/ShareImportPop/ShareCodeInput"):GetComponent("InputField")
     this.shareImportBtn = root.transform:Find("DIYCreateVehicleCanvas/ShareImportPop/ImportBtn"):GetComponent("Button")
 
-    this.slotMultiObjectsToggle =
-        root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/SlotMultiObjectsToggle"):GetComponent("Toggle")
+    this.slotMultiObjectsToggle = root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/SlotMultiObjectsToggle"):GetComponent("Toggle")
 
-    this.ApplyParentScaleToggle =
-        root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/ApplyParentScaleToggle"):GetComponent("Toggle")
+    this.ApplyParentScaleToggle = root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/ApplyParentScaleToggle"):GetComponent("Toggle")
 
-    this.copyBtn =
-        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Main/CopyBtn"):GetComponent(
+    this.copyBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Main/CopyBtn"):GetComponent(
         "Button"
     )
 
-    this.symmetryXBtn =
-        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Symmetry/XAxisBtn"):GetComponent(
+    this.symmetryXBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Symmetry/XAxisBtn"):GetComponent(
         "Button"
     )
 
-    this.symmetryYBtn =
-        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Symmetry/YAxisBtn"):GetComponent(
+    this.symmetryYBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Symmetry/YAxisBtn"):GetComponent(
         "Button"
     )
 
-    this.symmetryZBtn =
-        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Symmetry/ZAxisBtn"):GetComponent(
+    this.symmetryZBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Symmetry/ZAxisBtn"):GetComponent(
         "Button"
     )
 
     this.allEquipGo = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll").gameObject
-    this.allFilterBtn =
-        root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/AllBtn"):GetComponent("Button")
-    this.turretFilterBtn =
-        root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/TurretBtn"):GetComponent("Button")
-    this.gunFilterBtn =
-        root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/GunBtn"):GetComponent("Button")
-    this.itemFilterBtn =
-        root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/ItemBtn"):GetComponent("Button")
-    this.filterSearchField =
-        root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/FilterSearchField"):GetComponent("InputField")
+    this.allFilterBtn = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/AllBtn"):GetComponent("Button")
+    this.turretFilterBtn = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/TurretBtn"):GetComponent("Button")
+    this.gunFilterBtn = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/GunBtn"):GetComponent("Button")
+    this.itemFilterBtn = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/ItemBtn"):GetComponent("Button")
+    this.filterSearchField = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/FilterSearchField"):GetComponent("InputField")
 
-    this.noneBtn =
-        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/NoneBtn"):GetComponent("Button")
-    this.moveBtn =
-        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/MoveBtn"):GetComponent("Button")
-    this.rotateBtn =
-        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/RotateBtn"):GetComponent("Button")
-    this.scaleBtn =
-        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/ScaleBtn"):GetComponent("Button")
+    this.noneBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/NoneBtn"):GetComponent("Button")
+    this.moveBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/MoveBtn"):GetComponent("Button")
+    this.rotateBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/RotateBtn"):GetComponent("Button")
+    this.scaleBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/ScaleBtn"):GetComponent("Button")
 
-    this.detailDeleteBtn =
-        root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Title/DeleteBtn"):GetComponent("Button")
+    this.detailDeleteBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Title/DeleteBtn"):GetComponent("Button")
 
     this.dragInfo = root.transform:Find("DIYCreateVehicleCanvas/DragInfo").gameObject
     this.pauseTimeBtn = root.transform:Find("DIYCreateVehicleCanvas/ToolAction/PauseTimeBtn"):GetComponent("Button")
-    this.recoveryTimeBtn =
-        root.transform:Find("DIYCreateVehicleCanvas/TimeScaleInfo/RecoverTimeBtn"):GetComponent("Button")
+    this.recoveryTimeBtn = root.transform:Find("DIYCreateVehicleCanvas/TimeScaleInfo/RecoverTimeBtn"):GetComponent("Button")
     this.timeScaleInfoGo = root.transform:Find("DIYCreateVehicleCanvas/TimeScaleInfo").gameObject
-
-    this.cameraTransform = root.transform:Find("Main Camera").transform
     this.quickImportShareBtn = root.transform:Find("DIYCreateVehicleCanvas/ToolAction/ImportBtn"):GetComponent("Button")
     ------------------------------------------------------
     -- 按钮 Binding
@@ -386,45 +322,6 @@ this.onUtilCreated = function(root)
         end
     )
 
-    ---------------------摄像机操控--------------------------
-    this.upBtn.onClick:AddListener(
-        function()
-            this.makeCameraTargetDelta(Vector3.up, false)
-        end
-    )
-
-    this.downBtn.onClick:AddListener(
-        function()
-            this.makeCameraTargetDelta(Vector3.down, false)
-        end
-    )
-
-    this.forwardBtn.onClick:AddListener(
-        function()
-            this.makeCameraTargetDelta(Vector3.forward, true)
-        end
-    )
-
-    this.backwardBtn.onClick:AddListener(
-        function()
-            this.makeCameraTargetDelta(Vector3.back, true)
-        end
-    )
-
-    this.leftBtn.onClick:AddListener(
-        function()
-            this.makeCameraTargetDelta(Vector3.left, true)
-        end
-    )
-
-    this.rightBtn.onClick:AddListener(
-        function()
-            this.makeCameraTargetDelta(Vector3.right, true)
-        end
-    )
-
-    ------------------------------------------------------
-
     this.noneBtn.onClick:AddListener(
         function()
             this.controlType = eDIYControlType.None
@@ -527,11 +424,13 @@ this.onUtilCreated = function(root)
     this.slotModifyBtnPools:Init(this.slotModifyBtnTemplate.gameObject, 200)
 
     -- 场景数据
-    --- @type Transform 摄像机焦点 Transform
-    this.cameraTargetTrans = root.transform:Find("CameraPoint")
-    --- @type Vector3 摄像机焦点初始位置
-    this.cameraDelta = Vector3.zero
-    this.cameraTargetOriginalPos = root.transform:Find("CameraPoint").position
+    ---------------------摄像机--------------------------
+    local cameraUITransform = root.transform:Find("DIYCreateVehicleCanvas/CameraAction")
+    local cameraTransform = root.transform:Find("Main Camera").transform
+    local cameraTargetTrans = root.transform:Find("CameraPoint")
+
+    this.cameraController:Init(cameraUITransform, cameraTransform, cameraTargetTrans)
+    ---------------------摄像机--------------------------
 
     -- 逻辑数据
 
@@ -584,22 +483,6 @@ this.onUtilCreated = function(root)
     CSharpAPI.OnDIYPickItem:AddListener(this.OnDIYPickItem)
 
     this.toggleEquipList(false)
-end
-
---- 调整摄像机聚焦位置
---- @param delta Vector3 位置增量
-this.makeCameraTargetDelta = function(delta, isProjectPlane)
-    if isProjectPlane then
-        delta = Vector3.ProjectOnPlane(this.cameraTransform:TransformVector(delta), Vector3.up)
-    end
-
-    this.cameraDelta = this.cameraDelta + delta
-
-    if this.cameraDelta.y < 0 then
-        this.cameraDelta = Vector3(this.cameraDelta.x, 0, this.cameraDelta.z)
-    end
-
-    this.cameraTargetTrans.position = this.cameraDelta + this.cameraTargetOriginalPos
 end
 
 this.getBaseDataTypeText = function(dataType)
@@ -830,6 +713,7 @@ function this.forceReloadUserDefined()
         end
     )
 end
+
 --- 删除配件
 this.unequipSlot = function(itemGuid)
     -- 进行删除操作，都要进行询问
@@ -1060,7 +944,7 @@ this.selectRule = function(ruleId)
                 CSharpAPI.OnDIYEulerAnglesHandleChanged:AddListener(
                     function(eulerAngles)
                         local localRot =
-                            CSharpAPI.WorldToRelateiveRotation(
+                        CSharpAPI.WorldToRelateiveRotation(
                             this.bindingTransform.parent.rotation,
                             CSharpAPI.EulerToRot(eulerAngles)
                         ) -- 得到插槽上的相对旋转
@@ -1133,7 +1017,7 @@ this.selectRule = function(ruleId)
 
             for p, q in pairs(customProperty:GetEdittableFields()) do
                 local instance =
-                    GameObject.Instantiate(
+                GameObject.Instantiate(
                     this.configCustomPropertyTemplate,
                     this.configCustomPropertyTemplate.transform.parent,
                     true
@@ -1227,22 +1111,19 @@ this.symmetry = function(ruleId, axis)
 
             -- 镜像
             if axis == SymmetryAxis.XAxis then
-                copiedRule.deltaPos =
-                    SerializeVector3(-copiedRule.deltaPos.x, copiedRule.deltaPos.y, copiedRule.deltaPos.z)
+                copiedRule.deltaPos = SerializeVector3(-copiedRule.deltaPos.x, copiedRule.deltaPos.y, copiedRule.deltaPos.z)
 
                 local rot = TransformUtil.SerializeVectorToQuaternion(copiedRule.localEulerAngles)
                 local symmetryRot = Quaternion(rot.x * -1, rot.y, rot.z, rot.w * -1)
                 copiedRule.localEulerAngles = TransformUtil.QuaternionToSeralizeVector(symmetryRot)
             elseif axis == SymmetryAxis.YAxis then
-                copiedRule.deltaPos =
-                    SerializeVector3(copiedRule.deltaPos.x, -copiedRule.deltaPos.y, copiedRule.deltaPos.z)
+                copiedRule.deltaPos = SerializeVector3(copiedRule.deltaPos.x, -copiedRule.deltaPos.y, copiedRule.deltaPos.z)
 
                 local rot = TransformUtil.SerializeVectorToQuaternion(copiedRule.localEulerAngles)
                 local symmetryRot = Quaternion(rot.x, rot.y * -1, rot.z, rot.w * -1)
                 copiedRule.localEulerAngles = TransformUtil.QuaternionToSeralizeVector(symmetryRot)
             elseif axis == SymmetryAxis.ZAxis then
-                copiedRule.deltaPos =
-                    SerializeVector3(copiedRule.deltaPos.x, copiedRule.deltaPos.y, -copiedRule.deltaPos.z)
+                copiedRule.deltaPos = SerializeVector3(copiedRule.deltaPos.x, copiedRule.deltaPos.y, -copiedRule.deltaPos.z)
 
                 local rot = TransformUtil.SerializeVectorToQuaternion(copiedRule.localEulerAngles)
                 local symmetryRot = Quaternion(rot.x, rot.y, rot.z * -1, rot.w * -1)

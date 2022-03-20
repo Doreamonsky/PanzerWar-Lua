@@ -102,6 +102,10 @@ GameObjectPool = CS.ShanghaiWindy.Core.Utils.GameObjectPool
 --- @field HandleScale float
 RuntimeHandlesComponent = CS.Battlehub.RTHandles.RuntimeHandlesComponent
 
+--- @class FreeCamera
+--- @field CreateFreeCamera fun():void 创建摄像机
+FreeCamera = CS.ShanghaiWindy.Core.FreeCamera
+
 -- UnityEngine
 --- @class GameObject
 --- @field Instantiate fun() 实例化

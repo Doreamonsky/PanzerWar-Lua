@@ -3,6 +3,7 @@ require("modes.FreeCameraMode")
 require("modes.MaskTextureMgrMode")
 require("modes.DIYCreateVehicleMode")
 require("modes.LuaModeSetting")
+require("modes.DIYCreateMapMode")
 
 -- 装甲纷争 自定义模式
 luaGameModes = {
@@ -58,6 +59,20 @@ luaGameModes = {
         end,
         onStartMode = DIYCreateVehicleMode.onStartMode,
         onExitMode = DIYCreateVehicleMode.onExitMode,
+        isProxyBattle = function()
+            return false
+        end
+    },    
+    {
+        modName = "DIY 创建地图",
+        author = "超级哆啦酱",
+        description = "创建地图",
+        luaLibVersion = LibVersion,
+        getModeName = function(userLang)
+            return "DIY 创建地图 / DIY Map"
+        end,
+        onStartMode = DIYCreateMapMode.onStartMode,
+        onExitMode = DIYCreateMapMode.onExitMode,
         isProxyBattle = function()
             return false
         end
