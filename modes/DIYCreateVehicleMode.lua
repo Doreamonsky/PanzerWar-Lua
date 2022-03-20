@@ -68,6 +68,8 @@ this.onUpdate = function()
                 end
             end
         end
+
+        this.cameraController:update()
     end
 end
 

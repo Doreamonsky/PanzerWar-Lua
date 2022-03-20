@@ -37,6 +37,7 @@ GameDataManager = CS.ShanghaiWindy.Core.GameDataManager
 
 CommonDataManager = CS.ShanghaiWindy.Core.CommonDataManager
 UserDIYDataManager = CS.ShanghaiWindy.Core.UserDIYDataManager
+UserDIYMapDataManager = CS.ShanghaiWindy.Core.UserDIYMapDataManager
 
 GameEventManager = CS.ShanghaiWindy.Core.GameEventManager
 
@@ -77,6 +78,25 @@ DIYUserDefined = CS.ShanghaiWindy.Core.Data.DIYUserDefined
 DIYRule = CS.ShanghaiWindy.Core.Data.DIYUserDefined.Rule
 
 DIYDataEnum = CS.ShanghaiWindy.Core.Data.DIYDataEnum
+
+--- @class DIYMapItemComponent
+--- @field transform Transfrom
+--- @field GetData fun():DIYMapBaseData
+DIYMapItemComponent = CS.ShanghaiWindy.Core.DIYMapItemComponent
+
+--- @class DIYMapSerializationUtil
+--- @field DeserializeToCurrentScene fun(userDefined:DIYMapUserDefined):void
+--- @field SerializeCurrentScene fun(definedName:string):DIYMapUserDefined
+DIYMapSerializationUtil = CS.ShanghaiWindy.Core.DIYMapSerializationUtil
+
+--- @class DIYMapCreateUtil
+--- @field AutoPlaceItem fun(itemGuid:string,cameraPos:Vector3,cameraDir:Vector3):void
+DIYMapCreateUtil = CS.ShanghaiWindy.Core.DIYMapCreateUtil
+
+--- @class DIYMapBaseData
+--- @field itemGUID string
+DIYMapBaseData = CS.ShanghaiWindy.Core.DIYMapBaseData
+
 SerializeVector3 = CS.ShanghaiWindy.Core.Data.SerializeVector3
 uGUI_Localization = CS.ShanghaiWindy.Core.uGUI_Localization
 
@@ -87,7 +107,6 @@ InternalModule = CS.ShanghaiWindy.Core.InternalModule
 --- @class uGUI_Localsize
 --- @field GetContent fun(_Key:string):void
 uGUI_Localsize = CS.ShanghaiWindy.Core.uGUI_Localsize
-
 
 eDIYControlType = CS.ShanghaiWindy.Core.eDIYControlType
 
@@ -105,6 +124,11 @@ RuntimeHandlesComponent = CS.Battlehub.RTHandles.RuntimeHandlesComponent
 --- @class FreeCamera
 --- @field CreateFreeCamera fun():void 创建摄像机
 FreeCamera = CS.ShanghaiWindy.Core.FreeCamera
+
+
+--- @class RuntimeInspector
+--- @field Inspect fun(obj:object):void
+RuntimeInspector = CS.RuntimeInspectorNamespace.RuntimeInspector
 
 -- UnityEngine
 --- @class GameObject
@@ -143,3 +167,4 @@ MeshRenderer = CS.UnityEngine.MeshRenderer
 
 Input = CS.UnityEngine.Input
 KeyCode = CS.UnityEngine.KeyCode
+Camera = CS.UnityEngine.Camera
