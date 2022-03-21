@@ -37,8 +37,20 @@ GameDataManager = CS.ShanghaiWindy.Core.GameDataManager
 
 CommonDataManager = CS.ShanghaiWindy.Core.CommonDataManager
 UserDIYDataManager = CS.ShanghaiWindy.Core.UserDIYDataManager
+
+--- @class UserDIYMapDataManager
+--- @field Instance UserDIYMapDataManager
+--- @field GetDIYUserDefines fun():List<DIYMapUserDefined> 
 UserDIYMapDataManager = CS.ShanghaiWindy.Core.UserDIYMapDataManager
 
+--- @class DIYFileRecycleMgr
+--- @field OnShareFile UnityEvent<string>
+--- @field OnLoadFile UnityEvent<string>
+--- @field OnDeleteFile UnityEvent<string>
+--- @field AddFileName fun(fileName:string):void
+--- @field RemoveFileName fun(fileName:string):void
+--- @field Refresh fun():void
+DIYFileRecycleMgr = CS.ShanghaiWindy.Core.DIYFileRecycleMgr
 GameEventManager = CS.ShanghaiWindy.Core.GameEventManager
 
 --- @field Team Team
@@ -85,8 +97,9 @@ DIYDataEnum = CS.ShanghaiWindy.Core.Data.DIYDataEnum
 DIYMapItemComponent = CS.ShanghaiWindy.Core.DIYMapItemComponent
 
 --- @class DIYMapSerializationUtil
---- @field DeserializeToCurrentScene fun(userDefined:DIYMapUserDefined):void
+--- @field DeserializeToCurrentScene fun(userDefined:DIYMapUserDefined,isRuntimeMode:boolean):void
 --- @field SerializeCurrentScene fun(definedName:string):DIYMapUserDefined
+--- @field CleanScene fun():void
 DIYMapSerializationUtil = CS.ShanghaiWindy.Core.DIYMapSerializationUtil
 
 --- @class DIYMapCreateUtil

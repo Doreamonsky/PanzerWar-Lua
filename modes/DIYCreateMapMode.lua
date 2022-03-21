@@ -28,8 +28,12 @@ this.onStartMode = function()
 end
 
 this.onUtilCreated = function(root)
-    this.dragInfo = root.transform:Find("DIYCreateMapCanvas/DragInfo")
+    this.fileLoadPop = root.transform:Find("DIYCreateMapCanvas/FileLoadPop")
 
+    --- @type DIYFileRecycleMgr
+    this.fileMgr = this.fileLoadPop:GetComponent(typeof(DIYFileRecycleMgr))
+
+    this.dragInfo = root.transform:Find("DIYCreateMapCanvas/DragInfo")
     this.configProp = root.transform:Find("DIYCreateMapCanvas/ConfigProp")
     this.configComfirmBtn = this.configProp:Find("Title/ConfirmBtn"):GetComponent("Button")
     this.configDeleteBtn = this.configProp:Find("Title/DeleteBtn"):GetComponent("Button")
@@ -55,6 +59,7 @@ this.onUtilCreated = function(root)
     this.fileSavePop = root.transform:Find("DIYCreateMapCanvas/FileSavePop")
     this.fileNameInput = this.fileSavePop.transform:Find("FileNameInput"):GetComponent("InputField")
     this.saveBtn = this.fileSavePop.transform:Find("SaveBtn"):GetComponent("Button")
+    this.fileLoadCloseBtn = root.transform:Find("DIYCreateMapCanvas/FileLoadPop/Title/CloseBtn"):GetComponent("Button")
 
     ---------------------Bind--------------------------
     this.noneBtn.onClick:AddListener(
@@ -140,12 +145,15 @@ this.onUtilCreated = function(root)
 
     this.loadActionBtn.onClick:AddListener(
         function()
+            this.fileLoadPop.gameObject:SetActive(true)
         end
     )
 
     this.saveBtn.onClick:AddListener(
         function()
             local definedName = this.fileNameInput.text
+            this.fileSavePop.gameObject:SetActive(false)
+
             local userDefine = DIYMapSerializationUtil.SerializeCurrentScene(definedName)
             UserDIYMapDataManager.Instance:SetDIYUserDefined(userDefine)
         end
@@ -157,6 +165,39 @@ this.onUtilCreated = function(root)
     this.cameraTargetTrans = root.transform:Find("CameraPoint")
     this.mainCamera = this.cameraTransform:GetComponent(typeof(Camera))
     this.cameraController:Init(this.cameraUITransform, this.cameraTransform, this.cameraTargetTrans)
+    ------------------------------------------------------
+
+    ---------------------地图加载页面--------------------------
+    this.fileLoadCloseBtn.onClick:AddListener(function()
+        this.fileLoadPop.gameObject:SetActive(false)
+    end)
+
+    for k, v in pairs(UserDIYMapDataManager.Instance:GetDIYUserDefines()) do
+        this.fileMgr:AddFileName(v.definedName)
+    end
+
+    this.fileMgr:Refresh()
+
+    this.fileMgr.OnDeleteFile:AddListener(function(defineName)
+        -- 删除当前存档
+        UserDIYMapDataManager.Instance:DeleteDIYUserDefined(defineName)
+        this.fileMgr:Refresh()
+    end)
+
+    this.fileMgr.OnLoadFile:AddListener(function(defineName)
+        this.fileLoadPop.gameObject:SetActive(false)
+        this.fileNameInput.text = defineName
+
+        -- 清当前场景
+        DIYMapSerializationUtil.CleanScene()
+
+        -- 创建新场景
+        local userDefine = UserDIYMapDataManager.Instance:GetUserDefine(defineName)
+        DIYMapSerializationUtil.DeserializeToCurrentScene(userDefine, false)
+    end)
+
+    this.fileMgr.OnShareFile:AddListener(function(defineName)
+    end)
     ------------------------------------------------------
 
     CSharpAPI.SetDIYControlType(eDIYControlType.None)
