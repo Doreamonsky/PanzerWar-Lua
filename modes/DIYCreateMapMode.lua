@@ -5,7 +5,7 @@ DIYCreateMapMode = {}
 local this = DIYCreateMapMode
 this.onStartMode = function()
     this.isEditMode = true
-    this.controlType = eDIYControlType.None
+    this.controlType = eDIYControlType.Position
     this.cameraController = CameraController.new()
 
     --- @type DIYMapItemComponent
@@ -28,6 +28,13 @@ this.onStartMode = function()
 end
 
 this.onUtilCreated = function(root)
+    local settingBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/SettingBtn"):GetComponent("Button")
+    local configTransform = root.transform:Find("DIYCreateMapCanvas/GizmoConfig")
+    local rtPluginTransform = root.transform:Find("RT-Plugin")
+
+    this.gizmoUITransform = GizmoConfigController.new()
+    this.gizmoUITransform:init(configTransform, rtPluginTransform, settingBtn)
+
     this.fileLoadPop = root.transform:Find("DIYCreateMapCanvas/FileLoadPop")
 
     --- @type DIYFileRecycleMgr

@@ -1,4 +1,4 @@
-require("modes.DIYCreateVehicleMode.GizmoConfigCtrl")
+require("modes.Common.GizmoConfigController")
 require("modes.Common.CameraController")
 
 DIYCreateVehicleMode = {}
@@ -85,7 +85,12 @@ end
 -- end
 
 this.onUtilCreated = function(root)
-    GizmoConfigCtrl.onInit(root)
+    local settingBtn = root.transform:Find("DIYCreateVehicleCanvas/ToolAction/SettingBtn"):GetComponent("Button")
+    local configTransform = root.transform:Find("DIYCreateVehicleCanvas/GizmoConfig")
+    local rtPluginTransform = root.transform:Find("RT-Plugin")
+
+    this.gizmoUITransform = GizmoConfigController.new()
+    this.gizmoUITransform:init(configTransform, rtPluginTransform, settingBtn)
 
     this.slotModifyBtnTemplate = root.transform:Find("DIYCreateVehicleCanvas/Slots/SlotModifyBtn")
     this.slotModifyBtnTemplate.gameObject:SetActive(false)
@@ -569,7 +574,7 @@ this.refreshEquipSlotInteractBtn = function()
                     local iconPos = CSharpAPI.GetSlotPosFromBinding(slotOwnerRuleId, slotIndex, this.bindingData)
 
                     local instance = this.slotModifyBtnPools:InstantiateObject()
-                    GizmoConfigCtrl.applySlotScale(instance.transform) -- 设置插槽的大小
+                    this.gizmoUITransform:applySlotScale(instance.transform) -- 设置插槽的大小
 
                     instance:GetComponent(typeof(CS.ShanghaiWindy.Core.IconScreenPositionCtrl)).worldPos = iconPos
                     instance:GetComponent("Button").onClick:AddListener(

@@ -14,45 +14,45 @@ function CameraController:Init(uiTransform, cameraTransform, cameraTargetTransfo
 
     self.keyboardCameraMoveSpeed = 5 -- 摄像机移动速度，按 Shift 会加快
 
-    self.upBtn = uiTransform:Find("UpBtn"):GetComponent("Button")
-    self.downBtn = uiTransform:Find("DownBtn"):GetComponent("Button")
-    self.forwardBtn = uiTransform:Find("ForwardBtn"):GetComponent("Button")
-    self.backwardBtn = uiTransform:Find("BackwardBtn"):GetComponent("Button")
-    self.leftBtn = uiTransform:Find("LeftBtn"):GetComponent("Button")
-    self.rightBtn = uiTransform:Find("RightBtn"):GetComponent("Button")
+    self.upBtn = uiTransform:Find("UpBtn"):GetComponent("PressButton")
+    self.downBtn = uiTransform:Find("DownBtn"):GetComponent("PressButton")
+    self.forwardBtn = uiTransform:Find("ForwardBtn"):GetComponent("PressButton")
+    self.backwardBtn = uiTransform:Find("BackwardBtn"):GetComponent("PressButton")
+    self.leftBtn = uiTransform:Find("LeftBtn"):GetComponent("PressButton")
+    self.rightBtn = uiTransform:Find("RightBtn"):GetComponent("PressButton")
 
     ---------------------摄像机操控--------------------------
-    self.upBtn.onClick:AddListener(
+    self.upBtn.onPressed:AddListener(
         function()
             self:makeCameraTargetDelta(Vector3.up, false)
         end
     )
 
-    self.downBtn.onClick:AddListener(
+    self.downBtn.onPressed:AddListener(
         function()
             self:makeCameraTargetDelta(Vector3.down, false)
         end
     )
 
-    self.forwardBtn.onClick:AddListener(
+    self.forwardBtn.onPressed:AddListener(
         function()
             self:makeCameraTargetDelta(Vector3.forward, true)
         end
     )
 
-    self.backwardBtn.onClick:AddListener(
+    self.backwardBtn.onPressed:AddListener(
         function()
             self:makeCameraTargetDelta(Vector3.back, true)
         end
     )
 
-    self.leftBtn.onClick:AddListener(
+    self.leftBtn.onPressed:AddListener(
         function()
             self:makeCameraTargetDelta(Vector3.left, true)
         end
     )
 
-    self.rightBtn.onClick:AddListener(
+    self.rightBtn.onPressed:AddListener(
         function()
             self:makeCameraTargetDelta(Vector3.right, true)
         end
@@ -64,27 +64,27 @@ function CameraController:update()
     -- PC 输入
     if not Application.isMobile then
         if Input.GetKey(KeyCode.W) then
-            self:makeCameraTargetDelta(Vector3.forward * Time.deltaTime * self.keyboardCameraMoveSpeed, true)
+            self:makeCameraTargetDelta(Vector3.forward, true)
         end
 
         if Input.GetKey(KeyCode.A) then
-            self:makeCameraTargetDelta(Vector3.left * Time.deltaTime * self.keyboardCameraMoveSpeed, true)
+            self:makeCameraTargetDelta(Vector3.left, true)
         end
 
         if Input.GetKey(KeyCode.S) then
-            self:makeCameraTargetDelta(Vector3.back * Time.deltaTime * self.keyboardCameraMoveSpeed, true)
+            self:makeCameraTargetDelta(Vector3.back, true)
         end
 
         if Input.GetKey(KeyCode.D) then
-            self:makeCameraTargetDelta(Vector3.right * Time.deltaTime * self.keyboardCameraMoveSpeed, true)
+            self:makeCameraTargetDelta(Vector3.right, true)
         end
 
         if Input.GetKey(KeyCode.E) then
-            self:makeCameraTargetDelta(Vector3.up * Time.deltaTime * self.keyboardCameraMoveSpeed, false)
+            self:makeCameraTargetDelta(Vector3.up, false)
         end
 
         if Input.GetKey(KeyCode.Q) then
-            self:makeCameraTargetDelta(Vector3.down * Time.deltaTime * self.keyboardCameraMoveSpeed, false)
+            self:makeCameraTargetDelta(Vector3.down, false)
         end
 
         if Input.GetKeyDown(KeyCode.LeftShift) then
@@ -101,6 +101,8 @@ end
 --- @param delta Vector3 位置增量
 --- @param isProjectPlane boolean 是否投影到 XZ 平面
 function CameraController:makeCameraTargetDelta(delta, isProjectPlane)
+    delta = delta * Time.deltaTime * self.keyboardCameraMoveSpeed
+    
     if isProjectPlane then
         delta = Vector3.ProjectOnPlane(self.cameraTransform:TransformVector(delta), Vector3.up)
     end
