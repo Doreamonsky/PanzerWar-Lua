@@ -94,6 +94,7 @@ DIYDataEnum = CS.ShanghaiWindy.Core.Data.DIYDataEnum
 --- @class DIYMapItemComponent
 --- @field transform Transfrom
 --- @field GetData fun():DIYMapBaseData
+--- @field GetJson fun():DIYMapItemComponentJson
 DIYMapItemComponent = CS.ShanghaiWindy.Core.DIYMapItemComponent
 
 --- @class DIYMapSerializationUtil

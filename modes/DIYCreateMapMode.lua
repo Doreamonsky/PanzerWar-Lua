@@ -163,6 +163,9 @@ this.onUtilCreated = function(root)
 
             local userDefine = DIYMapSerializationUtil.SerializeCurrentScene(definedName)
             UserDIYMapDataManager.Instance:SetDIYUserDefined(userDefine)
+
+            this.fileMgr:AddFileName(definedName)
+            this.fileMgr:Refresh()
         end
     )
     ---------------------摄像机--------------------------
@@ -261,7 +264,7 @@ this.selectItemComponent = function(itemCompoent)
     this.configProp.gameObject:SetActive(true)
     this.dragInfo.gameObject:SetActive(false)
 
-    this.runtimeInspector:Inspect(this.itemComponent)
+    this.runtimeInspector:Inspect(this.itemComponent:GetJson())
 
     local baseData = itemCompoent:GetData()
     this.configPropEquipText.text = baseData.displayName:GetDisplayName()
