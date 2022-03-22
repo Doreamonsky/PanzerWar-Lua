@@ -423,11 +423,7 @@ this.onUtilCreated = function(root)
         this.fileLoadPop.gameObject:SetActive(false)
     end)
 
-    for k, v in pairs(UserDIYDataManager.Instance:GetDIYUserDefineds()) do
-        this.fileMgr:AddFileName(v.definedName)
-    end
 
-    this.fileMgr:Refresh()
 
     this.fileMgr.OnDeleteFile:AddListener(function(definedName)
         -- 删除当前的 UserDefine
@@ -436,8 +432,7 @@ this.onUtilCreated = function(root)
             function(state)
                 if state then
                     this.deleteUserDefine(definedName)
-                    this.fileMgr:RemoveFileName(definedName)
-                    this.fileMgr:Refresh()
+                    this.refeshFileList()
                 end
             end
         )
@@ -791,8 +786,7 @@ this.saveUserDefine = function(definedName)
     this.userDefined.definedName = definedName
 
     UserDIYDataManager.Instance:SetDIYUserDefined(this.deepCopyUserDefine(this.userDefined))
-    this.fileMgr:AddFileName(definedName)
-    this.fileMgr:Refresh()
+    this.refeshFileList()
 
     this.fileSavePop.gameObject:SetActive(false)
 end
@@ -808,8 +802,7 @@ end
 this.deleteUserDefine = function(definedName)
     -- 通知 C# 存储侧删除该 UserDefine
     UserDIYDataManager.Instance:DeleteDIYUserDefined(definedName)
-    this.fileMgr:RemoveFileName(definedName)
-    this.fileMgr:Refresh()
+    this.refeshFileList()
 end
 
 --- 加载新的 UserDefine
@@ -1215,8 +1208,7 @@ this.importShareCode = function()
         function(shareUserDefine)
             if shareUserDefine ~= nil then
                 UserDIYDataManager.Instance:SetDIYUserDefined(shareUserDefine)
-                this.fileMgr:AddFileName(shareUserDefine.definedName)
-                this.fileMgr:Refresh()
+                this.refeshFileList()
             else
                 PopMessageManager.Instance:PushPopup(
                     "错误的分享码。 Invalid Share Code.",
@@ -1276,4 +1268,15 @@ this.onExitMode = function()
     this.slotModifyBtnPools:Dispose()
 
     -- Application.logMessageReceived("-", this.onLogCallBack)
+end
+
+
+this.refeshFileList = function()
+    this.fileMgr:Clean()
+
+    for k, v in pairs(UserDIYDataManager.Instance:GetDIYUserDefineds()) do
+        this.fileMgr:AddFileName(v.definedName)
+    end
+
+    this.fileMgr:Refresh()
 end

@@ -164,8 +164,7 @@ this.onUtilCreated = function(root)
             local userDefine = DIYMapSerializationUtil.SerializeCurrentScene(definedName)
             UserDIYMapDataManager.Instance:SetDIYUserDefined(userDefine)
 
-            this.fileMgr:AddFileName(definedName)
-            this.fileMgr:Refresh()
+            this.refeshFileList()
         end
     )
     ---------------------摄像机--------------------------
@@ -182,11 +181,7 @@ this.onUtilCreated = function(root)
         this.fileLoadPop.gameObject:SetActive(false)
     end)
 
-    for k, v in pairs(UserDIYMapDataManager.Instance:GetDIYUserDefines()) do
-        this.fileMgr:AddFileName(v.definedName)
-    end
-
-    this.fileMgr:Refresh()
+    this.refeshFileList()
 
     this.fileMgr.OnDeleteFile:AddListener(function(definedName)
         -- 删除当前存档
@@ -283,4 +278,15 @@ this.closeConfig = function()
     this.dragInfo.gameObject:SetActive(true)
 
     CSharpAPI.SetDIYControlType(eDIYControlType.None)
+end
+
+
+this.refeshFileList = function()
+    this.fileMgr:Clean()
+
+    for k, v in pairs(UserDIYMapDataManager.Instance:GetDIYUserDefines()) do
+        this.fileMgr:AddFileName(v.definedName)
+    end
+
+    this.fileMgr:Refresh()
 end

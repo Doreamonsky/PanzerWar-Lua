@@ -50,6 +50,7 @@ UserDIYMapDataManager = CS.ShanghaiWindy.Core.UserDIYMapDataManager
 --- @field AddFileName fun(fileName:string):void
 --- @field RemoveFileName fun(fileName:string):void
 --- @field Refresh fun():void
+--- @field Clean fun():void
 DIYFileRecycleMgr = CS.ShanghaiWindy.Core.DIYFileRecycleMgr
 GameEventManager = CS.ShanghaiWindy.Core.GameEventManager
 
