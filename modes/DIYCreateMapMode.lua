@@ -185,25 +185,26 @@ this.onUtilCreated = function(root)
 
     this.fileMgr:Refresh()
 
-    this.fileMgr.OnDeleteFile:AddListener(function(defineName)
+    this.fileMgr.OnDeleteFile:AddListener(function(definedName)
         -- 删除当前存档
-        UserDIYMapDataManager.Instance:DeleteDIYUserDefined(defineName)
+        UserDIYMapDataManager.Instance:DeleteDIYUserDefined(definedName)
+        this.fileMgr:RemoveFileName(definedName)
         this.fileMgr:Refresh()
     end)
 
-    this.fileMgr.OnLoadFile:AddListener(function(defineName)
+    this.fileMgr.OnLoadFile:AddListener(function(definedName)
         this.fileLoadPop.gameObject:SetActive(false)
-        this.fileNameInput.text = defineName
+        this.fileNameInput.text = definedName
 
         -- 清当前场景
         DIYMapSerializationUtil.CleanScene()
 
         -- 创建新场景
-        local userDefine = UserDIYMapDataManager.Instance:GetUserDefine(defineName)
+        local userDefine = UserDIYMapDataManager.Instance:GetUserDefine(definedName)
         DIYMapSerializationUtil.DeserializeToCurrentScene(userDefine, false)
     end)
 
-    this.fileMgr.OnShareFile:AddListener(function(defineName)
+    this.fileMgr.OnShareFile:AddListener(function(definedName)
     end)
     ------------------------------------------------------
 

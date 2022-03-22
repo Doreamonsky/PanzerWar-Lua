@@ -109,9 +109,10 @@ this.onUtilCreated = function(root)
     this.saveBtn = this.fileSavePop.transform:Find("SaveBtn"):GetComponent("Button")
 
     this.fileLoadPop = root.transform:Find("DIYCreateVehicleCanvas/FileLoadPop")
-    this.fileLoadCloseBtn = this.fileLoadPop:Find("Scroll View/Viewport/Content/Title/CloseBtn"):GetComponent("Button")
-    this.fileLoadTemplate = this.fileLoadPop:Find("Scroll View/Viewport/Content/Template")
-    this.fileLoadTemplate.gameObject:SetActive(false)
+    --- @type DIYFileRecycleMgr
+    this.fileMgr = this.fileLoadPop:GetComponent(typeof(DIYFileRecycleMgr))
+    this.fileLoadCloseBtn = this.fileLoadPop:Find("Title/CloseBtn"):GetComponent("Button")
+    this.loadShareBtn = this.fileLoadPop:Find("Title/LoadShareBtn"):GetComponent("Button")
 
     this.setMainBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Main/SetMainBtn"):GetComponent(
         "Button"
@@ -136,9 +137,7 @@ this.onUtilCreated = function(root)
     )
     this.configCustomPropertyTemplate.gameObject:SetActive(false)
 
-    this.loadShareBtn = root.transform:Find("DIYCreateVehicleCanvas/FileLoadPop/Scroll View/Viewport/Content/Title/LoadShareBtn"):GetComponent(
-        "Button"
-    )
+
     this.shareImportPop = root.transform:Find("DIYCreateVehicleCanvas/ShareImportPop")
     this.shareImportCancelBtn = this.shareImportPop:GetComponent("Button")
     this.shareCodeInput = root.transform:Find("DIYCreateVehicleCanvas/ShareImportPop/ShareCodeInput"):GetComponent("InputField")
@@ -223,7 +222,6 @@ this.onUtilCreated = function(root)
                 return
             end
 
-            this.refreshFileLoadList()
             this.fileLoadPop.gameObject:SetActive(true)
         end
     )
@@ -249,12 +247,6 @@ this.onUtilCreated = function(root)
         end
     )
 
-    this.fileLoadCloseBtn.onClick:AddListener(
-        function()
-            this.fileLoadPop.gameObject:SetActive(false)
-        end
-    )
-
     this.quickImportShareBtn.onClick:AddListener(
         function()
             -- 快速导入分享码
@@ -262,7 +254,6 @@ this.onUtilCreated = function(root)
                 return
             end
 
-            this.refreshFileLoadList()
             this.fileLoadPop.gameObject:SetActive(true)
             this.shareImportPop.gameObject:SetActive(true)
         end
@@ -426,6 +417,46 @@ this.onUtilCreated = function(root)
             this.updateTimeScale()
         end
     )
+
+    ---------------------坦克加载页面--------------------------
+    this.fileLoadCloseBtn.onClick:AddListener(function()
+        this.fileLoadPop.gameObject:SetActive(false)
+    end)
+
+    for k, v in pairs(UserDIYDataManager.Instance:GetDIYUserDefineds()) do
+        this.fileMgr:AddFileName(v.definedName)
+    end
+
+    this.fileMgr:Refresh()
+
+    this.fileMgr.OnDeleteFile:AddListener(function(definedName)
+        -- 删除当前的 UserDefine
+        PopMessageManager.Instance:PushPopup(
+            "是否确定删除当前的存档? Delete current saving?",
+            function(state)
+                if state then
+                    this.deleteUserDefine(definedName)
+                    this.fileMgr:RemoveFileName(definedName)
+                    this.fileMgr:Refresh()
+                end
+            end
+        )
+    end)
+
+    this.fileMgr.OnLoadFile:AddListener(function(definedName)
+        local userDefine = UserDIYDataManager.Instance:GetUserDefine(definedName)
+        local loadedDefine = this.deepCopyUserDefine(userDefine)
+        this.loadNewUserDefine(loadedDefine)
+        this.fileNameInput.text = loadedDefine.definedName
+        this.fileLoadPop.gameObject:SetActive(false)
+    end)
+
+    this.fileMgr.OnShareFile:AddListener(function(definedName)
+        local userDefine = UserDIYDataManager.Instance:GetUserDefine(definedName)
+        this.exportShareCode(userDefine)
+    end)
+    ------------------------------------------------------
+
     -- 缓存数据
     this.slotModifyBtnPools = GameObjectPool()
     this.slotModifyBtnPools:Init(this.slotModifyBtnTemplate.gameObject, 200)
@@ -455,9 +486,6 @@ this.onUtilCreated = function(root)
 
     --- 配件属性UI物体列表
     this.propertyUIList = {}
-
-    --- 加载UI物件列表
-    this.fileLoadUIList = {}
 
     --- 创建DIY载具的中间件
     this.bindingData = nil
@@ -749,9 +777,9 @@ this.toggleEquipList = function(showInstalled)
     this.slotDisableMask.gameObject:SetActive(not showInstalled)
 end
 
-this.saveUserDefine = function(defineName)
+this.saveUserDefine = function(definedName)
     -- 保存名称检查
-    if not defineName or defineName == "" then
+    if not definedName or definedName == "" then
         PopMessageManager.Instance:PushPopup(
             "请输入存档名称。Input the saving name.",
             function()
@@ -760,9 +788,11 @@ this.saveUserDefine = function(defineName)
         return
     end
 
-    this.userDefined.definedName = defineName
+    this.userDefined.definedName = definedName
 
     UserDIYDataManager.Instance:SetDIYUserDefined(this.deepCopyUserDefine(this.userDefined))
+    this.fileMgr:AddFileName(definedName)
+    this.fileMgr:Refresh()
 
     this.fileSavePop.gameObject:SetActive(false)
 end
@@ -778,6 +808,8 @@ end
 this.deleteUserDefine = function(definedName)
     -- 通知 C# 存储侧删除该 UserDefine
     UserDIYDataManager.Instance:DeleteDIYUserDefined(definedName)
+    this.fileMgr:RemoveFileName(definedName)
+    this.fileMgr:Refresh()
 end
 
 --- 加载新的 UserDefine
@@ -820,58 +852,6 @@ this.loadNewUserDefine = function(userDefine)
             this.ApplyParentScaleToggle.isOn = userDefine.isApplyParentScale
         end
     )
-end
-
---- 更新存档页面列表
-this.refreshFileLoadList = function()
-    for k, v in pairs(this.fileLoadUIList) do
-        GameObject.Destroy(v.gameObject)
-    end
-    this.fileLoadUIList = {}
-
-    -- 遍历 UserDefine
-    local userDefines = UserDIYDataManager.Instance:GetDIYUserDefineds()
-
-    for k, v in pairs(userDefines) do
-        --- @type DIYUserDefined
-        local userDefine = v
-        local instance = GameObject.Instantiate(this.fileLoadTemplate, this.fileLoadTemplate.transform.parent, true)
-        instance.transform:Find("Title"):GetComponent("Text").text = userDefine.definedName
-        instance.transform:Find("LoadBtn"):GetComponent("Button").onClick:AddListener(
-            function()
-                -- 覆盖当前的 UserDefine
-                local loadedDefine = this.deepCopyUserDefine(userDefine)
-                this.loadNewUserDefine(loadedDefine)
-                this.fileNameInput.text = loadedDefine.definedName
-                this.fileLoadPop.gameObject:SetActive(false)
-            end
-        )
-        instance.transform:Find("DeleteBtn"):GetComponent("Button").onClick:AddListener(
-            function()
-                -- 删除当前的 UserDefine
-                PopMessageManager.Instance:PushPopup(
-                    "是否确定删除当前的存档? Delete current saving?",
-                    function(state)
-                        if state then
-                            this.deleteUserDefine(userDefine.definedName)
-                            this.refreshFileLoadList()
-                        end
-                    end
-                )
-            end
-        )
-
-        instance.transform:Find("ShareBtn"):GetComponent("Button").onClick:AddListener(
-            function()
-                -- 设置分享
-                this.exportShareCode(userDefine)
-            end
-        )
-
-        instance.gameObject:SetActive(true)
-
-        table.insert(this.fileLoadUIList, instance)
-    end
 end
 
 --- 选择当前聚焦编辑的规则
@@ -1235,7 +1215,8 @@ this.importShareCode = function()
         function(shareUserDefine)
             if shareUserDefine ~= nil then
                 UserDIYDataManager.Instance:SetDIYUserDefined(shareUserDefine)
-                this.refreshFileLoadList()
+                this.fileMgr:AddFileName(shareUserDefine.definedName)
+                this.fileMgr:Refresh()
             else
                 PopMessageManager.Instance:PushPopup(
                     "错误的分享码。 Invalid Share Code.",
