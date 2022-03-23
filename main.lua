@@ -4,7 +4,6 @@
 require("Class")
 require("LibVersion") -- Lua C# 交互版本
 require("Core") -- 框架
-require("GlobalDefine") -- 方便调用 C#
 
 -- GamePlay 玩法相关
 require("feature.Features")

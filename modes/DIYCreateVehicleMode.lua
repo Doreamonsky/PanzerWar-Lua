@@ -1259,7 +1259,8 @@ end
 
 this.onExitMode = function()
     this.isEditMode = false
-
+    this.cameraController:onrelease()
+    
     CSharpAPI.OnEquipUninstallClicked:RemoveAllListeners(this.OnEquipUninstallClicked)
     CSharpAPI.OnEquipDetailClicked:RemoveListener(this.OnEquipDetailClicked)
     CSharpAPI.OnEquipInstallClicked:RemoveListener(this.OnEquipInstallClicked)

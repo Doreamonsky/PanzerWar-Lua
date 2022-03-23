@@ -6,10 +6,17 @@ GizmoConfig = {}
 local this = GizmoConfig
 this.configName = "Gizmo"
 
+CameraControllerType = enum({
+    "Keypad",
+    "Joystick"
+})
+
 this.config = {
     ["SlotScale"] = 1,
     ["AxisScale"] = 1,
-    ["EnableGrid"] = true
+    ["CameraMoveScale"] = 1,
+    ["EnableGrid"] = true,
+    ["CameraControllerType"] = CameraControllerType.Keypad
 }
 
 this.loadConfig = function()

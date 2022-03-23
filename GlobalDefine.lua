@@ -38,6 +38,8 @@ GameDataManager = CS.ShanghaiWindy.Core.GameDataManager
 CommonDataManager = CS.ShanghaiWindy.Core.CommonDataManager
 UserDIYDataManager = CS.ShanghaiWindy.Core.UserDIYDataManager
 
+DIYMapUserDefinedRule = CS.ShanghaiWindy.Core.Data.DIYMapUserDefined.Rule
+
 --- @class UserDIYMapDataManager
 --- @field Instance UserDIYMapDataManager
 --- @field GetDIYUserDefines fun():List<DIYMapUserDefined> 
@@ -92,6 +94,8 @@ DIYRule = CS.ShanghaiWindy.Core.Data.DIYUserDefined.Rule
 
 DIYDataEnum = CS.ShanghaiWindy.Core.Data.DIYDataEnum
 
+DIYMapBaseReference = CS.ShanghaiWindy.Core.Data.DIYMapBaseReference
+
 --- @class DIYMapItemComponent
 --- @field transform Transfrom
 --- @field GetData fun():DIYMapBaseData
@@ -140,6 +144,7 @@ RuntimeHandlesComponent = CS.Battlehub.RTHandles.RuntimeHandlesComponent
 --- @field CreateFreeCamera fun():void 创建摄像机
 FreeCamera = CS.ShanghaiWindy.Core.FreeCamera
 
+Joystick = CS.ShanghaiWindy.Core.Joystick
 
 --- @class RuntimeInspector
 --- @field Inspect fun(obj:object):void
@@ -183,3 +188,6 @@ MeshRenderer = CS.UnityEngine.MeshRenderer
 Input = CS.UnityEngine.Input
 KeyCode = CS.UnityEngine.KeyCode
 Camera = CS.UnityEngine.Camera
+
+EventTrigger = CS.UnityEngine.EventSystems
+EventTriggerType = CS.UnityEngine.EventSystems.EventTriggerType

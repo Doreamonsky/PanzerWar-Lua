@@ -47,14 +47,15 @@ luaCommonMods = {
         end
     },
     {
-        modName = "载具DIY - 更新",
+        modName = "Custom Loops",
         author = "超级哆啦酱",
-        description = "Update Loop",
+        description = "模式相关的 update 都可以放在这里",
         luaLibVersion = LibVersion,
         onStarted = function()
         end,
         onUpdated = function()
             DIYCreateVehicleMode.onUpdate()
+            DIYCreateMapMode.onUpdate()
         end,
         onFixedUpdated = function()
         end,

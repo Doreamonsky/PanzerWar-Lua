@@ -12,6 +12,13 @@ function GizmoConfigController:init(gizmoUITransform, rtPluginTransform, entryBu
     self.axisScaleInputField = gizmoUITransform.transform:Find("Bar/Content/AxisScale/InputField"):GetComponent(
         "InputField"
     )
+    self.cameraMoveScaleInputField = gizmoUITransform.transform:Find("Bar/Content/CameraMoveScale/InputField"):GetComponent(
+        "InputField"
+    )
+    self.enableJoysitckToggle = gizmoUITransform.transform:Find("Bar/Content/EnableJoysitckToggle/Toggle"):GetComponent(
+        "Toggle"
+    )
+    
     self.enableGridToggle = gizmoUITransform.transform:Find("Bar/Content/EnableGrid/Toggle"):GetComponent("Toggle")
 
     self.confirmBtn = gizmoUITransform.transform:Find("Bar/Title/ConfirmBtn"):GetComponent("Button")
@@ -42,6 +49,27 @@ function GizmoConfigController:init(gizmoUITransform, rtPluginTransform, entryBu
         end
     )
 
+    -- 摄像机移速
+    self.cameraMoveScaleInputField.text = tostring(GizmoConfig.config.CameraMoveScale)
+    self.cameraMoveScaleInputField.onValueChanged:AddListener(
+        function(text)
+            local scale = tonumber(text)
+            GizmoConfig.config.CameraMoveScale = scale
+        end
+    )
+
+    -- 是否启用 虚拟摇杆
+    self.enableJoysitckToggle.isOn = GizmoConfig.config.CameraControllerType == CameraControllerType.Joystick
+    self.enableJoysitckToggle.onValueChanged:AddListener(
+        function(isEnable)
+            if isEnable then
+                GizmoConfig.config.CameraControllerType = CameraControllerType.Joystick
+            else
+                GizmoConfig.config.CameraControllerType = CameraControllerType.Keypad
+            end
+        end
+    )
+
     -- 是否启用 Grid
     self.gridComponent = rtPluginTransform:Find("SceneGrid").gameObject
     self.gridComponent:SetActive(GizmoConfig.config.EnableGrid)
@@ -65,6 +93,8 @@ function GizmoConfigController:init(gizmoUITransform, rtPluginTransform, entryBu
         function()
             GizmoConfig.saveConfig()
             self.settingGo:SetActive(false)
+
+            EventSystem.DispatchEvent(EventDefine.OnGizmoConfigChanged)
         end
     )
     ---------------------------------

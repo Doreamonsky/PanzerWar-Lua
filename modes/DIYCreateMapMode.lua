@@ -7,6 +7,7 @@ this.onStartMode = function()
     this.isEditMode = true
     this.controlType = eDIYControlType.Position
     this.cameraController = CameraController.new()
+    this.outlinableComponents = {}
 
     --- @type DIYMapItemComponent
     this.itemComponent = nil
@@ -68,6 +69,11 @@ this.onUtilCreated = function(root)
     this.saveBtn = this.fileSavePop.transform:Find("SaveBtn"):GetComponent("Button")
     this.fileLoadCloseBtn = root.transform:Find("DIYCreateMapCanvas/FileLoadPop/Title/CloseBtn"):GetComponent("Button")
 
+    this.configDeleteBtn.onClick:AddListener(
+        function()
+            this.deleteConfig()
+        end
+    )
     ---------------------Bind--------------------------
     this.noneBtn.onClick:AddListener(
         function()
@@ -105,8 +111,14 @@ this.onUtilCreated = function(root)
 
     this.configDuplicateBtn.onClick:AddListener(
         function()
-            local instance = GameObject.Instantiate(this.itemComponent.gameObject)
-            this.selectItemComponent(instance:GetComponent(typeof(DIYMapItemComponent)))
+            local targetComponent = this.itemComponent
+
+            if targetComponent ~= nil then
+                this.closeConfig()
+                this.duplicateItem(targetComponent, function(res)
+                    this.selectItemComponent(res)
+                end)
+            end
         end
     )
 
@@ -235,8 +247,16 @@ this.onUtilCreated = function(root)
     CSharpAPI.OnMapInstallClicked:AddListener(this.OnMapInstallClicked)
 end
 
+this.onUpdate = function()
+    if this.isEditMode then
+        this.cameraController:update()
+    end
+end
+
 this.onExitMode = function()
     this.isEditMode = false
+
+    this.cameraController:onrelease()
 
     CSharpAPI.OnDIYPositionHandleChanged:RemoveAllListeners()
     CSharpAPI.OnDIYEulerAnglesHandleChanged:RemoveAllListeners()
@@ -270,9 +290,32 @@ this.selectItemComponent = function(itemCompoent)
     CSharpAPI.SetDIYPosition(this.itemComponent.transform.position)
     CSharpAPI.SetDIYEulerAngles(this.itemComponent.transform.eulerAngles)
     CSharpAPI.SetDIYScale(this.itemComponent.transform.localScale)
+
+    local reference = this.itemComponent.gameObject:GetComponent(typeof(DIYMapBaseReference))
+
+    for i = 0, reference.renderers.Length - 1 do
+        local render = reference.renderers[i]
+
+        if not render:IsNull() then
+            local go = render.gameObject
+            OutlineHelper.CreateOutlineWithDefaultParams(go, render, Color(1, 0, 0, 1))
+
+            local outline = go:GetComponent(typeof(CS.EPOOutline.Outlinable))
+            table.insert(this.outlinableComponents, outline)
+        end
+    end
 end
 
+--- 删除当前配置
+this.deleteConfig = function()
+    GameObject.Destroy(this.itemComponent.gameObject)
+    this.closeConfig()
+end
+
+--- 关闭配置
 this.closeConfig = function()
+    this.deleteOutlines()
+
     this.itemComponent = nil
     this.configProp.gameObject:SetActive(false)
     this.dragInfo.gameObject:SetActive(true)
@@ -280,7 +323,29 @@ this.closeConfig = function()
     CSharpAPI.SetDIYControlType(eDIYControlType.None)
 end
 
+this.deleteOutlines = function()
+    for k, v in pairs(this.outlinableComponents) do
+        GameObject.Destroy(v)
+    end
 
+    this.outlinableComponents = {}
+end
+
+this.duplicateItem = function(itemComponent, callBack)
+    local itemGuid = itemComponent:GetData().itemGUID
+    local itemJson = JsonUtility.ToJson(itemComponent:GetJson())
+
+    local rule = DIYMapUserDefinedRule()
+    rule.itemGuid = itemGuid
+    rule.itemJson = itemJson
+
+    DIYMapCreateUtil.AsyncCreateData(rule, false, function(res)
+        local component = res:GetComponent(typeof(DIYMapItemComponent))
+        callBack(component)
+    end)
+end
+
+--- 刷新页面
 this.refeshFileList = function()
     this.fileMgr:Clean()
 
