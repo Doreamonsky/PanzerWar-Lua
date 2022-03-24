@@ -146,9 +146,22 @@ FreeCamera = CS.ShanghaiWindy.Core.FreeCamera
 
 Joystick = CS.ShanghaiWindy.Core.Joystick
 
+--- @class DIYHandleManager
+--- @field Instance DIYHandleManager
+--- @field isDragging boolean
+DIYHandleManager = CS.ShanghaiWindy.Core.DIYHandleManager
+
+--- @class DIYMapItemComponentDragPicker
+--- @param Instance DIYMapItemComponentDragPicker
+--- @param GetRayItem fun(screenPoint:Vector2)
+DIYMapItemComponentDragPicker = CS.ShanghaiWindy.Core.DIYMapItemComponentDragPicker
+
 --- @class RuntimeInspector
 --- @field Inspect fun(obj:object):void
 RuntimeInspector = CS.RuntimeInspectorNamespace.RuntimeInspector
+
+--- @class UIEventUtil
+UIEventUtil = CS.ShanghaiWindy.Core.UIEventUtil
 
 -- UnityEngine
 --- @class GameObject
@@ -189,5 +202,6 @@ Input = CS.UnityEngine.Input
 KeyCode = CS.UnityEngine.KeyCode
 Camera = CS.UnityEngine.Camera
 
-EventTrigger = CS.UnityEngine.EventSystems
+--- @class EventTrigger
+EventTrigger = CS.UnityEngine.EventSystems.EventTrigger
 EventTriggerType = CS.UnityEngine.EventSystems.EventTriggerType

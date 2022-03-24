@@ -10,6 +10,7 @@ table.indexOf = function(tab, value)
     end
 end
 
+--- 枚举
 function enum(tbl)
     local length = #tbl
     for i = 1, length do
@@ -21,15 +22,22 @@ function enum(tbl)
 end
 
 -----------------------------------------------------
+-- 通用框架 (不仅针对此项目，未来任何项目都可以使用的通用代码)
+require("framework.Class") -- 面向对象编程 local customClass = class("customClass") local a = customClass.new(...)
+require("framework.lib.base64") -- base64
+require("framework.lib.configIO") -- IO 相关
+require("framework.Entity") -- 实体
+require("framework.EventSystem") -- 事件系统
 
---- 第三方插件 以及框架向的引用
-require("GlobalDefine") -- 方便调用 C#
-require("events.EventDefine") -- 事件定义
-require("events.EventSystem") -- 事件系统
-require("lib.base64") -- base64
-require("lib.configIO") -- IO 相关
+inspect = require("framework.lib.inspect") -- 方便 Debug Table
+json = require("framework.lib.dkjson") -- Json 序列化，反序列化
+-----------------------------------------------------
+
+-----------------------------------------------------
+-- 项目相关
+require("LibVersion") -- Lua C# 交互版本
 require("util.Util")
 require("conifg.Config")
-
-inspect = require("lib.inspect")
-json = require("lib.dkjson")
+require("GlobalDefine") -- 方便调用 C#
+require("events.EventDefine") -- 事件定义
+-----------------------------------------------------

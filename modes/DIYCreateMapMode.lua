@@ -1,3 +1,4 @@
+require "modes.Common.CustomClickHandler"
 require "modes.Common.CameraController"
 
 DIYCreateMapMode = {}
@@ -45,12 +46,13 @@ this.onUtilCreated = function(root)
     this.configProp = root.transform:Find("DIYCreateMapCanvas/ConfigProp")
     this.configComfirmBtn = this.configProp:Find("Title/ConfirmBtn"):GetComponent("Button")
     this.configDeleteBtn = this.configProp:Find("Title/DeleteBtn"):GetComponent("Button")
+    this.configMethodTemplateGo = this.configProp:Find("Methods/MethodTemplate").gameObject
+
     this.configContent = this.configProp:Find("Content")
     this.configPropEquipText = this.configContent:Find("BaseInfo/EquipName"):GetComponent("Text")
     this.configPropEquipDescriptionText = this.configContent:Find("BaseInfo/EquipDescription"):GetComponent("Text")
     this.configPropEquipImg = this.configContent:Find("BaseInfo/Icon"):GetComponent("Image")
     this.configDuplicateBtn = this.configContent:Find("Main/DuplicateBtn"):GetComponent("Button")
-
     --- @type RuntimeInspector
     this.runtimeInspector = this.configContent:Find("Property/RuntimeInspector"):GetComponent(typeof(RuntimeInspector))
 
@@ -69,12 +71,18 @@ this.onUtilCreated = function(root)
     this.saveBtn = this.fileSavePop.transform:Find("SaveBtn"):GetComponent("Button")
     this.fileLoadCloseBtn = root.transform:Find("DIYCreateMapCanvas/FileLoadPop/Title/CloseBtn"):GetComponent("Button")
 
+    this.longPressTipGo = root.transform:Find("DIYCreateMapCanvas/LongPressTip").gameObject
+    this.tipFillImg = this.longPressTipGo.transform:Find("Fill"):GetComponent("Image")
+
+    this.eventTrigger = root.transform:Find("DIYCreateMapCanvas/TouchBar"):GetComponent(typeof(EventTrigger))
+
+    ---------------------Bind--------------------------
     this.configDeleteBtn.onClick:AddListener(
         function()
             this.deleteConfig()
         end
     )
-    ---------------------Bind--------------------------
+
     this.noneBtn.onClick:AddListener(
         function()
             this.controlType = eDIYControlType.None
@@ -114,8 +122,8 @@ this.onUtilCreated = function(root)
             local targetComponent = this.itemComponent
 
             if targetComponent ~= nil then
-                this.closeConfig()
                 this.duplicateItem(targetComponent, function(res)
+                    this.closeConfig()
                     this.selectItemComponent(res)
                 end)
             end
@@ -218,6 +226,28 @@ this.onUtilCreated = function(root)
     end)
     ------------------------------------------------------
 
+    this.configMethodGoPool = GameObjectPool()
+    this.configMethodGoPool:Init(this.configMethodTemplateGo, 5)
+    this.configsMethodList = {}
+
+    this.rayHitClick = CustomClickHandler.new()
+    this.rayHitClick:Init(this.eventTrigger, 1, 5, function(evtData)
+        local ret, viewData = DIYMapItemComponentDragPicker.Instance:GetRayItem(evtData.position)
+
+        if ret then
+            this.selectItemComponent(viewData.itemComponent)
+        end
+    end, function(state, evtData)
+        this.tipFillImg.fillAmount = 0
+        this.longPressTipGo:SetActive(state)
+    end, function(pressTime)
+        if pressTime > 0.2 then
+            this.tipFillImg.fillAmount = pressTime
+        end
+    end)
+
+    EntityManager.AddEntity(this.rayHitClick)
+
     CSharpAPI.SetDIYControlType(eDIYControlType.None)
     CSharpAPI.OnDIYPositionHandleChanged:AddListener(
         function(position)
@@ -257,6 +287,7 @@ this.onExitMode = function()
     this.isEditMode = false
 
     this.cameraController:onrelease()
+    EntityManager.RemoveEntity(this.rayHitClick)
 
     CSharpAPI.OnDIYPositionHandleChanged:RemoveAllListeners()
     CSharpAPI.OnDIYEulerAnglesHandleChanged:RemoveAllListeners()
@@ -286,11 +317,13 @@ this.selectItemComponent = function(itemCompoent)
     this.configPropEquipDescriptionText.text = baseData.description:GetDisplayName()
     this.configPropEquipImg.sprite = baseData.icon
 
+    -- 移动绑定
     CSharpAPI.SetDIYControlType(this.controlType)
     CSharpAPI.SetDIYPosition(this.itemComponent.transform.position)
     CSharpAPI.SetDIYEulerAngles(this.itemComponent.transform.eulerAngles)
     CSharpAPI.SetDIYScale(this.itemComponent.transform.localScale)
 
+    -- 描边
     local reference = this.itemComponent.gameObject:GetComponent(typeof(DIYMapBaseReference))
 
     for i = 0, reference.renderers.Length - 1 do
@@ -303,6 +336,30 @@ this.selectItemComponent = function(itemCompoent)
             local outline = go:GetComponent(typeof(CS.EPOOutline.Outlinable))
             table.insert(this.outlinableComponents, outline)
         end
+    end
+
+    -- 扩展方法
+    for k, v in pairs(this.configsMethodList) do
+        this.configMethodGoPool:DestroyObject(v)
+    end
+
+    this.configsMethodList = {}
+
+    local reflectMethods = this.itemComponent:ReflectMethods()
+    local methodDisplayNames = this.itemComponent:ReflectMethodDisplayNames()
+
+    for i = 0, reflectMethods.Length - 1 do
+        local go = this.configMethodGoPool:InstantiateObject()
+        local txt = go.transform:Find("Text"):GetComponent("Text")
+        local btn = go.transform:GetComponent("Button")
+        txt.text = methodDisplayNames[i]
+        btn.onClick:RemoveAllListeners()
+        btn.onClick:AddListener(function()
+            itemCompoent:InvokeMethod(i)
+        end)
+        go:SetActive(true)
+
+        table.insert(this.configsMethodList, go)
     end
 end
 
@@ -332,6 +389,8 @@ this.deleteOutlines = function()
 end
 
 this.duplicateItem = function(itemComponent, callBack)
+    itemComponent:ApplyPosition()
+
     local itemGuid = itemComponent:GetData().itemGUID
     local itemJson = JsonUtility.ToJson(itemComponent:GetJson())
 

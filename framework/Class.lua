@@ -1,6 +1,6 @@
 --- lua 侧面向对象
 --- @param classname string 类名称
---- @param super string 父类名称
+--- @param super table 父类名称
 --- 调用 .new(...) 实例化 ... 为 :ctor 的初始化参数
 function class(classname, super)
     local cls
@@ -23,6 +23,7 @@ function class(classname, super)
     cls.__cname = classname
     cls.__index = cls
 
+    --- @param params ... 构造函数 
     function cls.new(...)
         local instance = setmetatable({}, cls)
         instance.class = cls

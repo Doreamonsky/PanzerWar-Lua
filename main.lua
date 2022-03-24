@@ -1,8 +1,6 @@
 -- Lua 的入口， xlua 初始化调用
 
 -- Base 基础相关
-require("Class")
-require("LibVersion") -- Lua C# 交互版本
 require("Core") -- 框架
 
 -- GamePlay 玩法相关
@@ -11,9 +9,9 @@ require("modes.GameModes")
 
 Config.loadAllConfigs()
 
--- 测试一下 Config 系统
-GizmoConfig.config.AxisScale = 2
-GizmoConfig.saveConfig()
+-- -- 测试一下 Config 系统
+-- GizmoConfig.config.AxisScale = 2
+-- GizmoConfig.saveConfig()
 
 -- print(GetLuaDataFolder())
 

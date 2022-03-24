@@ -142,6 +142,11 @@ end
 --- @param isProjectPlane boolean 是否投影到 XZ 平面
 function CameraController:makeCameraTargetDelta(delta, isProjectPlane)
     if delta.sqrMagnitude ~= 0 then
+        -- 移动坐标时候，禁止输入
+        if DIYHandleManager.Instance.isDragging then
+            return
+        end
+
         delta = delta * Time.deltaTime * self.keyboardCameraMoveSpeed * GizmoConfig.config.CameraMoveScale
 
         if isProjectPlane then

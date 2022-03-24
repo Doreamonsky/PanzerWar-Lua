@@ -6,10 +6,10 @@ function EventSystem.AddListener(eventType, func, instance)
     end
     if (EventSystem[eventType] == nil) then
         local a = {}
-        table.insert(a, {func, instance})
+        table.insert(a, { func, instance })
         EventSystem[eventType] = a
     else
-        table.insert(EventSystem[eventType], {func, instance})
+        table.insert(EventSystem[eventType], { func, instance })
     end
 end
 

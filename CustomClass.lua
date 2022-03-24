@@ -1,4 +1,4 @@
-CustomClass = {}
+CustomClass = class("CustomClass")
 
 local this = CustomClass
 
