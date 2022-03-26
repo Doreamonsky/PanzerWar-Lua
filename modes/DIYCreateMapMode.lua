@@ -55,6 +55,7 @@ this.onUtilCreated = function(root)
     this.configDuplicateBtn = this.configContent:Find("Main/DuplicateBtn"):GetComponent("Button")
     --- @type RuntimeInspector
     this.runtimeInspector = this.configContent:Find("Property/RuntimeInspector"):GetComponent(typeof(RuntimeInspector))
+    this.runtimeInspector:Awake() -- 预热
 
     this.noneBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/NoneBtn"):GetComponent("Button")
     this.moveBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/MoveBtn"):GetComponent("Button")
@@ -70,6 +71,11 @@ this.onUtilCreated = function(root)
     this.fileNameInput = this.fileSavePop.transform:Find("FileNameInput"):GetComponent("InputField")
     this.saveBtn = this.fileSavePop.transform:Find("SaveBtn"):GetComponent("Button")
     this.fileLoadCloseBtn = root.transform:Find("DIYCreateMapCanvas/FileLoadPop/Title/CloseBtn"):GetComponent("Button")
+
+    this.shareImportPop = root.transform:Find("DIYCreateMapCanvas/ShareImportPop")
+    this.shareImportCancelBtn = this.shareImportPop:GetComponent("Button")
+    this.shareCodeInput = this.shareImportPop:Find("ShareCodeInput"):GetComponent("InputField")
+    this.shareImportBtn = this.shareImportPop:Find("ImportBtn"):GetComponent("Button")
 
     this.longPressTipGo = root.transform:Find("DIYCreateMapCanvas/LongPressTip").gameObject
     this.tipFillImg = this.longPressTipGo.transform:Find("Fill"):GetComponent("Image")
@@ -187,6 +193,19 @@ this.onUtilCreated = function(root)
             this.refeshFileList()
         end
     )
+
+    this.shareImportCancelBtn.onClick:AddListener(
+        function()
+            this.shareImportPop.gameObject:SetActive(false)
+        end
+    )
+
+    this.shareImportBtn.onClick:AddListener(
+        function()
+            this.importShareCode()
+        end
+    )
+
     ---------------------摄像机--------------------------
     --- @type Transform
     this.cameraUITransform = root.transform:Find("DIYCreateMapCanvas/CameraAction")
@@ -223,6 +242,8 @@ this.onUtilCreated = function(root)
     end)
 
     this.fileMgr.OnShareFile:AddListener(function(definedName)
+        local userDefine = UserDIYMapDataManager.Instance:GetUserDefine(definedName)
+        this.exportShareCode(userDefine)
     end)
     ------------------------------------------------------
 
@@ -230,23 +251,28 @@ this.onUtilCreated = function(root)
     this.configMethodGoPool:Init(this.configMethodTemplateGo, 5)
     this.configsMethodList = {}
 
-    this.rayHitClick = CustomClickHandler.new()
+    --- @type CustomClickHandler
+    this.rayHitClick = EntityFactory.AddEntity(CustomClickHandler)
     this.rayHitClick:Init(this.eventTrigger, 1, 5, function(evtData)
         local ret, viewData = DIYMapItemComponentDragPicker.Instance:GetRayItem(evtData.position)
 
         if ret then
+            if this.itemComponent ~= nil then
+                if this.itemComponent == viewData.itemComponent then
+                    return
+                else
+                    this.closeConfig()
+                end
+            end
+
             this.selectItemComponent(viewData.itemComponent)
         end
     end, function(state, evtData)
-        this.tipFillImg.fillAmount = 0
         this.longPressTipGo:SetActive(state)
-    end, function(pressTime)
-        if pressTime > 0.2 then
-            this.tipFillImg.fillAmount = pressTime
-        end
+    end, function(progress)
+        this.tipFillImg.fillAmount = progress
     end)
 
-    EntityManager.AddEntity(this.rayHitClick)
 
     CSharpAPI.SetDIYControlType(eDIYControlType.None)
     CSharpAPI.OnDIYPositionHandleChanged:AddListener(
@@ -287,7 +313,7 @@ this.onExitMode = function()
     this.isEditMode = false
 
     this.cameraController:onrelease()
-    EntityManager.RemoveEntity(this.rayHitClick)
+    EntityFactory.RemoveEntity(this.rayHitClick)
 
     CSharpAPI.OnDIYPositionHandleChanged:RemoveAllListeners()
     CSharpAPI.OnDIYEulerAnglesHandleChanged:RemoveAllListeners()
@@ -413,4 +439,61 @@ this.refeshFileList = function()
     end
 
     this.fileMgr:Refresh()
+end
+
+--- 导出分享码
+this.exportShareCode = function(userDefine)
+    CSharpAPI.ExportMapShareCode(
+        userDefine,
+        function(serverCode)
+            if serverCode == "" then
+                PopMessageManager.Instance:PushPopup(
+                    "分享异常。Share failed.",
+                    function(state)
+                    end,
+                    false
+                )
+            else
+                PopMessageManager.Instance:PushPopup(
+                    "游戏将访问剪贴版，并将分享码: " .. serverCode .. " 复制进剪贴板",
+                    function(state)
+                        if state then
+                            CS.UnityEngine.GUIUtility.systemCopyBuffer = serverCode
+
+                            if CS.UnityEngine.Application.isMobilePlatform then
+                                PopMessageManager.Instance:PushNotice("复制成功。聊天软件长按输入框，点击粘贴即可分享给好友。", 4)
+                            else
+                                PopMessageManager.Instance:PushNotice("复制成功。点击 Ctrl + V 即可分享给好友。", 4)
+                            end
+                        end
+                    end
+                )
+            end
+        end
+    )
+end
+
+--- 导入分享码
+this.importShareCode = function()
+    local shareCode = this.shareCodeInput.text
+
+    CSharpAPI.ImportMapShareCode(
+        shareCode,
+        function(shareUserDefine)
+            if shareUserDefine ~= nil then
+                UserDIYDataManager.Instance:SetDIYUserDefined(shareUserDefine)
+                this.refeshFileList()
+            else
+                PopMessageManager.Instance:PushPopup(
+                    "错误的分享码。 Invalid Share Code.",
+                    function(state)
+                    end,
+                    false
+                )
+            end
+
+            this.shareCodeInput.text = ""
+            this.shareImportPop.gameObject:SetActive(false)
+        end
+    )
 end

@@ -1,6 +1,6 @@
 require("feature.MultiTurretGUI")
 require("feature.BlueprintVehicles")
-require("feature.EntityManager")
+require("feature.EntityFactory")
 require("modes.DIYCreateVehicleMode")
 
 luaCommonMods = {
@@ -58,7 +58,7 @@ luaCommonMods = {
             DIYCreateVehicleMode.onUpdate()
             DIYCreateMapMode.onUpdate()
 
-            for k,v in pairs(EntityManager.entities) do
+            for k,v in pairs(EntityFactory.entities) do
                 --- @type Entity
                 local x = v
                 x:update()

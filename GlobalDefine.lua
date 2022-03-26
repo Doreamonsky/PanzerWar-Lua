@@ -173,6 +173,8 @@ Vector2 = CS.UnityEngine.Vector2
 Vector3 = CS.UnityEngine.Vector3
 Quaternion = CS.UnityEngine.Quaternion
 Color = CS.UnityEngine.Color
+Mathf = CS.UnityEngine.Mathf
+Handheld = CS.UnityEngine.Handheld
 
 --- @class JsonUtility
 --- @field ToJson fun(object:obj) Generate a JSON representation of the public fields of an object.

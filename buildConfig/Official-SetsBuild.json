@@ -2,8 +2,7 @@
     "infos": [
         {
             "modNames": [
-                "BuildPipline-Vehicle-DIY-OfficialSets",
-                "BuildPipline-Map-DIY-OfficialSets"
+                "BuildPipline-Vehicle-DIY-OfficialSets"
             ],
             "copyInfo": [
                 {
@@ -13,6 +12,21 @@
                 {
                     "platform": "StandaloneWindows64",
                     "dstDir": "D:/Projects/LuaProject/resources/windows/default/diy"
+                }
+            ]
+        },
+        {
+            "modNames": [
+                "BuildPipline-Map-DIY-OfficialSets"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/LuaProject/resources/android/default/diy-map"
+                },
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/diy-map"
                 }
             ]
         }
