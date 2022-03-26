@@ -156,6 +156,11 @@ DIYHandleManager = CS.ShanghaiWindy.Core.DIYHandleManager
 --- @param GetRayItem fun(screenPoint:Vector2)
 DIYMapItemComponentDragPicker = CS.ShanghaiWindy.Core.DIYMapItemComponentDragPicker
 
+--- @class DIYDragPicker
+--- @param Instance DIYDragPicker
+--- @param GetRayItem fun(screenPoint:Vector2)
+DIYDragPicker = CS.ShanghaiWindy.Core.DIYDragPicker
+
 --- @class RuntimeInspector
 --- @field Inspect fun(obj:object):void
 RuntimeInspector = CS.RuntimeInspectorNamespace.RuntimeInspector

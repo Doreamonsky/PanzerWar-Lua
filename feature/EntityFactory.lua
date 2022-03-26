@@ -4,8 +4,8 @@ EntityFactory = {}
 EntityFactory.entities = {}
 
 --- @param entityType Class
-EntityFactory.AddEntity = function(entityType)
-    local entity = entityType.new()
+EntityFactory.AddEntity = function(entityType, ...)
+    local entity = entityType.new(...)
     table.insert(EntityFactory.entities, entity)
     return entity
 end

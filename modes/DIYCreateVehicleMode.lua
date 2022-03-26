@@ -182,6 +182,11 @@ this.onUtilCreated = function(root)
     this.recoveryTimeBtn = root.transform:Find("DIYCreateVehicleCanvas/TimeScaleInfo/RecoverTimeBtn"):GetComponent("Button")
     this.timeScaleInfoGo = root.transform:Find("DIYCreateVehicleCanvas/TimeScaleInfo").gameObject
     this.quickImportShareBtn = root.transform:Find("DIYCreateVehicleCanvas/ToolAction/ImportBtn"):GetComponent("Button")
+
+    this.longPressTipGo = root.transform:Find("DIYCreateVehicleCanvas/LongPressTip").gameObject
+    this.tipFillImg = this.longPressTipGo.transform:Find("Fill"):GetComponent("Image")
+
+    this.eventTrigger = root.transform:Find("DIYCreateVehicleCanvas/TouchBar"):GetComponent(typeof(EventTrigger))
     ------------------------------------------------------
     -- 按钮 Binding
     this.exitActionBtn.onClick:AddListener(
@@ -464,6 +469,28 @@ this.onUtilCreated = function(root)
 
     this.cameraController:Init(cameraUITransform, cameraTransform, cameraTargetTrans)
     ---------------------摄像机--------------------------
+
+    --- @type CustomClickHandler
+    this.rayHitClick = EntityFactory.AddEntity(CustomClickHandler)
+    this.rayHitClick:Init(this.eventTrigger, 1, 5, function(evtData)
+        local ret, viewData = DIYDragPicker.Instance:GetRayItem(evtData.position)
+
+        if ret then
+            if this.curRuleId ~= nil then
+                if this.curRuleId == viewData.ruleGUID then
+                    return
+                else
+                    this.closeConfig()
+                end
+            end
+
+            this.selectRule(viewData.ruleGUID)
+        end
+    end, function(state, evtData)
+        this.longPressTipGo:SetActive(state)
+    end, function(progress)
+        this.tipFillImg.fillAmount = progress
+    end)
 
     -- 逻辑数据
 
@@ -1260,7 +1287,9 @@ end
 this.onExitMode = function()
     this.isEditMode = false
     this.cameraController:onrelease()
-    
+
+    EntityFactory.RemoveEntity(this.rayHitClick)
+
     CSharpAPI.OnEquipUninstallClicked:RemoveAllListeners(this.OnEquipUninstallClicked)
     CSharpAPI.OnEquipDetailClicked:RemoveListener(this.OnEquipDetailClicked)
     CSharpAPI.OnEquipInstallClicked:RemoveListener(this.OnEquipInstallClicked)

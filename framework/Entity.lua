@@ -2,11 +2,11 @@
 -- 可以理解为 mono 对象
 Entity = class("Entity")
 
-function Entity:ctor()
-    self:awake()
+function Entity:ctor(...)
+    self:awake(...)
 end
 
-function Entity:awake()
+function Entity:awake(...)
     print("you have not implment awake")
 end
 
