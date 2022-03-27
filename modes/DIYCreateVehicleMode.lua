@@ -428,7 +428,7 @@ this.onUtilCreated = function(root)
         this.fileLoadPop.gameObject:SetActive(false)
     end)
 
-
+    this.refreshFileList()
 
     this.fileMgr.OnDeleteFile:AddListener(function(definedName)
         -- 删除当前的 UserDefine
@@ -437,7 +437,7 @@ this.onUtilCreated = function(root)
             function(state)
                 if state then
                     this.deleteUserDefine(definedName)
-                    this.refeshFileList()
+                    this.refreshFileList()
                 end
             end
         )
@@ -813,7 +813,7 @@ this.saveUserDefine = function(definedName)
     this.userDefined.definedName = definedName
 
     UserDIYDataManager.Instance:SetDIYUserDefined(this.deepCopyUserDefine(this.userDefined))
-    this.refeshFileList()
+    this.refreshFileList()
 
     this.fileSavePop.gameObject:SetActive(false)
 end
@@ -829,7 +829,7 @@ end
 this.deleteUserDefine = function(definedName)
     -- 通知 C# 存储侧删除该 UserDefine
     UserDIYDataManager.Instance:DeleteDIYUserDefined(definedName)
-    this.refeshFileList()
+    this.refreshFileList()
 end
 
 --- 加载新的 UserDefine
@@ -1235,7 +1235,7 @@ this.importShareCode = function()
         function(shareUserDefine)
             if shareUserDefine ~= nil then
                 UserDIYDataManager.Instance:SetDIYUserDefined(shareUserDefine)
-                this.refeshFileList()
+                this.refreshFileList()
             else
                 PopMessageManager.Instance:PushPopup(
                     "错误的分享码。 Invalid Share Code.",
@@ -1290,6 +1290,10 @@ this.onExitMode = function()
 
     EntityFactory.RemoveEntity(this.rayHitClick)
 
+    CSharpAPI.OnDIYPositionHandleChanged:RemoveAllListeners()
+    CSharpAPI.OnDIYEulerAnglesHandleChanged:RemoveAllListeners()
+    CSharpAPI.OnDIYScaleHandleChanged:RemoveAllListeners()
+    
     CSharpAPI.OnEquipUninstallClicked:RemoveAllListeners(this.OnEquipUninstallClicked)
     CSharpAPI.OnEquipDetailClicked:RemoveListener(this.OnEquipDetailClicked)
     CSharpAPI.OnEquipInstallClicked:RemoveListener(this.OnEquipInstallClicked)
@@ -1301,7 +1305,7 @@ this.onExitMode = function()
 end
 
 
-this.refeshFileList = function()
+this.refreshFileList = function()
     this.fileMgr:Clean()
 
     for k, v in pairs(UserDIYDataManager.Instance:GetDIYUserDefineds()) do
