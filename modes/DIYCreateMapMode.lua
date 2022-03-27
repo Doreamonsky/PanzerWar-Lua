@@ -71,6 +71,7 @@ this.onUtilCreated = function(root)
     this.fileNameInput = this.fileSavePop.transform:Find("FileNameInput"):GetComponent("InputField")
     this.saveBtn = this.fileSavePop.transform:Find("SaveBtn"):GetComponent("Button")
     this.fileLoadCloseBtn = root.transform:Find("DIYCreateMapCanvas/FileLoadPop/Title/CloseBtn"):GetComponent("Button")
+    this.loadShareBtn = this.fileLoadPop:Find("Title/LoadShareBtn"):GetComponent("Button")
 
     this.shareImportPop = root.transform:Find("DIYCreateMapCanvas/ShareImportPop")
     this.shareImportCancelBtn = this.shareImportPop:GetComponent("Button")
@@ -194,6 +195,12 @@ this.onUtilCreated = function(root)
         end
     )
 
+    this.loadShareBtn.onClick:AddListener(
+        function()
+            this.shareImportPop.gameObject:SetActive(true)
+        end
+    )
+
     this.shareImportCancelBtn.onClick:AddListener(
         function()
             this.shareImportPop.gameObject:SetActive(false)
@@ -220,6 +227,7 @@ this.onUtilCreated = function(root)
         this.fileLoadPop.gameObject:SetActive(false)
     end)
 
+    
     this.refeshFileList()
 
     this.fileMgr.OnDeleteFile:AddListener(function(definedName)
@@ -481,7 +489,7 @@ this.importShareCode = function()
         shareCode,
         function(shareUserDefine)
             if shareUserDefine ~= nil then
-                UserDIYDataManager.Instance:SetDIYUserDefined(shareUserDefine)
+                UserDIYMapDataManager.Instance:SetDIYUserDefined(shareUserDefine)
                 this.refeshFileList()
             else
                 PopMessageManager.Instance:PushPopup(

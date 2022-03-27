@@ -50,7 +50,7 @@ luaGameModes = {
         end
     },
     {
-        modName = "DIY 创建载具",
+        modName = "DIYVehicle",
         author = "超级哆啦酱",
         description = "创建载具",
         luaLibVersion = LibVersion,
@@ -64,7 +64,7 @@ luaGameModes = {
         end
     },    
     {
-        modName = "DIY 创建地图",
+        modName = "DIYMap",
         author = "超级哆啦酱",
         description = "创建地图",
         luaLibVersion = LibVersion,
