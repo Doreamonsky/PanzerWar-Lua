@@ -16,7 +16,8 @@ this.config = {
     ["AxisScale"] = 1,
     ["CameraMoveScale"] = 1,
     ["EnableGrid"] = true,
-    ["CameraControllerType"] = CameraControllerType.Keypad
+    ["CameraControllerType"] = CameraControllerType.Keypad,
+    ["EnablePressSelect"] = true,
 }
 
 this.loadConfig = function()

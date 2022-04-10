@@ -20,6 +20,7 @@ function GizmoConfigController:init(gizmoUITransform, rtPluginTransform, entryBu
     )
     
     self.enableGridToggle = gizmoUITransform.transform:Find("Bar/Content/EnableGrid/Toggle"):GetComponent("Toggle")
+    self.enablePressSelectToggle = gizmoUITransform.transform:Find("Bar/Content/EnablePressSelect/Toggle"):GetComponent("Toggle")
 
     self.confirmBtn = gizmoUITransform.transform:Find("Bar/Title/ConfirmBtn"):GetComponent("Button")
 
@@ -79,6 +80,14 @@ function GizmoConfigController:init(gizmoUITransform, rtPluginTransform, entryBu
         function(isEnable)
             GizmoConfig.config.EnableGrid = isEnable
             self.gridComponent.gameObject:SetActive(isEnable)
+        end
+    )
+
+    -- 是否启用 长按点击
+    self.enablePressSelectToggle.isOn = GizmoConfig.config.EnablePressSelect
+    self.enablePressSelectToggle.onValueChanged:AddListener(
+        function(isEnable)
+            GizmoConfig.config.EnablePressSelect = isEnable
         end
     )
 

@@ -473,6 +473,7 @@ this.onUtilCreated = function(root)
     --- @type CustomClickHandler
     this.rayHitClick = EntityFactory.AddEntity(CustomClickHandler)
     this.rayHitClick:Init(this.eventTrigger, 1, 5, function(evtData)
+        if not GizmoConfig.config.EnablePressSelect then return end
         local ret, viewData = DIYDragPicker.Instance:GetRayItem(evtData.position)
 
         if ret then
@@ -487,8 +488,10 @@ this.onUtilCreated = function(root)
             this.selectRule(viewData.ruleGUID)
         end
     end, function(state, evtData)
+        if not GizmoConfig.config.EnablePressSelect then return end
         this.longPressTipGo:SetActive(state)
     end, function(progress)
+        if not GizmoConfig.config.EnablePressSelect then return end
         this.tipFillImg.fillAmount = progress
     end)
 
@@ -1293,7 +1296,7 @@ this.onExitMode = function()
     CSharpAPI.OnDIYPositionHandleChanged:RemoveAllListeners()
     CSharpAPI.OnDIYEulerAnglesHandleChanged:RemoveAllListeners()
     CSharpAPI.OnDIYScaleHandleChanged:RemoveAllListeners()
-    
+
     CSharpAPI.OnEquipUninstallClicked:RemoveAllListeners(this.OnEquipUninstallClicked)
     CSharpAPI.OnEquipDetailClicked:RemoveListener(this.OnEquipDetailClicked)
     CSharpAPI.OnEquipInstallClicked:RemoveListener(this.OnEquipInstallClicked)

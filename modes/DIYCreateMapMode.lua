@@ -77,12 +77,14 @@ this.onUtilCreated = function(root)
     this.shareImportCancelBtn = this.shareImportPop:GetComponent("Button")
     this.shareCodeInput = this.shareImportPop:Find("ShareCodeInput"):GetComponent("InputField")
     this.shareImportBtn = this.shareImportPop:Find("ImportBtn"):GetComponent("Button")
-
+    
     this.longPressTipGo = root.transform:Find("DIYCreateMapCanvas/LongPressTip").gameObject
     this.tipFillImg = this.longPressTipGo.transform:Find("Fill"):GetComponent("Image")
 
     this.eventTrigger = root.transform:Find("DIYCreateMapCanvas/TouchBar"):GetComponent(typeof(EventTrigger))
+    this.seasonDropdown = root.transform:Find("DIYCreateMapCanvas/FileSavePop/SeasonDropdown"):GetComponent("Dropdown")
 
+    this.downloadMaskGo = root.transform:Find("DIYCreateMapCanvas/DownloadMask").gameObject
     ---------------------Bind--------------------------
     this.configDeleteBtn.onClick:AddListener(
         function()
@@ -168,6 +170,7 @@ this.onUtilCreated = function(root)
 
     this.importActionBtn.onClick:AddListener(
         function()
+            this.shareImportPop.gameObject:SetActive(true)
         end
     )
 
@@ -189,6 +192,7 @@ this.onUtilCreated = function(root)
             this.fileSavePop.gameObject:SetActive(false)
 
             local userDefine = DIYMapSerializationUtil.SerializeCurrentScene(definedName)
+            userDefine.season = this.seasonDropdown.value
             UserDIYMapDataManager.Instance:SetDIYUserDefined(userDefine)
 
             this.refeshFileList()
@@ -227,14 +231,21 @@ this.onUtilCreated = function(root)
         this.fileLoadPop.gameObject:SetActive(false)
     end)
 
-    
+
     this.refeshFileList()
 
     this.fileMgr.OnDeleteFile:AddListener(function(definedName)
         -- 删除当前存档
-        UserDIYMapDataManager.Instance:DeleteDIYUserDefined(definedName)
-        this.fileMgr:RemoveFileName(definedName)
-        this.fileMgr:Refresh()
+        PopMessageManager.Instance:PushPopup(
+            "是否确定删除当前的存档? Delete current saving?",
+            function(state)
+                if state then
+                    UserDIYMapDataManager.Instance:DeleteDIYUserDefined(definedName)
+                    this.fileMgr:RemoveFileName(definedName)
+                    this.fileMgr:Refresh()
+                end
+            end
+        )
     end)
 
     this.fileMgr.OnLoadFile:AddListener(function(definedName)
@@ -247,6 +258,8 @@ this.onUtilCreated = function(root)
         -- 创建新场景
         local userDefine = UserDIYMapDataManager.Instance:GetUserDefine(definedName)
         DIYMapSerializationUtil.DeserializeToCurrentScene(userDefine, false)
+
+        this.seasonDropdown.value = CSharpAPI.EnumToNumber(userDefine.season)
     end)
 
     this.fileMgr.OnShareFile:AddListener(function(definedName)
@@ -262,6 +275,7 @@ this.onUtilCreated = function(root)
     --- @type CustomClickHandler
     this.rayHitClick = EntityFactory.AddEntity(CustomClickHandler)
     this.rayHitClick:Init(this.eventTrigger, 1, 5, function(evtData)
+        if not GizmoConfig.config.EnablePressSelect then return end
         local ret, viewData = DIYMapItemComponentDragPicker.Instance:GetRayItem(evtData.position)
 
         if ret then
@@ -276,8 +290,10 @@ this.onUtilCreated = function(root)
             this.selectItemComponent(viewData.itemComponent)
         end
     end, function(state, evtData)
+        if not GizmoConfig.config.EnablePressSelect then return end
         this.longPressTipGo:SetActive(state)
     end, function(progress)
+        if not GizmoConfig.config.EnablePressSelect then return end
         this.tipFillImg.fillAmount = progress
     end)
 
@@ -346,6 +362,13 @@ this.selectItemComponent = function(itemCompoent)
 
     this.runtimeInspector:Inspect(this.itemComponent:GetJson())
 
+    if not this.itemComponent:IsNull() then
+        this.itemComponent:OnSelect()
+    else
+        -- 各种意外，导致选择到空物体。比如单例复制。
+        return
+    end
+
     local baseData = itemCompoent:GetData()
     this.configPropEquipText.text = baseData.displayName:GetDisplayName()
     this.configPropEquipDescriptionText.text = baseData.description:GetDisplayName()
@@ -399,13 +422,24 @@ end
 
 --- 删除当前配置
 this.deleteConfig = function()
-    GameObject.Destroy(this.itemComponent.gameObject)
-    this.closeConfig()
+    PopMessageManager.Instance:PushPopup(
+        "是否删除当前物品? Delete Current Item?",
+        function(state)
+            if state then
+                GameObject.Destroy(this.itemComponent.gameObject)
+                this.closeConfig()
+            end
+        end
+    )
 end
 
 --- 关闭配置
 this.closeConfig = function()
     this.deleteOutlines()
+
+    if not this.itemComponent:IsNull() then
+        this.itemComponent:OnDeselect()
+    end
 
     this.itemComponent = nil
     this.configProp.gameObject:SetActive(false)
@@ -423,7 +457,7 @@ this.deleteOutlines = function()
 end
 
 this.duplicateItem = function(itemComponent, callBack)
-    itemComponent:ApplyPosition()
+    itemComponent:SerializeProperty()
 
     local itemGuid = itemComponent:GetData().itemGUID
     local itemJson = JsonUtility.ToJson(itemComponent:GetJson())
@@ -484,6 +518,7 @@ end
 --- 导入分享码
 this.importShareCode = function()
     local shareCode = this.shareCodeInput.text
+    this.downloadMaskGo:SetActive(true)
 
     CSharpAPI.ImportMapShareCode(
         shareCode,
@@ -501,6 +536,7 @@ this.importShareCode = function()
             end
 
             this.shareCodeInput.text = ""
+            this.downloadMaskGo:SetActive(false)
             this.shareImportPop.gameObject:SetActive(false)
         end
     )
