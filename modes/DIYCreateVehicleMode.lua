@@ -489,9 +489,11 @@ this.onUtilCreated = function(root)
         end
     end, function(state, evtData)
         if not GizmoConfig.config.EnablePressSelect then return end
+        if this.isEditingRule then return end
         this.longPressTipGo:SetActive(state)
     end, function(progress)
         if not GizmoConfig.config.EnablePressSelect then return end
+        if this.isEditingRule then return end
         this.tipFillImg.fillAmount = progress
     end)
 

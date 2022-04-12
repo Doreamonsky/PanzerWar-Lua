@@ -9,6 +9,7 @@ this.onStartMode = function()
     this.controlType = eDIYControlType.Position
     this.cameraController = CameraController.new()
     this.outlinableComponents = {}
+    this.isLocalControlHandle = false
 
     --- @type DIYMapItemComponent
     this.itemComponent = nil
@@ -53,6 +54,10 @@ this.onUtilCreated = function(root)
     this.configPropEquipDescriptionText = this.configContent:Find("BaseInfo/EquipDescription"):GetComponent("Text")
     this.configPropEquipImg = this.configContent:Find("BaseInfo/Icon"):GetComponent("Image")
     this.configDuplicateBtn = this.configContent:Find("Main/DuplicateBtn"):GetComponent("Button")
+    this.configFocusBtn = this.configContent:Find("Main/FocusBtn"):GetComponent("Button")
+    this.configTransformBtn = this.configContent:Find("Main/TransformBtn"):GetComponent("Button")
+    this.configPropertyBtn = this.configContent:Find("Main/PropertyBtn"):GetComponent("Button")
+
     --- @type RuntimeInspector
     this.runtimeInspector = this.configContent:Find("Property/RuntimeInspector"):GetComponent(typeof(RuntimeInspector))
     this.runtimeInspector:Awake() -- 预热
@@ -61,6 +66,8 @@ this.onUtilCreated = function(root)
     this.moveBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/MoveBtn"):GetComponent("Button")
     this.rotateBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/RotateBtn"):GetComponent("Button")
     this.scaleBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/ScaleBtn"):GetComponent("Button")
+    this.worldLocalBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/WorldLocalBtn"):GetComponent("Button")
+    this.localWorldBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/LocalWorldBtn"):GetComponent("Button")
 
     this.exitActionBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/ExitBtn"):GetComponent("Button")
     this.importActionBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/ImportBtn"):GetComponent("Button")
@@ -77,7 +84,7 @@ this.onUtilCreated = function(root)
     this.shareImportCancelBtn = this.shareImportPop:GetComponent("Button")
     this.shareCodeInput = this.shareImportPop:Find("ShareCodeInput"):GetComponent("InputField")
     this.shareImportBtn = this.shareImportPop:Find("ImportBtn"):GetComponent("Button")
-    
+
     this.longPressTipGo = root.transform:Find("DIYCreateMapCanvas/LongPressTip").gameObject
     this.tipFillImg = this.longPressTipGo.transform:Find("Fill"):GetComponent("Image")
 
@@ -85,6 +92,9 @@ this.onUtilCreated = function(root)
     this.seasonDropdown = root.transform:Find("DIYCreateMapCanvas/FileSavePop/SeasonDropdown"):GetComponent("Dropdown")
 
     this.downloadMaskGo = root.transform:Find("DIYCreateMapCanvas/DownloadMask").gameObject
+
+    this.handlerTransform = root.transform:Find("RT-Plugin/Handle").transform
+
     ---------------------Bind--------------------------
     this.configDeleteBtn.onClick:AddListener(
         function()
@@ -94,29 +104,39 @@ this.onUtilCreated = function(root)
 
     this.noneBtn.onClick:AddListener(
         function()
-            this.controlType = eDIYControlType.None
-            CSharpAPI.SetDIYControlType(this.controlType)
+            this.setHandle(eDIYControlType.None)
         end
     )
 
     this.moveBtn.onClick:AddListener(
         function()
-            this.controlType = eDIYControlType.Position
-            CSharpAPI.SetDIYControlType(this.controlType)
+            this.setHandle(eDIYControlType.Position)
         end
     )
 
     this.rotateBtn.onClick:AddListener(
         function()
-            this.controlType = eDIYControlType.EulerAngles
-            CSharpAPI.SetDIYControlType(this.controlType)
+            this.setHandle(eDIYControlType.EulerAngles)
         end
     )
 
     this.scaleBtn.onClick:AddListener(
         function()
-            this.controlType = eDIYControlType.Scale
-            CSharpAPI.SetDIYControlType(this.controlType)
+            this.setHandle(eDIYControlType.Scale)
+        end
+    )
+
+    this.localWorldBtn.onClick:AddListener(
+        function()
+            this.isLocalControlHandle = false
+            this.setHandle(this.controlType)
+        end
+    )
+
+    this.worldLocalBtn.onClick:AddListener(
+        function()
+            this.isLocalControlHandle = true
+            this.setHandle(this.controlType)
         end
     )
 
@@ -136,6 +156,28 @@ this.onUtilCreated = function(root)
                     this.selectItemComponent(res)
                 end)
             end
+        end
+    )
+
+    this.configFocusBtn.onClick:AddListener(
+        function()
+            local targetComponent = this.itemComponent
+
+            if targetComponent ~= nil then
+                this.cameraController:focusTaget(targetComponent.transform.position)
+            end
+        end
+    )
+
+    this.configTransformBtn.onClick:AddListener(
+        function()
+            this.runtimeInspector:Inspect(this.itemComponent.transform)
+        end
+    )
+
+    this.configPropertyBtn.onClick:AddListener(
+        function()
+            this.runtimeInspector:Inspect(this.itemComponent:GetJson())
         end
     )
 
@@ -291,9 +333,11 @@ this.onUtilCreated = function(root)
         end
     end, function(state, evtData)
         if not GizmoConfig.config.EnablePressSelect then return end
+        if this.itemComponent ~= nil then return end
         this.longPressTipGo:SetActive(state)
     end, function(progress)
         if not GizmoConfig.config.EnablePressSelect then return end
+        if this.itemComponent ~= nil then return end
         this.tipFillImg.fillAmount = progress
     end)
 
@@ -329,7 +373,18 @@ end
 
 this.onUpdate = function()
     if this.isEditMode then
+        -- 摄像机更新
         this.cameraController:update()
+
+
+        -- 意外情况下，Handler 强制更新位置
+        if this.itemComponent ~= nil and not this.itemComponent:IsNull() then
+            local dis = Vector3.Distance(this.handlerTransform.position, this.itemComponent.transform.position)
+
+            if dis > 0.05 then
+                this.updateHandle()
+            end
+        end
     end
 end
 
@@ -352,6 +407,7 @@ this.OnMapInstallClicked = function(baseData)
     --- @type Ray
     local ray = this.mainCamera:ScreenPointToRay(this.dragInfo.position)
     DIYMapCreateUtil.AutoPlaceItem(baseData.itemGUID, ray.origin, ray.direction)
+    PopMessageManager.Instance:PushNotice(string.format("放置 %s 成功", baseData.displayName:GetDisplayName()), 1)
 end
 
 --- @param itemCompoent DIYMapItemComponent
@@ -375,10 +431,7 @@ this.selectItemComponent = function(itemCompoent)
     this.configPropEquipImg.sprite = baseData.icon
 
     -- 移动绑定
-    CSharpAPI.SetDIYControlType(this.controlType)
-    CSharpAPI.SetDIYPosition(this.itemComponent.transform.position)
-    CSharpAPI.SetDIYEulerAngles(this.itemComponent.transform.eulerAngles)
-    CSharpAPI.SetDIYScale(this.itemComponent.transform.localScale)
+    this.updateHandle()
 
     -- 描边
     local reference = this.itemComponent.gameObject:GetComponent(typeof(DIYMapBaseReference))
@@ -420,6 +473,34 @@ this.selectItemComponent = function(itemCompoent)
     end
 end
 
+--- 更新轴位置
+this.updateHandle = function()
+    CSharpAPI.SetDIYPosition(this.itemComponent.transform.position)
+    CSharpAPI.SetDIYEulerAngles(this.itemComponent.transform.eulerAngles)
+    CSharpAPI.SetDIYScale(this.itemComponent.transform.localScale)
+    this.setHandle(this.controlType)
+end
+
+--- 设置轴
+this.setHandle = function(controlType)
+    this.controlType = controlType
+
+    this.localWorldBtn.gameObject:SetActive(this.isLocalControlHandle)
+    this.worldLocalBtn.gameObject:SetActive(not this.isLocalControlHandle)
+
+    if controlType == eDIYControlType.Position then
+        if this.isLocalControlHandle then
+            CSharpAPI.SetDIYEulerAngles(Vector3.zero)
+        else
+            CSharpAPI.SetDIYEulerAngles(this.itemComponent.transform.eulerAngles)
+        end
+    else
+        CSharpAPI.SetDIYEulerAngles(this.itemComponent.transform.eulerAngles)
+    end
+
+    CSharpAPI.SetDIYControlType(this.controlType)
+end
+
 --- 删除当前配置
 this.deleteConfig = function()
     PopMessageManager.Instance:PushPopup(
@@ -457,6 +538,7 @@ this.deleteOutlines = function()
 end
 
 this.duplicateItem = function(itemComponent, callBack)
+    PopMessageManager.Instance:PushNotice("复制成功 - Copy Successfully", 1)
     itemComponent:SerializeProperty()
 
     local itemGuid = itemComponent:GetData().itemGUID
