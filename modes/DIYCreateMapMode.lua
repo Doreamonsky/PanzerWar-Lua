@@ -276,6 +276,11 @@ this.onUtilCreated = function(root)
 
     this.refeshFileList()
 
+    this.fileMgr.OnPublishFile:AddListener(function(definedName)
+        local userDefine = UserDIYMapDataManager.Instance:GetUserDefine(definedName)
+        DIYDataPackageManager.Instance:ExportMapUserDefine(userDefine)
+    end)
+
     this.fileMgr.OnDeleteFile:AddListener(function(definedName)
         -- 删除当前存档
         PopMessageManager.Instance:PushPopup(

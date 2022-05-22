@@ -261,11 +261,11 @@ this.CreatePlayerVehicle = function(vehicleInfo)
         function(trans)
             if vehicleInfo.type == VehicleInfo.Type.Ground then
                 local tankInitSystem =
-                    CSharpAPI.CreateTankPlayer(vehicleInfo.vehicleName, trans.position, trans.rotation)
+                    CSharpAPI.CreateTankPlayer(vehicleInfo:GetVehicleName(), trans.position, trans.rotation)
                 tankInitSystem.OnVehicleLoaded:AddListener(this.ClosePlayerUI)
             elseif vehicleInfo.type == VehicleInfo.Type.Aviation then
                 local flightInitSystem =
-                    CSharpAPI.CreateFlightPlayer(vehicleInfo.vehicleName, trans.position, trans.rotation, false)
+                    CSharpAPI.CreateFlightPlayer(vehicleInfo:GetVehicleName(), trans.position, trans.rotation, false)
                 flightInitSystem.OnVehicleLoaded:AddListener(this.ClosePlayerUI)
             end
         end,
@@ -295,7 +295,7 @@ this.CreateBotVehicle = function(team)
             end
 
             if vehicleInfo.type == VehicleInfo.Type.Ground then
-                CSharpAPI.CreateTankBot(vehicleInfo.vehicleName, trans.position, trans.rotation, team)
+                CSharpAPI.CreateTankBot(vehicleInfo:GetVehicleName(), trans.position, trans.rotation, team)
             end
         end,
         0,

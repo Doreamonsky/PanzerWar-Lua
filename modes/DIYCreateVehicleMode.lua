@@ -430,6 +430,11 @@ this.onUtilCreated = function(root)
 
     this.refreshFileList()
 
+    this.fileMgr.OnPublishFile:AddListener(function(definedName)
+        local userDefine = UserDIYDataManager.Instance:GetUserDefine(definedName)
+        DIYDataPackageManager.Instance:ExportUserDefine(userDefine)
+    end)
+
     this.fileMgr.OnDeleteFile:AddListener(function(definedName)
         -- 删除当前的 UserDefine
         PopMessageManager.Instance:PushPopup(
