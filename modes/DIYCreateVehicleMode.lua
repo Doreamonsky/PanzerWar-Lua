@@ -1,5 +1,6 @@
 require("modes.Common.GizmoConfigController")
 require("modes.Common.CameraController")
+require("modes.Common.ShareCodeListController")
 
 DIYCreateVehicleMode = {}
 
@@ -15,6 +16,11 @@ local this = DIYCreateVehicleMode
 this.onStartMode = function()
     this.userDefined = DIYUserDefined()
     this.cameraController = CameraController.new()
+    this.shareCodeListController = ShareCodeListController.new(
+        "https://game.waroftanks.cn/backend/userDefine/Newest/",
+        this.importShareCode
+    )
+
     this.isDirty = false
     this.lastdirtyTime = 0
     this.dirtyCount = 0
@@ -278,7 +284,8 @@ this.onUtilCreated = function(root)
 
     this.shareImportBtn.onClick:AddListener(
         function()
-            this.importShareCode()
+            local shareCode = this.shareCodeInput.text
+            this.importShareCode(shareCode)
         end
     )
 
@@ -422,6 +429,13 @@ this.onUtilCreated = function(root)
             this.updateTimeScale()
         end
     )
+
+
+    ---------------------分享码--------------------------
+    local findBtn = root.transform:Find("DIYCreateVehicleCanvas/ToolAction/FindBtn"):GetComponent("Button")
+    local shareCodeListGo = root.transform:Find("DIYCreateVehicleCanvas/DIYShareCodeListCanvas").gameObject
+    this.shareCodeListController:Init(findBtn, shareCodeListGo)
+    ------------------------------------------------------
 
     ---------------------坦克加载页面--------------------------
     this.fileLoadCloseBtn.onClick:AddListener(function()
@@ -1221,7 +1235,7 @@ this.exportShareCode = function(userDefine)
                     "游戏将访问剪贴版，并将分享码: " .. serverCode .. " 复制进剪贴板",
                     function(state)
                         if state then
-                            CS.UnityEngine.GUIUtility.systemCopyBuffer = serverCode
+                            GUIUtility.systemCopyBuffer = serverCode
 
                             if CS.UnityEngine.Application.isMobilePlatform then
                                 PopMessageManager.Instance:PushNotice("复制成功。聊天软件长按输入框，点击粘贴即可分享给好友。", 4)
@@ -1237,9 +1251,7 @@ this.exportShareCode = function(userDefine)
 end
 
 --- 导入分享码
-this.importShareCode = function()
-    local shareCode = this.shareCodeInput.text
-
+this.importShareCode = function(shareCode)
     CSharpAPI.ImportShareCode(
         shareCode,
         function(shareUserDefine)

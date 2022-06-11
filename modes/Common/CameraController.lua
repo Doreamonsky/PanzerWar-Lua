@@ -164,7 +164,7 @@ function CameraController:makeCameraTargetDelta(delta, isProjectPlane)
 end
 
 --- 聚焦目标
-function CameraController:focusTaget(targetPosition)
+function CameraController:focusTarget(targetPosition)
     self.cameraDelta = targetPosition - self.cameraOriginPos
     self.cameraTargetTrans.position = self.cameraDelta + self.cameraOriginPos
 end

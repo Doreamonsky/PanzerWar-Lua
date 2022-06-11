@@ -21,6 +21,10 @@ function enum(tbl)
     return tbl
 end
 
+traceback = function(err)
+    print(debug.traceback())
+    error("lua error " .. err)
+end
 -----------------------------------------------------
 -- 通用框架 (不仅针对此项目，未来任何项目都可以使用的通用代码)
 require("framework.Class") -- 面向对象编程 local customClass = class("customClass") local a = customClass.new(...)

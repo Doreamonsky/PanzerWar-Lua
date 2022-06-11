@@ -224,3 +224,5 @@ Camera = CS.UnityEngine.Camera
 --- @class EventTrigger
 EventTrigger = CS.UnityEngine.EventSystems.EventTrigger
 EventTriggerType = CS.UnityEngine.EventSystems.EventTriggerType
+
+GUIUtility = CS.UnityEngine.GUIUtility

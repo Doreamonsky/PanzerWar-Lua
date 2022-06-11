@@ -1,5 +1,6 @@
 require "modes.Common.CustomClickHandler"
 require "modes.Common.CameraController"
+require "modes.Common.ShareCodeListController"
 
 DIYCreateMapMode = {}
 
@@ -8,6 +9,11 @@ this.onStartMode = function()
     this.isEditMode = true
     this.controlType = eDIYControlType.Position
     this.cameraController = CameraController.new()
+    this.shareCodeListController = ShareCodeListController.new(
+        "https://game.waroftanks.cn/backend/mapUserDefine/Newest/",
+        this.importShareCode
+    )
+
     this.outlinableComponents = {}
     this.isLocalControlHandle = false
 
@@ -93,6 +99,8 @@ this.onUtilCreated = function(root)
 
     this.downloadMaskGo = root.transform:Find("DIYCreateMapCanvas/DownloadMask").gameObject
 
+    this.navBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/NavBtn"):GetComponent("Button")
+
     this.handlerTransform = root.transform:Find("RT-Plugin/Handle").transform
 
     ---------------------Bind--------------------------
@@ -164,7 +172,7 @@ this.onUtilCreated = function(root)
             local targetComponent = this.itemComponent
 
             if targetComponent ~= nil then
-                this.cameraController:focusTaget(targetComponent.transform.position)
+                this.cameraController:focusTarget(targetComponent.transform.position)
             end
         end
     )
@@ -255,10 +263,16 @@ this.onUtilCreated = function(root)
 
     this.shareImportBtn.onClick:AddListener(
         function()
-            this.importShareCode()
+            local shareCode = this.shareCodeInput.text
+            this.importShareCode(shareCode)
         end
     )
 
+    this.navBtn.onClick:AddListener(
+        function()
+            this.toggleNav()
+        end
+    )
     ---------------------摄像机--------------------------
     --- @type Transform
     this.cameraUITransform = root.transform:Find("DIYCreateMapCanvas/CameraAction")
@@ -266,6 +280,12 @@ this.onUtilCreated = function(root)
     this.cameraTargetTrans = root.transform:Find("CameraPoint")
     this.mainCamera = this.cameraTransform:GetComponent(typeof(Camera))
     this.cameraController:Init(this.cameraUITransform, this.cameraTransform, this.cameraTargetTrans)
+    ------------------------------------------------------
+
+    ---------------------分享码--------------------------
+    local findBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/FindBtn"):GetComponent("Button")
+    local shareCodeListGo = root.transform:Find("DIYCreateMapCanvas/DIYShareCodeListCanvas").gameObject
+    this.shareCodeListController:Init(findBtn, shareCodeListGo)
     ------------------------------------------------------
 
     ---------------------地图加载页面--------------------------
@@ -587,7 +607,7 @@ this.exportShareCode = function(userDefine)
                     "游戏将访问剪贴版，并将分享码: " .. serverCode .. " 复制进剪贴板",
                     function(state)
                         if state then
-                            CS.UnityEngine.GUIUtility.systemCopyBuffer = serverCode
+                            GUIUtility.systemCopyBuffer = serverCode
 
                             if CS.UnityEngine.Application.isMobilePlatform then
                                 PopMessageManager.Instance:PushNotice("复制成功。聊天软件长按输入框，点击粘贴即可分享给好友。", 4)
@@ -603,8 +623,7 @@ this.exportShareCode = function(userDefine)
 end
 
 --- 导入分享码
-this.importShareCode = function()
-    local shareCode = this.shareCodeInput.text
+this.importShareCode = function(shareCode)
     this.downloadMaskGo:SetActive(true)
 
     CSharpAPI.ImportMapShareCode(
@@ -613,6 +632,13 @@ this.importShareCode = function()
             if shareUserDefine ~= nil then
                 UserDIYMapDataManager.Instance:SetDIYUserDefined(shareUserDefine)
                 this.refeshFileList()
+
+                PopMessageManager.Instance:PushPopup(
+                    "导入成功。Import Succeed.",
+                    function(state)
+                    end,
+                    false
+                )
             else
                 PopMessageManager.Instance:PushPopup(
                     "错误的分享码。 Invalid Share Code.",
@@ -627,4 +653,18 @@ this.importShareCode = function()
             this.shareImportPop.gameObject:SetActive(false)
         end
     )
+end
+
+--- 切换寻路显示
+this.toggleNav = function()
+    if this.visualizeMesh ~= nil and not this.visualizeMesh:IsNull() then
+        this.removeNav()
+    else
+        this.visualizeMesh = DIYMapCreateUtil.BuildVisualizeMesh()
+    end
+end
+
+--- 删除寻路模型
+this.removeNav = function()
+    GameObject.Destroy(this.visualizeMesh)
 end
