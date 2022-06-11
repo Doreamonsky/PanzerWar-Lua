@@ -617,7 +617,13 @@ this.refreshEquipSlotInteractBtn = function()
         for index, x in pairs(this.userDefined.rules) do
             --- @type DIYRule
             local rule = x
-            local slotInfos = DIYDataManager.Instance:GetData(rule.itemGuid).slotInfos
+            
+            local slotInfos = nil
+            if GET_SLOT_INFO_METHOD then
+                slotInfos = DIYDataManager.Instance:GetData(rule.itemGuid):GetSlotInfos()
+            else
+                slotInfos = DIYDataManager.Instance:GetData(rule.itemGuid).slotInfos
+            end
 
             local status = {}
 
