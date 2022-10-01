@@ -1,0 +1,19 @@
+{
+    "infos": [
+        {
+            "modNames": [
+                "BuildPipline-CommonVerVehicle"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/LuaProject/resources/android/default/common-ver-vehicle"
+                },
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/common-ver-vehicle"
+                }
+            ]
+        }
+    ]
+}

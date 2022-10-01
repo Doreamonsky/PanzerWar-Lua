@@ -179,6 +179,11 @@ PositionHandle = CS.Battlehub.RTHandles.PositionHandle
 RotationHandle = CS.Battlehub.RTHandles.RotationHandle
 ScaleHandle = CS.Battlehub.RTHandles.ScaleHandle
 
+--- @class UIManager
+--- @field Instance UIManager
+--- @field ShowUI fun(uiEnum:UIEnum,cb:function(ctrl))
+UIManager = CS.UIManager
+
 -- UnityEngine
 --- @class GameObject
 --- @field Instantiate fun() 实例化
@@ -226,3 +231,4 @@ EventTrigger = CS.UnityEngine.EventSystems.EventTrigger
 EventTriggerType = CS.UnityEngine.EventSystems.EventTriggerType
 
 GUIUtility = CS.UnityEngine.GUIUtility
+Screen = CS.UnityEngine.Screen

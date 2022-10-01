@@ -9,6 +9,8 @@ require("modes.GameModes")
 
 Config.loadAllConfigs()
 
+-- 禁止屏熄
+Screen.sleepTimeout = CS.SleepTimeout.NeverSleep
 -- -- 测试一下 Config 系统
 -- GizmoConfig.config.AxisScale = 2
 -- GizmoConfig.saveConfig()
