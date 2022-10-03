@@ -206,11 +206,7 @@ this.onUtilCreated = function(root)
                 function(state)
                     if state then
                         this.onExitMode()
-                        CSharpAPI.RequestScene(
-                            "Garage",
-                            function()
-                            end
-                        )
+                        CSharpAPI.RequestGarageScene()
                     end
                 end
             )

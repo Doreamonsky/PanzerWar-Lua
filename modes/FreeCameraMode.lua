@@ -1,14 +1,9 @@
 FreeCameraMode = {}
 
 FreeCameraMode.onStartMode = function()
-    CS.ShanghaiWindy.Core.FreeCamera.CreateFreeCamera(
-        CS.UnityEngine.Vector3.zero,
-        function(...)
-            local state = CS.ShanghaiWindy.Core.BaseInitSystem:GetMobileState()
-            CS.ShanghaiWindy.URPCore.URPMainUIManager.Instance.backgroundCamera.gameObject:SetActive(false)
-            CS.ShanghaiWindy.URPCore.URPMainUIManager.Instance.observeJoystick.gameObject:SetActive(state)
-        end
-    )
+    local mapData = MapDataManager.Instance.currentMap
+    -- 放置自由摄像机
+    CSharpAPI.CreateFreeCamera(mapData.sceneCameraPos, mapData.sceneCameraRot)
 end
 
 FreeCameraMode.onExitMode = function()

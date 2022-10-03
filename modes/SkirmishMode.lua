@@ -87,24 +87,35 @@ this.initMode = function()
     local playerVehicle = VehicleInfoManager.Instance:GetVehicleInfo(URPCustomModeOfflineManager.PlayerVehicleName) -- 玩家的坦克
     local maxRandomPoolCount = tonumber(this.vMaxRandomPool.text) -- 坦克池，资源预热防止战斗卡顿，越大越吃内存
 
-    -- 寻找合适的载具
-    --- @type VehicleInfo[]
     local availableVehicleList = nil
-    availableVehicleList = VehicleInfoManager.Instance:GetAllDriveableVehicleList():FindAll(
-        function(x)
-            return playerVehicle:GetRank() - lowerRank <= x:GetRank() and
-                x:GetRank() <= playerVehicle:GetRank() + upperRank
-        end
-    )
-
-    local enemyRank = playerVehicle:GetRank() + tonumber(this.vEnemyRankOffSet.text)
-
     local enemyAvailableVehicleList = nil
-    enemyAvailableVehicleList = VehicleInfoManager.Instance:GetAllDriveableVehicleList():FindAll(
-        function(x)
-            return enemyRank - lowerRank <= x:GetRank() and x:GetRank() <= enemyRank + upperRank
+
+    if this.customVehicleList == nil or this.customVehicleList.Count == 0 then
+        -- 寻找合适的载具
+        --- @type VehicleInfo[]
+        availableVehicleList = VehicleInfoManager.Instance:GetAllDriveableVehicleList():FindAll(
+            function(x)
+                return playerVehicle:GetRank() - lowerRank <= x:GetRank() and
+                    x:GetRank() <= playerVehicle:GetRank() + upperRank
+            end
+        )
+
+        local enemyRank = playerVehicle:GetRank() + tonumber(this.vEnemyRankOffSet.text)
+        enemyAvailableVehicleList = VehicleInfoManager.Instance:GetAllDriveableVehicleList():FindAll(
+            function(x)
+                return enemyRank - lowerRank <= x:GetRank() and x:GetRank() <= enemyRank + upperRank
+            end
+        )
+    else
+        local tmpVehicleList = CSharpAPI.GetNewVehicleInfoList()
+
+        for k, v in pairs(this.customVehicleList) do
+            tmpVehicleList:Add(VehicleInfoManager.Instance:GetVehicleInfo(v))
         end
-    )
+
+        availableVehicleList = tmpVehicleList
+        enemyAvailableVehicleList = tmpVehicleList
+    end
 
     -- 通知创建载具列表
     URPMainUIManager.Instance:CreateVehicleUIs(playerVehicle, availableVehicleList)
@@ -168,6 +179,8 @@ this.onStartMode = function()
                 this.instanceGo = go
                 this.initUI(go.transform)
 
+                this.customVehicleList = CSharpAPI.GetNewStringList()
+
                 this.vStartBattle.onClick:AddListener(
                     function()
                         this.vStartup:SetActive(false)
@@ -177,13 +190,9 @@ this.onStartMode = function()
 
                 this.vCustomVehicleList.onClick:AddListener(function()
                     UIManager.Instance:ShowUI(UIEnum.BANPICK_UI, function(ctrl)
-                        this.customVehicleList = CSharpAPI.GetNewStringList()
+                        ctrl:InitBanPickInfo(this.customVehicleList)
+                        ctrl:onSaveCallBack():AddListener(function()
 
-                        ctrl:InitBanPickInfo(banList)
-                        ctrl.onSaveCallBack:AddListener(function()
-                            for k, v in pairs(this.customVehicleList) do
-                                print(v)
-                            end
                         end)
                     end)
                 end)
