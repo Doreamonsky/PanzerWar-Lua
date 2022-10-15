@@ -215,6 +215,8 @@ end
 --- @param isWin boolean 是否胜利
 this.onBattleEnd = function(isWin)
     if not this.isPopEnd then
+        MouseLockModule.Instance:Show()
+
         Time.timeScale = 0
 
         this.vFinishBar:SetActive(true)
