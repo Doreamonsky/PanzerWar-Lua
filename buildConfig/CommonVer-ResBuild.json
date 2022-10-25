@@ -13,6 +13,10 @@
                 {
                     "platform": "StandaloneWindows64",
                     "dstDir": "D:/Projects/LuaProject/resources/windows/default/common-ver-vehicle"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/LuaProject/resources/ios/default/common-ver-vehicle"
                 }
             ]
         }

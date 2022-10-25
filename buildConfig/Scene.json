@@ -12,6 +12,10 @@
                 {
                     "platform": "StandaloneWindows64",
                     "dstDir": "D:/Projects/LuaProject/resources/windows/default/map"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/LuaProject/resources/ios/default/map"
                 }
             ]
         }
