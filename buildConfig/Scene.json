@@ -15,7 +15,7 @@
                 },
                 {
                     "platform": "iOS",
-                    "dstDir": "/Users/shanghaiwindy/Projects/LuaProject/resources/ios/default/map"
+                    "dstDir": "/Users/shanghaiwindy/Projects/Panzer-War-URP/LuaProject/resources/ios/default/map"
                 }
             ]
         }

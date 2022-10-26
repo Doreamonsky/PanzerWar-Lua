@@ -16,7 +16,7 @@
                 },
                 {
                     "platform": "iOS",
-                    "dstDir": "/Users/shanghaiwindy/Projects/LuaProject/resources/ios/modes"
+                    "dstDir": "/Users/shanghaiwindy/Projects/Panzer-War-URP/LuaProject/resources/ios/modes"
                 }
             ]
         }
