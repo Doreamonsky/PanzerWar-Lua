@@ -22,6 +22,9 @@ end
 --- 写入配置文件
 function WriteConfig(configName, config)
     local file, err = io.open(GetLuaDataFolder() .. "/" .. configName .. ".conf", "w")
-    file:write(config)
-    file:close()
+
+    if file ~= nil then
+        file:write(config)
+        file:close()
+    end
 end
