@@ -1,0 +1,24 @@
+{
+    "description":"音频组",
+    "infos": [
+        {
+            "modNames": [
+                "BuildPipline-Official-SoundBank"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/LuaProject/resources/android/default/banks"
+                },
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/banks"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/LuaProject/resources/ios/default/banks"
+                }
+            ]
+        }
+    ]
+}
