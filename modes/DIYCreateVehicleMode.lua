@@ -54,7 +54,8 @@ end
 --- 显示出错的异常，方便追踪问题
 this.onLogCallBack = function(logString, stackTrace, type)
     if type == LogType.Exception then
-        PopMessageManager.Instance:PushPopup("报错 / Exception:" .. logString .. "堆栈 / Stack:" .. stackTrace, nil, false)
+        PopMessageManager.Instance:PushPopup("报错 / Exception:" .. logString .. "堆栈 / Stack:" .. stackTrace, nil,
+            false)
     end
 end
 
@@ -120,9 +121,10 @@ this.onUtilCreated = function(root)
     this.fileLoadCloseBtn = this.fileLoadPop:Find("Title/CloseBtn"):GetComponent("Button")
     this.loadShareBtn = this.fileLoadPop:Find("Title/LoadShareBtn"):GetComponent("Button")
 
-    this.setMainBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Main/SetMainBtn"):GetComponent(
-        "Button"
-    )
+    this.setMainBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Main/SetMainBtn")
+        :GetComponent(
+            "Button"
+        )
 
     this.configProp = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp")
     this.configProp.gameObject:SetActive(false)
@@ -149,32 +151,40 @@ this.onUtilCreated = function(root)
     this.shareCodeInput = root.transform:Find("DIYCreateVehicleCanvas/ShareImportPop/ShareCodeInput"):GetComponent("InputField")
     this.shareImportBtn = root.transform:Find("DIYCreateVehicleCanvas/ShareImportPop/ImportBtn"):GetComponent("Button")
 
-    this.slotMultiObjectsToggle = root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/SlotMultiObjectsToggle"):GetComponent("Toggle")
+    this.slotMultiObjectsToggle = root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/SlotMultiObjectsToggle"):
+        GetComponent("Toggle")
 
-    this.ApplyParentScaleToggle = root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/ApplyParentScaleToggle"):GetComponent("Toggle")
+    this.ApplyParentScaleToggle = root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/ApplyParentScaleToggle"):
+        GetComponent("Toggle")
 
-    this.copyBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Main/CopyBtn"):GetComponent(
-        "Button"
-    )
+    this.copyBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Main/CopyBtn"):
+        GetComponent(
+            "Button"
+        )
 
-    this.symmetryXBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Symmetry/XAxisBtn"):GetComponent(
-        "Button"
-    )
+    this.symmetryXBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Symmetry/XAxisBtn")
+        :GetComponent(
+            "Button"
+        )
 
-    this.symmetryYBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Symmetry/YAxisBtn"):GetComponent(
-        "Button"
-    )
+    this.symmetryYBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Symmetry/YAxisBtn")
+        :GetComponent(
+            "Button"
+        )
 
-    this.symmetryZBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Symmetry/ZAxisBtn"):GetComponent(
-        "Button"
-    )
+    this.symmetryZBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Symmetry/ZAxisBtn")
+        :GetComponent(
+            "Button"
+        )
 
     this.allEquipGo = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll").gameObject
     this.allFilterBtn = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/AllBtn"):GetComponent("Button")
-    this.turretFilterBtn = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/TurretBtn"):GetComponent("Button")
+    this.turretFilterBtn = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/TurretBtn"):
+        GetComponent("Button")
     this.gunFilterBtn = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/GunBtn"):GetComponent("Button")
     this.itemFilterBtn = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/ItemBtn"):GetComponent("Button")
-    this.filterSearchField = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/FilterSearchField"):GetComponent("InputField")
+    this.filterSearchField = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/FilterSearchField"):
+        GetComponent("InputField")
 
     this.noneBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/NoneBtn"):GetComponent("Button")
     this.moveBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/MoveBtn"):GetComponent("Button")
@@ -613,7 +623,7 @@ this.refreshEquipSlotInteractBtn = function()
         for index, x in pairs(this.userDefined.rules) do
             --- @type DIYRule
             local rule = x
-            
+
             local slotInfos = nil
             if GET_SLOT_INFO_METHOD then
                 slotInfos = DIYDataManager.Instance:GetData(rule.itemGuid):GetSlotInfos()
@@ -876,7 +886,20 @@ this.loadNewUserDefine = function(userDefine)
 
         if DIYDataManager.Instance:GetData(rule.itemGuid) == nil then
             this.isLoadingParts = false
-            PopMessageManager.Instance:PushPopup("缺少部件。 Missing Item. GUID:" .. tostring(rule.itemGuid), nil, false)
+
+            local itemDisplayName = rule.itemGuid
+
+            for k, extraInfo in pairs(userDefine.extraInfos) do
+                if extraInfo.itemGuid == rule.itemGuid then
+                    itemDisplayName = extraInfo.itemName
+                end
+            end
+
+            PopMessageManager.Instance:PushPopup("缺少部件，无法加载。Item is missing on local. Failed to load."
+                .. itemDisplayName,
+                nil,
+                false)
+
             return
         end
     end
@@ -1144,19 +1167,22 @@ this.symmetry = function(ruleId, axis)
 
             -- 镜像
             if axis == SymmetryAxis.XAxis then
-                copiedRule.deltaPos = SerializeVector3(-copiedRule.deltaPos.x, copiedRule.deltaPos.y, copiedRule.deltaPos.z)
+                copiedRule.deltaPos = SerializeVector3(-copiedRule.deltaPos.x, copiedRule.deltaPos.y,
+                    copiedRule.deltaPos.z)
 
                 local rot = TransformUtil.SerializeVectorToQuaternion(copiedRule.localEulerAngles)
                 local symmetryRot = Quaternion(rot.x * -1, rot.y, rot.z, rot.w * -1)
                 copiedRule.localEulerAngles = TransformUtil.QuaternionToSeralizeVector(symmetryRot)
             elseif axis == SymmetryAxis.YAxis then
-                copiedRule.deltaPos = SerializeVector3(copiedRule.deltaPos.x, -copiedRule.deltaPos.y, copiedRule.deltaPos.z)
+                copiedRule.deltaPos = SerializeVector3(copiedRule.deltaPos.x, -copiedRule.deltaPos.y,
+                    copiedRule.deltaPos.z)
 
                 local rot = TransformUtil.SerializeVectorToQuaternion(copiedRule.localEulerAngles)
                 local symmetryRot = Quaternion(rot.x, rot.y * -1, rot.z, rot.w * -1)
                 copiedRule.localEulerAngles = TransformUtil.QuaternionToSeralizeVector(symmetryRot)
             elseif axis == SymmetryAxis.ZAxis then
-                copiedRule.deltaPos = SerializeVector3(copiedRule.deltaPos.x, copiedRule.deltaPos.y, -copiedRule.deltaPos.z)
+                copiedRule.deltaPos = SerializeVector3(copiedRule.deltaPos.x, copiedRule.deltaPos.y,
+                    -copiedRule.deltaPos.z)
 
                 local rot = TransformUtil.SerializeVectorToQuaternion(copiedRule.localEulerAngles)
                 local symmetryRot = Quaternion(rot.x, rot.y, rot.z * -1, rot.w * -1)
@@ -1240,9 +1266,11 @@ this.exportShareCode = function(userDefine)
                             GUIUtility.systemCopyBuffer = serverCode
 
                             if CS.UnityEngine.Application.isMobilePlatform then
-                                PopMessageManager.Instance:PushNotice("复制成功。聊天软件长按输入框，点击粘贴即可分享给好友。", 4)
+                                PopMessageManager.Instance:PushNotice("复制成功。聊天软件长按输入框，点击粘贴即可分享给好友。"
+                                    , 4)
                             else
-                                PopMessageManager.Instance:PushNotice("复制成功。点击 Ctrl + V 即可分享给好友。", 4)
+                                PopMessageManager.Instance:PushNotice("复制成功。点击 Ctrl + V 即可分享给好友。"
+                                    , 4)
                             end
                         end
                     end
@@ -1260,13 +1288,6 @@ this.importShareCode = function(shareCode)
             if shareUserDefine ~= nil then
                 UserDIYDataManager.Instance:SetDIYUserDefined(shareUserDefine)
                 this.refreshFileList()
-            else
-                PopMessageManager.Instance:PushPopup(
-                    "错误的分享码。 Invalid Share Code.",
-                    function(state)
-                    end,
-                    false
-                )
             end
 
             this.shareCodeInput.text = ""

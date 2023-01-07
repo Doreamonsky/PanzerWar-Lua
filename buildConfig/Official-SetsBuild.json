@@ -1,5 +1,5 @@
 {
-    "description":"官方载具 DIY。 地图 DIY。",
+    "description": "官方载具 DIY。 地图 DIY。",
     "infos": [
         {
             "modNames": [
@@ -18,7 +18,8 @@
                     "platform": "iOS",
                     "dstDir": "/Users/shanghaiwindy/Projects/LuaProject/resources/ios/default/diy"
                 }
-            ]
+            ],
+            "isCleanDstFolder": true
         },
         {
             "modNames": [
@@ -37,7 +38,8 @@
                     "platform": "iOS",
                     "dstDir": "/Users/shanghaiwindy/Projects/LuaProject/resources/ios/default/diy-map"
                 }
-            ]
+            ],
+            "isCleanDstFolder": true
         }
     ]
 }

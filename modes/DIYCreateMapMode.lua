@@ -606,9 +606,11 @@ this.exportShareCode = function(userDefine)
                             GUIUtility.systemCopyBuffer = serverCode
 
                             if CS.UnityEngine.Application.isMobilePlatform then
-                                PopMessageManager.Instance:PushNotice("复制成功。聊天软件长按输入框，点击粘贴即可分享给好友。", 4)
+                                PopMessageManager.Instance:PushNotice("复制成功。聊天软件长按输入框，点击粘贴即可分享给好友。"
+                                    , 4)
                             else
-                                PopMessageManager.Instance:PushNotice("复制成功。点击 Ctrl + V 即可分享给好友。", 4)
+                                PopMessageManager.Instance:PushNotice("复制成功。点击 Ctrl + V 即可分享给好友。"
+                                    , 4)
                             end
                         end
                     end
@@ -635,13 +637,7 @@ this.importShareCode = function(shareCode)
                     end,
                     false
                 )
-            else
-                PopMessageManager.Instance:PushPopup(
-                    "错误的分享码。 Invalid Share Code.",
-                    function(state)
-                    end,
-                    false
-                )
+
             end
 
             this.shareCodeInput.text = ""

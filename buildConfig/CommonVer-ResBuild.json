@@ -1,5 +1,5 @@
 {
-    "description":"普通版内置载具 -> ModPack 用于决定版热更",
+    "description": "普通版内置载具 -> ModPack 用于决定版热更",
     "infos": [
         {
             "modNames": [
@@ -18,7 +18,8 @@
                     "platform": "iOS",
                     "dstDir": "/Users/shanghaiwindy/Projects/LuaProject/resources/ios/default/common-ver-vehicle"
                 }
-            ]
+            ],
+            "isCleanDstFolder": true
         }
     ]
 }
