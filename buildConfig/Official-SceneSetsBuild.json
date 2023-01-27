@@ -1,0 +1,25 @@
+{
+    "description": "决定版地图 DIY",
+    "infos": [
+        {
+            "modNames": [
+                "BuildPipline-Map-DIY-OfficialSets"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/LuaProject/resources/android/default/diy-map"
+                },
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/diy-map"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/LuaProject/resources/ios/default/diy-map"
+                }
+            ],
+            "isCleanDstFolder": true
+        }
+    ]
+}

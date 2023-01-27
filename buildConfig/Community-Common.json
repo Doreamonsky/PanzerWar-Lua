@@ -1,9 +1,9 @@
 {
-    "description": "普通版内置载具 -> ModPack 用于决定版热更",
+    "description": "普通版内置载具",
     "infos": [
         {
             "modNames": [
-                "BuildPipline-CommonVerVehicle"
+                "BuildPipline-Community"
             ],
             "copyInfo": [
                 {

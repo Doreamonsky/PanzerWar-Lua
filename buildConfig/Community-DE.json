@@ -1,0 +1,25 @@
+{
+    "description": "决定版内置载具",
+    "infos": [
+        {
+            "modNames": [
+                "BuildPipline-Community-DE"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/LuaProject/resources/android/default/diy"
+                },
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/diy"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/LuaProject/resources/ios/default/diy"
+                }
+            ],
+            "isCleanDstFolder": true
+        }
+    ]
+}
