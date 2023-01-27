@@ -18,7 +18,8 @@
                     "platform": "iOS",
                     "dstDir": "/Users/shanghaiwindy/Projects/LuaProject/resources/ios/default/diy-third"
                 }
-            ]
+            ],
+            "isCleanDstFolder": true
         }
     ]
 }
