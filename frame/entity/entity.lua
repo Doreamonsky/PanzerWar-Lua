@@ -1,6 +1,7 @@
 -- 生命周期需要游戏侧自己维护 update 以及 dispose
 -- 可以理解为 mono 对象
-Entity = class("Entity")
+--- @class Entity
+local Entity = class("Entity")
 
 function Entity:ctor(...)
     self:awake(...)
@@ -19,3 +20,4 @@ function Entity:dispose()
 end
 
 return Entity
+

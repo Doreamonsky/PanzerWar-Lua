@@ -1,5 +1,5 @@
 -- 自定义点击，长按处理
-CustomClickHandler = class("CustomClickHandler", Entity)
+local CustomClickHandler = class("CustomClickHandler", Entity)
 
 function CustomClickHandler:awake()
     self.lastPointerDownTime = 0

@@ -4,5 +4,10 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"emmylua.source.roots": [
+			"frame/define/csharp.lua"
+		],
+		"emmylua.hint.varargHint": true
+	}
 }

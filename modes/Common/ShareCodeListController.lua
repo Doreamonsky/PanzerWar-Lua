@@ -1,10 +1,9 @@
 --- @class ShareCodeListController
 --- Share code list manager
 --- Make players easier to download share codes.
-ShareCodeListController = class("ShareCodeListController", nil)
-local this = ShareCodeListController
+local ShareCodeListController = class("ShareCodeListController", nil)
 
-function this:ctor(remoteUrl, importCB)
+function ShareCodeListController:ctor(remoteUrl, importCB)
     --- @type boolean 是否已初始化
     self.isInit = false
 
@@ -15,7 +14,7 @@ function this:ctor(remoteUrl, importCB)
     self.importCB = importCB
 end
 
-function this:Init(entryBtn, rootGo)
+function ShareCodeListController:Init(entryBtn, rootGo)
     --- @type Button 界面入口按钮
     self.entryBtn = entryBtn
 
@@ -44,11 +43,11 @@ function this:Init(entryBtn, rootGo)
     ---------------------Bind--------------------------
 end
 
-function this:toggleUIGo(status)
+function ShareCodeListController:toggleUIGo(status)
     self.root.gameObject:SetActive(status)
 end
 
-function this:getList(url)
+function ShareCodeListController:getList(url)
     local webRequest = UnityWebRequest.Get(url)
     local asyncWebRequest = webRequest:SendWebRequest()
 
@@ -97,4 +96,4 @@ function this:getList(url)
     )
 end
 
-return this
+return ShareCodeListController

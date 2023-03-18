@@ -336,7 +336,7 @@ this.onUtilCreated = function(root)
     this.configsMethodList = {}
 
     --- @type CustomClickHandler
-    this.rayHitClick = EntityFactory.AddEntity(CustomClickHandler)
+    this.rayHitClick = EntityFactory.AddEntity(CustomClickHandler.new())
     this.rayHitClick:Init(this.eventTrigger, 1, 5, function(evtData)
         if not GizmoConfig.config.EnablePressSelect then return end
         local ret, viewData = DIYMapItemComponentDragPicker.Instance:GetRayItem(evtData.position)

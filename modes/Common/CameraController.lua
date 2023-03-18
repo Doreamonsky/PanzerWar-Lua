@@ -1,6 +1,6 @@
 --- @class CameraController
 --- Lua 侧的方向键形式的按键控制器
-CameraController = class("CameraController", nil)
+local CameraController = class("CameraController", Entity)
 
 --- @param uiTransform Transfom 按钮
 --- @param cameraTargetTransform Transform 摄像机目标
@@ -123,7 +123,7 @@ function CameraController:update()
     end
 end
 
-function CameraController:onrelease()
+function CameraController:dispose()
     EventSystem.RemoveListener(EventDefine.OnGizmoConfigChanged, self.RefreshCameraController, self)
 end
 

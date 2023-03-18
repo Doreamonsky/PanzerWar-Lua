@@ -1,5 +1,5 @@
 --- @class GizmoConfigController
-GizmoConfigController = class("GizmoConfigController")
+local GizmoConfigController = class("GizmoConfigController")
 
 --- 设置界面初始化
 --- @param gizmoUITransform Transform GizmoConfig 的 Transform
