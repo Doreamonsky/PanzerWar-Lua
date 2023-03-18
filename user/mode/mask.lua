@@ -1,13 +1,22 @@
---- 反光贴图全局管理模式
+local Mask = class("Mask")
 
-MaskTextureMgrMode = {}
+GameMode()
 
-MaskTextureMgrMode.init = function()
+function Mask:ctor()
+    self.modName = "反光贴图全局管理模式"
+    self.author = "超级哆啦酱"
+    self.description = "管理反光"
 end
 
-MaskTextureMgrMode.onStartMode = function()
-    MaskTextureMgrMode.init()
+function Mask:GetGameModeName(userLang)
+    if userLang == "EN" then
+        return "Mask Texture Manager"
+    else
+        return "反光贴图管理"
+    end
+end
 
+function Mask:OnStartMode()
     CSharpAPI.LoadAssetBundle(
         "MaskTexMgrCanvas",
         "mod",
@@ -30,7 +39,7 @@ MaskTextureMgrMode.onStartMode = function()
 
                             for i = 0, vehicleInfos.Count - 1 do
                                 local vehicleCamoData =
-                                AchievementManager.Instance:GetVehicleCamoData(vehicleInfos[i]:GetVehicleName())
+                                    AchievementManager.Instance:GetVehicleCamoData(vehicleInfos[i]:GetVehicleName())
                                 vehicleCamoData.maskTexGuid = maskTex.guid
                             end
 
@@ -58,5 +67,7 @@ MaskTextureMgrMode.onStartMode = function()
     )
 end
 
-MaskTextureMgrMode.onExitMode = function()
+function Mask:OnExitMode()
 end
+
+return Mask

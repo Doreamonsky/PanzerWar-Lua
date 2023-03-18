@@ -1,7 +1,7 @@
-local GizmoConfigController = require("modes.Common.GizmoConfigController")
-local CameraController = require("modes.Common.CameraController")
-local ShareCodeListController = require("modes.Common.ShareCodeListController")
-local CustomClickHandler = require("modes.Common.CustomClickHandler")
+local GizmoConfigController = require("user.mode.component.gizmoconfigcontroller")
+local CameraController = require("user.mode.component.cameracontroller")
+local ShareCodeListController = require("user.mode.component.ShareCodeListController")
+local CustomClickHandler = require("user.mode.component.customclickhandler")
 
 SymmetryAxis = enum(
     {

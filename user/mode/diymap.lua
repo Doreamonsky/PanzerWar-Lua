@@ -1,7 +1,7 @@
-local CustomClickHandler = require "modes.Common.CustomClickHandler"
-local CameraController = require "modes.Common.CameraController"
-local ShareCodeListController = require "modes.Common.ShareCodeListController"
-local GizmoConfigController = require "modes.Common.GizmoConfigController"
+local GizmoConfigController = require("user.mode.component.gizmoconfigcontroller")
+local CameraController = require("user.mode.component.cameracontroller")
+local ShareCodeListController = require("user.mode.component.ShareCodeListController")
+local CustomClickHandler = require("user.mode.component.customclickhandler")
 
 local DIYMap = class("DIYMap")
 
