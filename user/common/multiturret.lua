@@ -29,12 +29,12 @@ function MultiTurret:BindEvent()
                 self.tankFireDataDict = {}
 
                 -- 获取炮塔列表 (Get turret list)
-                self.tankfireList = VehicleAPI.GetTankFireList(vehicle)
+                self.tankfireList = TankAPI.GetTankFireList(vehicle)
 
                 -- 如果炮塔数量大于1个，才需要创建多炮塔管理 (Create multi-turret management only if there are more than one turret)
                 if self.tankfireList.Count > 1 then
                     -- 请求 AssetBundle 资源 (Request AssetBundle resource)
-                    CSharpAPI.LoadAssetBundle(
+                    AssetAPI.LoadAssetBundle(
                         "multifirecanvas",
                         "mod",
                         function(asset)
