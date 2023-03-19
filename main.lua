@@ -8,3 +8,4 @@ Config.loadAllConfigs()
 
 -- 禁止屏熄
 Screen.sleepTimeout = CS.SleepTimeout.NeverSleep
+

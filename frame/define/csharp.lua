@@ -34,7 +34,8 @@ local ILuaMod = {}
 
 return ILuaMod
 
----Bullet fired info
+---子弹发射信息
+---Bullet Fired Info
 ---@class ShanghaiWindy.Core.Data.BulletFiredInfo
 local BulletFiredInfo = {}
 
@@ -131,6 +132,20 @@ function GameAPI.RegisterVehicleDestroyedEvent(gameVehicleDestroyedDelegate) end
 function GameAPI.UnRegisterVehicleDestroyedEvent(gameVehicleDestroyedDelegate) end
 return GameAPI
 
+---按键执行时的委托
+---Key Performed Delegate
+---@class ShanghaiWindy.Core.API.OnKeyPerformed
+local OnKeyPerformed = {}
+
+return OnKeyPerformed
+
+---按键取消时的委托
+---Key Canceled Delegate
+---@class ShanghaiWindy.Core.API.OnKeyCanceled
+local OnKeyCanceled = {}
+
+return OnKeyCanceled
+
 ---输入处理 API
 ---Input Handler API
 ---@class ShanghaiWindy.Core.API.InputAPI
@@ -147,6 +162,13 @@ function InputAPI.RegisterKeyInput(actionName, keyCode, keyPerformed, keyCancele
 ---@function [InputAPI.UnregisterKeyInput]
 function InputAPI.UnregisterKeyInput(actionName) end
 return InputAPI
+
+---音频事件加载完成时的委托
+---Post Event Loaded Delegate
+---@class ShanghaiWindy.Core.API.PostEventLoadedDelegate
+local PostEventLoadedDelegate = {}
+
+return PostEventLoadedDelegate
 
 ---声音相关 API
 ---Sound-related API
@@ -314,5 +336,17 @@ function VehicleAPI.TryGetArmyInitSystemFromGameObject(gameObject, armyInitSyste
 ---@function [VehicleAPI.GetFireList]
 ---@return System.Collections.Generic.List`1[[ShanghaiWindy.Core.BaseFireSystem, Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]] 火力系统数组 Array of fire system
 function VehicleAPI.GetFireList(vehicle) end
+---获取载具信息
+---Get Vehicle Info
+---@static
+---@function [VehicleAPI.GetVehicleInfo]
+---@return ShanghaiWindy.Core.VehicleInfo 载具信息 Vehicle Info
+function VehicleAPI.GetVehicleInfo(vehicleName) end
+---获取所有可驾驶载具列表
+---Get All Driveable Vehicle List
+---@static
+---@function [VehicleAPI.GetAllDriveableVehicleList]
+---@return System.Collections.Generic.List`1[[ShanghaiWindy.Core.VehicleInfo, Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]] 可驾驶载具列表 Driveable Vehicle List
+function VehicleAPI.GetAllDriveableVehicleList(ignoreModule) end
 return VehicleAPI
 
