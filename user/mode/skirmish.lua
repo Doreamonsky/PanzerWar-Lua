@@ -78,18 +78,23 @@ function SkirmishMode:InitUI(root)
 end
 
 --- 初始化模式逻辑
+--- Initialize the mode logic
 function SkirmishMode:InitMode()
     -- 寻找出生点
+    -- Find spawn points
     self.TeamAStartPoints = GameObject.FindGameObjectsWithTag("TeamAStartPoint")
     self.TeamBStartPoints = GameObject.FindGameObjectsWithTag("TeamBStartPoint")
-
     URPMainUIManager.Instance.audioListener.enabled = true     -- 打开界面 Audio Listener 防止警告
+    -- Enable Audio Listener in the interface to prevent warnings
     URPMainUIManager.Instance.selectVehicleBar:SetActive(true) -- 打开选车界面
+    -- Enable vehicle selection interface
 
     -- 结束战斗比分
+    -- Set the score to finish the battle
     self.scoreToFinish = tonumber(self.vScoreToFinish.text)
 
     -- 设置敌我最大人数
+    -- Set the maximum number of friends and enemies
     local firendNumber = tonumber(self.vFriendNumber.text)
     local enemyNumber = tonumber(self.vEnemyNumber.text)
 
@@ -102,17 +107,24 @@ function SkirmishMode:InitMode()
     end
 
     -- 设置对战等级区间
+    -- Set the level range for battles
     local lowerRank = tonumber(self.vLowerRank.text)
     local upperRank = tonumber(self.vUpperRank.text)
 
-    local playerVehicle = VehicleInfoManager.Instance:GetVehicleInfo(URPCustomModeOfflineManager.PlayerVehicleName) -- 玩家的坦克
-    local maxRandomPoolCount = tonumber(self.vMaxRandomPool.text)                                                   -- 坦克池，资源预热防止战斗卡顿，越大越吃内存
+    -- 玩家的坦克
+    -- Player's tank
+    local playerVehicle = VehicleInfoManager.Instance:GetVehicleInfo(URPCustomModeOfflineManager.PlayerVehicleName) 
+    
+    -- 坦克池，资源预热防止战斗卡顿，越大越吃内存
+    -- Tank pool, resource preheating to prevent battle stuttering, the larger the more memory consumed
+    local maxRandomPoolCount = tonumber(self.vMaxRandomPool.text)
 
     local availableVehicleList = nil
     local enemyAvailableVehicleList = nil
 
     if self.customVehicleList == nil or self.customVehicleList.Count == 0 then
         -- 寻找合适的载具
+        -- Find suitable vehicles
         --- @type VehicleInfo[]
         availableVehicleList = VehicleInfoManager.Instance:GetAllDriveableVehicleList():FindAll(
             function(x)
@@ -139,9 +151,11 @@ function SkirmishMode:InitMode()
     end
 
     -- 通知创建载具列表
+    -- Notify to create vehicle list
     URPMainUIManager.Instance:CreateVehicleUIs(playerVehicle, availableVehicleList)
 
     -- 载具选择后的回调
+    -- Callback after vehicle selection
     URPMainUIManager.Instance.OnVehicleSelected:AddListener(
         function(vehicleInfo)
             URPMainUIManager.Instance.selectVehicleBar:SetActive(false)
@@ -150,9 +164,11 @@ function SkirmishMode:InitMode()
     )
 
     -- 载具被击毁的回调
+    -- Callback when a vehicle is destroyed
     GameEventManager.OnNewVehicleDestroyed:AddListener(
         function(destroyedVehicle)
             --- Bot 被击毁，更新逻辑
+            --- Bot destroyed, update logic
             if Core.BaseInitSystem.IsLocalPlayer(destroyedVehicle._InstanceNetType) == false then
                 if destroyedVehicle.ownerTeam == TeamManager.Team.red then
                     self.TeamACount = self.TeamACount - 1
@@ -166,25 +182,26 @@ function SkirmishMode:InitMode()
         end
     )
 
-    -- 载具物体清楚的回调
+    -- 载具物体清除的回调
+    -- Callback when a vehicle object is removed
     GameEventManager.OnNewVehicleRemoved:AddListener(
         function(initSystem)
             if self.isInMode then
                 --- 玩家死亡，显示选车界面
-                if Core.BaseInitSystem.IsLocalPlayer(initSystem._InstanceNetType) then
-                    AudioListener.volume = 0
+                --- Player dies, show vehicle selection interface
+                AudioListener.volume = 0
 
-                    URPMainUIManager.Instance.audioListener.enabled = true
-                    URPMainUIManager.Instance.backgroundCamera.enabled = true
+                URPMainUIManager.Instance.audioListener.enabled = true
+                URPMainUIManager.Instance.backgroundCamera.enabled = true
 
-                    URPMainUIManager.Instance.selectVehicleBar:SetActive(true)
-                    MouseLockModule.Instance:Show()
-                end
+                URPMainUIManager.Instance.selectVehicleBar:SetActive(true)
+                MouseLockModule.Instance:Show()
             end
         end
     )
 
     -- Bot 列表
+    -- Bot list
     self.FriendBotVehicleList = CSharpAPI.GetBotVehicleList(availableVehicleList, maxRandomPoolCount)
     self.EnemyBotVehicleList = CSharpAPI.GetBotVehicleList(enemyAvailableVehicleList, maxRandomPoolCount)
     self:UpdateModeLogic()
@@ -192,9 +209,7 @@ end
 
 function SkirmishMode:OnStartMode()
     self:InitData()
-    self.isInMode = true
-
-    CSharpAPI.LoadAssetBundle(
+    self.isInMode = trueCSharpAPI.LoadAssetBundle(
         "LuaSkirmish",
         "mod",
         function(asset)
@@ -232,11 +247,12 @@ function SkirmishMode:OnExitMode()
 end
 
 --- Logic 战斗结束
+--- Logic Battle ends
 --- @param isWin boolean 是否胜利
+--- @param isWin boolean Whether it's a victory
 function SkirmishMode:OnBattleEnd(isWin)
     if not self.isPopEnd then
         MouseLockModule.Instance:Show()
-
         Time.timeScale = 0
 
         self.vFinishBar:SetActive(true)
@@ -267,9 +283,9 @@ function SkirmishMode:OnBattleEnd(isWin)
 end
 
 --- 更新比分
+--- Update the score
 function SkirmishMode:UpdateScore(destroyedVehicle)
     local ownerTeam = destroyedVehicle.ownerTeam
-
     if ownerTeam == GameDataManager.PlayerTeam then
         self.EnemyScore = self.EnemyScore + 1
     else
@@ -279,6 +295,7 @@ function SkirmishMode:UpdateScore(destroyedVehicle)
     self.vScore.text = tostring(self.FriendScore) .. ":" .. tostring(self.EnemyScore)
 
     -- 胜负条件
+    -- Win or lose conditions
     if self.FriendScore >= self.scoreToFinish then
         self:OnBattleEnd(true)
     end
@@ -289,6 +306,7 @@ function SkirmishMode:UpdateScore(destroyedVehicle)
 end
 
 --- 模式核心逻辑，循环遍历人数，补充缺失人数
+--- Core logic of the mode, looping through the number of people, and filling in the missing ones
 function SkirmishMode:UpdateModeLogic()
     if self.FriendBotVehicleList.Count ~= 0 and self.EnemyBotVehicleList.Count ~= 0 then
         if self.TeamACount < self.TeamAMaxNumber then
@@ -298,7 +316,6 @@ function SkirmishMode:UpdateModeLogic()
                 self:CreateBotVehicle(TeamManager.Team.red)
             end
         end
-
         if self.TeamBCount < self.TeamBMaxNumber then
             local delta = self.TeamBMaxNumber - self.TeamBCount - 1
             for i = 1, 1 + delta do
@@ -310,10 +327,10 @@ function SkirmishMode:UpdateModeLogic()
 end
 
 --- 创建玩家载具
+--- Create player vehicle
 --- @param vehicleInfo VehicleInfo
 function SkirmishMode:CreatePlayerVehicle(vehicleInfo)
     local startPoints = nil
-
     if GameDataManager.PlayerTeam == TeamManager.Team.red then
         startPoints = self.TeamAStartPoints
     else
@@ -340,7 +357,6 @@ end
 
 function SkirmishMode:CreateBotVehicle(team)
     local startPoints = nil
-
     if team == TeamManager.Team.red then
         startPoints = self.TeamAStartPoints
     else
@@ -351,7 +367,6 @@ function SkirmishMode:CreateBotVehicle(team)
         startPoints,
         function(trans)
             local vehicleInfo = nil
-
             if team == GameDataManager.PlayerTeam then
                 vehicleInfo = CSharpAPI.RandomVehicleFromList(self.FriendBotVehicleList)
             else
@@ -367,6 +382,8 @@ function SkirmishMode:CreateBotVehicle(team)
     )
 end
 
+--- 关闭玩家界面
+--- Close player UI
 function SkirmishMode:ClosePlayerUI()
     AudioListener.volume = 1
     URPMainUIManager.Instance.audioListener.enabled = false

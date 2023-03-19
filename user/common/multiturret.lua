@@ -22,7 +22,6 @@ function MultiTurret:BindEvent()
 
         -- 判断是否是本地玩家 (Check if it's the local player)
         if CSharpAPI.isLocalPlayer(vehicle) then
-
             local ret = VehicleAPI.IsTankVehicle(vehicle)
 
             if ret then
@@ -30,7 +29,7 @@ function MultiTurret:BindEvent()
                 self.tankFireDataDict = {}
 
                 -- 获取炮塔列表 (Get turret list)
-                self.tankfireList = VehicleAPI.GetFireList(vehicle)
+                self.tankfireList = VehicleAPI.GetTankFireList(vehicle)
 
                 -- 如果炮塔数量大于1个，才需要创建多炮塔管理 (Create multi-turret management only if there are more than one turret)
                 if self.tankfireList.Count > 1 then
@@ -83,8 +82,8 @@ function MultiTurret:OnAssetLoaded(asset)
 
         instance:GetComponent("Button").onClick:AddListener(
             function()
-                for k, v in pairs(self.tankFireDataDict) do
-                    self.tankFireDataDict[k]:Fire()
+                for k, v in pairs(self.tankfireList) do
+                    self.tankfireList[k]:Fire()
                 end
             end
         )
@@ -93,7 +92,7 @@ function MultiTurret:OnAssetLoaded(asset)
 
         template:SetActive(false)
 
-        VehicleAPI.UnRegisterVehicleDestroyedEvent(self.vehicle, function()
+        VehicleAPI.RegisterVehicleGameObjectDestroyedEvent(self.vehicle, function()
             self.tankFireDataDict = {}
             GameObject.Destroy(ui_instance)
         end)

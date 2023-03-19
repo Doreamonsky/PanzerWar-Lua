@@ -1,14 +1,14 @@
-local GizmoConfigController = require("user.mode.component.gizmoconfigcontroller")
-local CameraController = require("user.mode.component.cameracontroller")
-local ShareCodeListController = require("user.mode.component.ShareCodeListController")
-local CustomClickHandler = require("user.mode.component.customclickhandler")
+local GizmoConfigController = require("user.component.gizmoconfigcontroller")
+local CameraController = require("user.component.cameracontroller")
+local ShareCodeListController = require("user.component.sharecodelistcontroller")
+local CustomClickHandler = require("user.component.customclickhandler")
 
 local DIYMap = class("DIYMap")
 
 GameMode()
 
 function DIYMap:ctor()
-    self.modName = "DIY 地图工坊"
+    self.modName = "DIYMap"
     self.author = "超级哆啦酱"
     self.description = "创建自定义地图"
 end
@@ -414,7 +414,7 @@ function DIYMap:onUtilCreated(root)
     CSharpAPI.OnDIYEulerAnglesHandleChanged:AddListener(self.OnDIYEulerAnglesHandleChangedCb)
     CSharpAPI.OnDIYScaleHandleChanged:AddListener(self.OnDIYScaleHandleChangedCb)
     CSharpAPI.OnMapPickItemComponent:AddListener(self.OnMapPickItemComponentCb)
-    CSharpAPI.OnMapInstallClicked:AddListener(self.OnMapInstallClicked)
+    CSharpAPI.OnMapInstallClicked:AddListener(self.OnMapInstallClickedCb)
 end
 
 function DIYMap:OnUpdated()
@@ -440,7 +440,7 @@ function DIYMap:OnExitMode()
     CSharpAPI.OnDIYEulerAnglesHandleChanged:RemoveListener(self.OnDIYEulerAnglesHandleChangedCb)
     CSharpAPI.OnDIYScaleHandleChanged:RemoveListener(self.OnDIYScaleHandleChangedCb)
     CSharpAPI.OnMapPickItemComponent:RemoveListener(self.OnMapPickItemComponentCb)
-    CSharpAPI.OnMapInstallClicked:RemoveListener(self.OnMapInstallClicked)
+    CSharpAPI.OnMapInstallClicked:RemoveListener(self.OnMapInstallClickedCb)
 end
 
 --- @param baseData DIYMapBaseData

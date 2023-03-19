@@ -1,7 +1,7 @@
-local GizmoConfigController = require("user.mode.component.gizmoconfigcontroller")
-local CameraController = require("user.mode.component.cameracontroller")
-local ShareCodeListController = require("user.mode.component.ShareCodeListController")
-local CustomClickHandler = require("user.mode.component.customclickhandler")
+local GizmoConfigController = require("user.component.gizmoconfigcontroller")
+local CameraController = require("user.component.cameracontroller")
+local ShareCodeListController = require("user.component.sharecodelistcontroller")
+local CustomClickHandler = require("user.component.customclickhandler")
 
 SymmetryAxis = enum(
     {
@@ -16,7 +16,7 @@ local DIY = class("DIY")
 GameMode()
 
 function DIY:ctor()
-    self.modName = "DIY 工坊"
+    self.modName = "DIY"
     self.author = "超级哆啦酱"
     self.description = "创建自定义坦克"
 end
@@ -123,7 +123,7 @@ function DIY:OnUtilCreated(root)
     self.loadShareBtn = self.fileLoadPop:Find("Title/LoadShareBtn"):GetComponent("Button")
 
     self.setMainBtn = root.transform:Find(
-        "DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Main/SetMainBtn")
+            "DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Main/SetMainBtn")
         :GetComponent(
             "Button"
         )
@@ -151,7 +151,7 @@ function DIY:OnUtilCreated(root)
     self.shareImportPop = root.transform:Find("DIYCreateVehicleCanvas/ShareImportPop")
     self.shareImportCancelBtn = self.shareImportPop:GetComponent("Button")
     self.shareCodeInput = root.transform:Find("DIYCreateVehicleCanvas/ShareImportPop/ShareCodeInput"):GetComponent(
-    "InputField")
+        "InputField")
     self.shareImportBtn = root.transform:Find("DIYCreateVehicleCanvas/ShareImportPop/ImportBtn"):GetComponent("Button")
 
     self.slotMultiObjectsToggle = root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/SlotMultiObjectsToggle"):
@@ -166,51 +166,51 @@ function DIY:OnUtilCreated(root)
     )
 
     self.symmetryXBtn = root.transform:Find(
-        "DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Symmetry/XAxisBtn")
+            "DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Symmetry/XAxisBtn")
         :GetComponent(
             "Button"
         )
 
     self.symmetryYBtn = root.transform:Find(
-        "DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Symmetry/YAxisBtn")
+            "DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Symmetry/YAxisBtn")
         :GetComponent(
             "Button"
         )
 
     self.symmetryZBtn = root.transform:Find(
-        "DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Symmetry/ZAxisBtn")
+            "DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Symmetry/ZAxisBtn")
         :GetComponent(
             "Button"
         )
 
     self.allEquipGo = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll").gameObject
     self.allFilterBtn = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/AllBtn"):GetComponent(
-    "Button")
+        "Button")
     self.turretFilterBtn = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/TurretBtn"):
     GetComponent("Button")
     self.gunFilterBtn = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/GunBtn"):GetComponent(
-    "Button")
+        "Button")
     self.itemFilterBtn = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/ItemBtn"):GetComponent(
-    "Button")
+        "Button")
     self.filterSearchField = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/FilterSearchField"):
     GetComponent("InputField")
 
     self.noneBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/NoneBtn"):GetComponent(
-    "Button")
+        "Button")
     self.moveBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/MoveBtn"):GetComponent(
-    "Button")
+        "Button")
     self.rotateBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/RotateBtn"):GetComponent(
-    "Button")
+        "Button")
     self.scaleBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/ScaleBtn"):GetComponent(
-    "Button")
+        "Button")
 
     self.detailDeleteBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Title/DeleteBtn"):GetComponent(
-    "Button")
+        "Button")
 
     self.dragInfo = root.transform:Find("DIYCreateVehicleCanvas/DragInfo").gameObject
     self.pauseTimeBtn = root.transform:Find("DIYCreateVehicleCanvas/ToolAction/PauseTimeBtn"):GetComponent("Button")
     self.recoveryTimeBtn = root.transform:Find("DIYCreateVehicleCanvas/TimeScaleInfo/RecoverTimeBtn"):GetComponent(
-    "Button")
+        "Button")
     self.timeScaleInfoGo = root.transform:Find("DIYCreateVehicleCanvas/TimeScaleInfo").gameObject
     self.quickImportShareBtn = root.transform:Find("DIYCreateVehicleCanvas/ToolAction/ImportBtn"):GetComponent("Button")
 
