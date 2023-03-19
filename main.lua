@@ -2,7 +2,7 @@
 
 -- Base 基础相关
 require("frame.core") -- 框架
-require("game.all") -- 游戏侧脚本
+require("game.all")   -- 游戏侧脚本
 
 Config.loadAllConfigs()
 
