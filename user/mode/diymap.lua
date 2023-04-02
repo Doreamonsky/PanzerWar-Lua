@@ -25,9 +25,12 @@ function DIYMap:OnStartMode()
     self.isEditMode = true
     self.controlType = eDIYControlType.Position
     self.cameraController = EntityFactory.AddEntity(CameraController.new())
+    
     self.shareCodeListController = ShareCodeListController.new(
         "https://game.waroftanks.cn/backend/mapUserDefine/Newest/",
-        self.importShareCode
+        function(cb)
+            self:ImportShareCode(cb)
+        end
     )
 
     self.outlinableComponents = {}
@@ -279,7 +282,7 @@ function DIYMap:onUtilCreated(root)
     self.shareImportBtn.onClick:AddListener(
         function()
             local shareCode = self.shareCodeInput.text
-            self:importShareCode(shareCode)
+            self:ImportShareCode(shareCode)
         end
     )
 
@@ -641,7 +644,7 @@ function DIYMap:exportShareCode(userDefine)
 end
 
 --- 导入分享码
-function DIYMap:importShareCode(shareCode)
+function DIYMap:ImportShareCode(shareCode)
     self.downloadMaskGo:SetActive(true)
 
     CSharpAPI.ImportMapShareCode(
