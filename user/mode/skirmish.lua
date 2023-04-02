@@ -113,8 +113,8 @@ function SkirmishMode:InitMode()
 
     -- 玩家的坦克
     -- Player's tank
-    local playerVehicle = VehicleInfoManager.Instance:GetVehicleInfo(URPCustomModeOfflineManager.PlayerVehicleName) 
-    
+    local playerVehicle = VehicleInfoManager.Instance:GetVehicleInfo(URPCustomModeOfflineManager.PlayerVehicleName)
+
     -- 坦克池，资源预热防止战斗卡顿，越大越吃内存
     -- Tank pool, resource preheating to prevent battle stuttering, the larger the more memory consumed
     local maxRandomPoolCount = tonumber(self.vMaxRandomPool.text)
@@ -185,17 +185,19 @@ function SkirmishMode:InitMode()
     -- 载具物体清除的回调
     -- Callback when a vehicle object is removed
     GameEventManager.OnNewVehicleRemoved:AddListener(
-        function(initSystem)
+        function(destroyedVehicle)
             if self.isInMode then
-                --- 玩家死亡，显示选车界面
-                --- Player dies, show vehicle selection interface
-                AudioListener.volume = 0
+                if Core.BaseInitSystem.IsLocalPlayer(destroyedVehicle._InstanceNetType) == true then
+                    --- 玩家死亡，显示选车界面
+                    --- Player dies, show vehicle selection interface
+                    AudioListener.volume = 0
 
-                URPMainUIManager.Instance.audioListener.enabled = true
-                URPMainUIManager.Instance.backgroundCamera.enabled = true
+                    URPMainUIManager.Instance.audioListener.enabled = true
+                    URPMainUIManager.Instance.backgroundCamera.enabled = true
 
-                URPMainUIManager.Instance.selectVehicleBar:SetActive(true)
-                MouseLockModule.Instance:Show()
+                    URPMainUIManager.Instance.selectVehicleBar:SetActive(true)
+                    MouseLockModule.Instance:Show()
+                end
             end
         end
     )
