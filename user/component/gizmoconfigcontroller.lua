@@ -33,7 +33,6 @@ function GizmoConfigController:init(gizmoUITransform, rtPluginTransform, entryBu
         function(text)
             local scale = tonumber(text)
             GizmoConfig.config.SlotScale = scale
-            self:applyAllSlotsScale(scale)
         end
     )
 
@@ -109,12 +108,6 @@ function GizmoConfigController:init(gizmoUITransform, rtPluginTransform, entryBu
     ---------------------------------
 end
 
---- 设置 Config 中（所有）当前插槽大小
-function GizmoConfigController:applyAllSlotsScale()
-    for k, v in pairs(DIYCreateVehicleMode.slotModifyBtnList) do
-        self:applySlotScale(v.transform)
-    end
-end
 
 --- 设置 Config 中插槽大小
 function GizmoConfigController:applySlotScale(slotTransform)

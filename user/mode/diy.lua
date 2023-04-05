@@ -600,6 +600,7 @@ function DIY:OnUtilCreated(root)
     CSharpAPI.OnEquipInstallClicked:AddListener(self.OnEquipInstallClickedCb)
     CSharpAPI.OnDIYPickItem:AddListener(self.OnDIYPickItemCb)
 
+    EventSystem.AddListener(EventDefine.OnGizmoConfigChanged, self.RefreshAllSlotScale, self)
     self:toggleEquipList(false)
 end
 
@@ -617,6 +618,13 @@ function DIY:getBaseDataTypeText(dataType)
     end
 
     return text
+end
+
+--- 设置 Config 中（所有）当前插槽大小
+function DIY:RefreshAllSlotScale()
+    for k, v in pairs(self.slotModifyBtnList) do
+        self.gizmoUITransform:applySlotScale(v.transform)
+    end
 end
 
 --- 刷新 Slot 添加的 Icon
@@ -1358,6 +1366,8 @@ function DIY:OnExitMode()
     CSharpAPI.OnEquipDetailClicked:RemoveListener(self.OnEquipDetailClickedCb)
     CSharpAPI.OnEquipInstallClicked:RemoveListener(self.OnEquipInstallClickedCb)
     CSharpAPI.OnDIYPickItem:RemoveListener(self.OnDIYPickItemCb)
+
+    EventSystem.RemoveListener(EventDefine.OnGizmoConfigChanged, self.RefreshAllSlotScale, self)
 
     self.slotModifyBtnPools:Dispose()
 end
