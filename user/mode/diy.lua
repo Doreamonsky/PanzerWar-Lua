@@ -230,8 +230,12 @@ function DIY:OnUtilCreated(root)
                 "是否退出坦克工坊? Exit tank workshop?",
                 function(state)
                     if state then
-                        self:OnExitMode()
-                        CSharpAPI.RequestGarageScene()
+                        if MODE_API then
+                            ModeAPI.ExitMode()
+                        else
+                            self:OnExitMode()
+                            CSharpAPI.RequestGarageScene()
+                        end
                     end
                 end
             )

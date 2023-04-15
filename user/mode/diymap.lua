@@ -228,8 +228,12 @@ function DIYMap:onUtilCreated(root)
                 "是否退出地图工坊? Exit map workshop?",
                 function(state)
                     if state then
-                        self:OnExitMode()
-                        CSharpAPI.RequestGarageScene()
+                        if MODE_API then
+                            ModeAPI.ExitMode()
+                        else
+                            self:OnExitMode()
+                            CSharpAPI.RequestGarageScene()
+                        end
                     end
                 end
             )
