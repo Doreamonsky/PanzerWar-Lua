@@ -14,7 +14,6 @@ end
 
 -- 绑定事件 (Bind event)
 function MultiTurret:BindEvent()
-    print("Bind Events")
     GameAPI.RegisterVehicleLoadedEvent(function(vehicle)
         -- 判断是否开启多炮塔GUI (Check if MultiTurretGUI is enabled)
         if not LuaModeConfig.config.MultiTurretGUI then
