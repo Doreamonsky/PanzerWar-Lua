@@ -366,13 +366,13 @@ function GameAPI.UnRegisterVehicleDestroyedEvent(gameVehicleDestroyedDelegate) e
 ---注册车辆物体销毁事件
 ---Register Vehicle GameObject Destroyed Event
 ---@static
----@function [GameAPI.RegisterVehicleDestroyedEvent]
-function GameAPI.RegisterVehicleDestroyedEvent(gameVehicleGameObjectDestroyedDelegate) end
+---@function [GameAPI.RegisterVehicleGameObjectDestroyedEvent]
+function GameAPI.RegisterVehicleGameObjectDestroyedEvent(gameVehicleGameObjectDestroyedDelegate) end
 ---注销车辆物体销毁事件
 ---UnRegister Vehicle GameObject Destroyed Event
 ---@static
----@function [GameAPI.UnRegisterVehicleDestroyedEvent]
-function GameAPI.UnRegisterVehicleDestroyedEvent(gameVehicleGameObjectDestroyedDelegate) end
+---@function [GameAPI.UnRegisterVehicleGameObjectDestroyedEvent]
+function GameAPI.UnRegisterVehicleGameObjectDestroyedEvent(gameVehicleGameObjectDestroyedDelegate) end
 return GameAPI
 
 ---输入处理 API
