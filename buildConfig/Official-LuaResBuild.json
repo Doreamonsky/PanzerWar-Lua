@@ -8,15 +8,15 @@
             "copyInfo": [
                 {
                     "platform": "Android",
-                    "dstDir": "D:/Projects/LuaProject/resources/android/modes"
+                    "dstDir": "D:/Projects/LuaProject/resources/android/default/modes"
                 },
                 {
                     "platform": "StandaloneWindows64",
-                    "dstDir": "D:/Projects/LuaProject/resources/windows/modes"
+                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/modes"
                 },
                 {
                     "platform": "iOS",
-                    "dstDir": "/Users/shanghaiwindy/Projects/LuaProject/resources/ios/modes"
+                    "dstDir": "/Users/shanghaiwindy/Projects/LuaProject/resources/ios/default/modes"
                 }
             ]
         }

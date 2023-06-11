@@ -18,7 +18,7 @@ end
 
 function Mask:OnStartMode()
     CSharpAPI.LoadAssetBundle(
-        "MaskTexMgrCanvas",
+        "masktexmgrcanvas",
         "mod",
         function(asset)
             if asset ~= nil then

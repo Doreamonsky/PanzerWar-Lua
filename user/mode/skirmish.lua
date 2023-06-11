@@ -213,7 +213,7 @@ function SkirmishMode:OnStartMode()
     self:InitData()
     self.isInMode = true
     CSharpAPI.LoadAssetBundle(
-        "LuaSkirmish",
+        "luaskirmish",
         "mod",
         function(asset)
             if asset ~= nil then

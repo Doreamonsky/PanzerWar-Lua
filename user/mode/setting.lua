@@ -18,7 +18,7 @@ end
 
 function LuaModeSetting:OnStartMode()
     CSharpAPI.LoadAssetBundle(
-        "LuaModeConfigCanvas",
+        "luamodeconfigcanvas",
         "mod",
         function(asset)
             if asset ~= nil then

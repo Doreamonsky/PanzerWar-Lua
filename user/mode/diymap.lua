@@ -43,7 +43,7 @@ function DIYMap:OnStartMode()
         "Empty-Scene",
         function()
             CSharpAPI.LoadAssetBundle(
-                "DIYCreateMapUtil",
+                "diycreatemaputil",
                 "mod",
                 function(asset)
                     if asset ~= nil then

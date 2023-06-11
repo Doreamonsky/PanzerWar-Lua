@@ -54,7 +54,7 @@ function DIY:OnStartMode()
         "Physic-Play",
         function()
             CSharpAPI.LoadAssetBundle(
-                "DIYCreateVehicleUtil",
+                "diycreatevehicleutil",
                 "mod",
                 function(asset)
                     if asset ~= nil then
