@@ -84,7 +84,6 @@ function SkirmishMode:InitMode()
     -- Find spawn points
     self.TeamAStartPoints = GameObject.FindGameObjectsWithTag("TeamAStartPoint")
     self.TeamBStartPoints = GameObject.FindGameObjectsWithTag("TeamBStartPoint")
-    URPMainUIManager.Instance.audioListener.enabled = true     -- 打开界面 Audio Listener 防止警告
     -- Enable Audio Listener in the interface to prevent warnings
     URPMainUIManager.Instance.selectVehicleBar:SetActive(true) -- 打开选车界面
     -- Enable vehicle selection interface
@@ -190,9 +189,6 @@ function SkirmishMode:InitMode()
                 if Core.BaseInitSystem.IsLocalPlayer(destroyedVehicle._InstanceNetType) == true then
                     --- 玩家死亡，显示选车界面
                     --- Player dies, show vehicle selection interface
-                    AudioListener.volume = 0
-
-                    URPMainUIManager.Instance.audioListener.enabled = true
                     URPMainUIManager.Instance.backgroundCamera.enabled = true
 
                     URPMainUIManager.Instance.selectVehicleBar:SetActive(true)
@@ -388,8 +384,6 @@ end
 --- 关闭玩家界面
 --- Close player UI
 function SkirmishMode:ClosePlayerUI()
-    AudioListener.volume = 1
-    URPMainUIManager.Instance.audioListener.enabled = false
     URPMainUIManager.Instance.backgroundCamera.enabled = false
     MouseLockModule.Instance:Hide()
 end
