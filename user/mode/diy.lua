@@ -1380,7 +1380,9 @@ function DIY:refreshFileList()
     self.fileMgr:Clean()
 
     for k, v in pairs(UserDIYDataManager.Instance:GetDIYUserDefineds()) do
-        self.fileMgr:AddFileName(v.definedName)
+        if v then
+            self.fileMgr:AddFileName(v.definedName)
+        end
     end
 
     self.fileMgr:Refresh()
