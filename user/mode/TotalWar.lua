@@ -1,6 +1,7 @@
 --- 离线重生模式
 
-local M = class("BaseSkirmishMode")
+---@class TotalWar
+local M = class("TotalWar")
 
 GameMode()
 
@@ -9,10 +10,7 @@ local TOGGLE_OPTION_DEFINES = { "closed", "opened" }
 local STORARAGE_DEFINE = "skirmish"
 
 function M:ctor()
-    -- Mod Ctor
-    self.modName = "经典遭遇战模式"
-    self.author = "超级哆啦酱"
-    self.description = "双方重生战斗"
+    self:InitModeMeta()
 
     -- Config
     self:GetConfigStorage()
@@ -20,6 +18,9 @@ function M:ctor()
     -- Runtimes
     self.isGameLogic = false
     self.index = 0
+
+    self.redTeamScore = 0
+    self.blueTeamScore = 0
 
     ---@type table<number,ShanghaiWindy.Core.AbstractBattlePlayer>
     self.friendTankBotPlayers = {}
@@ -29,6 +30,21 @@ function M:ctor()
 
     ---@type ShanghaiWindy.Core.AbstractBattlePlayer
     self.mainBattlePlayer = nil
+end
+
+function M:InitModeMeta()
+    -- Mod Ctor
+    self.modName = "TotalWar"
+    self.author = "官方"
+    self.description = "双方空陆不间断冲突。"
+end
+
+function M:GetGameModeName(userLang)
+    if userLang == "EN" then
+        return "Total War Mode"
+    else
+        return "全面冲突模式"
+    end
 end
 
 function M:GetConfigStorage()
@@ -73,21 +89,14 @@ function M:SetConfigStorage()
     StorageAPI.SaveStorage()
 end
 
-function M:GetGameModeName(userLang)
-    if userLang == "EN" then
-        return "Base Skirmish Mode"
-    else
-        return "经典遭遇战模式"
-    end
-end
-
 function M:OnStartMode()
-    self:ShowSettingUI()
+    self:RefreshOptions()
     self:AddListeners()
 end
 
 function M:OnExitMode()
     self:RemoveListeners()
+    self.isGameLogic = false
 end
 
 function M:AddListeners()
@@ -108,7 +117,8 @@ function M:OnPickMainPlayerVehicle(evtData)
 end
 
 --- Create ui of game mode settting
-function M:ShowSettingUI()
+function M:RefreshOptions()
+    CustomOptionUIAPI.ClearOptions()
     CustomOptionUIAPI.ToggleUI(true)
     CustomOptionUIAPI.AddTitle("Skirmish")
 
@@ -181,11 +191,17 @@ function M:OnConfirmInfo()
         TeamAPI.SetPlayerTeamAsBlueTeam()
     end
 
-    ModeAPI.ShowPickVehicleUI()
+    self.mainPlayerList = VehicleAPI.GetFilteredVehicles(self.friendMinRank, self.friendMaxRank)
+    ModeAPI.ShowPickVehicleUIWithList(true, self.mainPlayerList)
 
     self.mainBattlePlayer = self:CreateMainPlayer()
     self.mainBattlePlayer.OnVehicleDestroyed:AddListener(function()
-        ModeAPI.ShowPickVehicleUI()
+        self:OnBattlePlayerDestroyed(self.mainBattlePlayer)
+    end)
+    self.mainBattlePlayer.OnGameObjectDestroyed:AddListener(function()
+        if self.isGameLogic then
+            ModeAPI.ShowPickVehicleUIWithList(true, self.mainPlayerList)
+        end
     end)
 
     --- Create bot tank players
@@ -250,7 +266,13 @@ function M:CreateBotPlayerVehicle(battlePlayerList, vehicleList)
         self:RandomSpawnBotVehicle(battlePlayer, vehicleList)
 
         battlePlayer.OnVehicleDestroyed:AddListener(function()
-            self:RandomSpawnBotVehicle(battlePlayer, vehicleList)
+            self:OnBattlePlayerDestroyed(battlePlayer)
+        end)
+
+        battlePlayer.OnGameObjectDestroyed:AddListener(function()
+            if self.isGameLogic then
+                self:RandomSpawnBotVehicle(battlePlayer, vehicleList)
+            end
         end)
     end
 end
@@ -266,7 +288,13 @@ end
 function M:RandomSpawnBotVehicle(battlePlayer, vehicleList)
     SpawnAPI.AsyncSpawn(battlePlayer:GetTeam(), function(trans)
         local vehicleInfo = RandomAPI.GetRandomVehicleFromList(vehicleList)
-        battlePlayer:CreateVehicle(vehicleInfo, trans.position, trans.rotation)
+        local spawnPos = trans.position
+
+        if vehicleInfo.type == VehicleInfo.Type.Aviation then
+            spawnPos = spawnPos + Vector3(0, 500, 0)
+        end
+
+        battlePlayer:CreateVehicle(vehicleInfo, spawnPos, trans.rotation)
     end)
 end
 
@@ -284,6 +312,36 @@ end
 
 function M:IsProxyBattle()
     return true
+end
+
+function M:IsEnableCapturePoint()
+    return false
+end
+
+---@param battlePlayer ShanghaiWindy.Core.AbstractBattlePlayer
+function M:OnBattlePlayerDestroyed(battlePlayer)
+    if battlePlayer:GetTeam() == TeamManager.Team.red then
+        self.blueTeamScore = self.blueTeamScore + 1
+    elseif battlePlayer:GetTeam() == TeamManager.Team.blue then
+        self.redTeamScore = self.redTeamScore + 1
+    end
+
+    self:UpdateScore()
+end
+
+function M:UpdateScore()
+    ModeAPI.UpdateScore(self.redTeamScore, self.blueTeamScore, self.scoreToEnd)
+
+    if self.redTeamScore >= self.scoreToEnd or self.blueTeamScore >= self.scoreToEnd then
+        if (self.redTeamScore >= self.scoreToEnd and self.team == TEAM_OPTION_DEFINES[1]) or
+            (self.blueTeamScore >= self.scoreToEnd and self.team == TEAM_OPTION_DEFINES[2]) then
+            ModeAPI.ShowVictoryOrDefeat(true)
+            self.isGameLogic = false
+        else
+            ModeAPI.ShowVictoryOrDefeat(false)
+            self.isGameLogic = false
+        end
+    end
 end
 
 return M
