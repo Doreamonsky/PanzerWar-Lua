@@ -6,6 +6,8 @@ AssetAPI = CS.ShanghaiWindy.Core.API.AssetAPI
 BattlePlayerAPI = CS.ShanghaiWindy.Core.API.BattlePlayerAPI
 --- @class ShanghaiWindy.Core.API.BuffAPI
 BuffAPI = CS.ShanghaiWindy.Core.API.BuffAPI
+--- @class ShanghaiWindy.Core.API.CameraAPI
+CameraAPI = CS.ShanghaiWindy.Core.API.CameraAPI
 --- @class ShanghaiWindy.Core.API.ComponentAPI
 ComponentAPI = CS.ShanghaiWindy.Core.API.ComponentAPI
 --- @class ShanghaiWindy.Core.API.ConvertAPI

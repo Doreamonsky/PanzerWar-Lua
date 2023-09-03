@@ -463,6 +463,13 @@ function BuffAPI.TryGetBuffReceiverAsFlight(buffReceiver, flightInitSystem) end
 function BuffAPI.TryGetBuffReceiverAsArmy(buffReceiver, armyInitSystem) end
 return BuffAPI
 
+---摄像机 API
+---Camera API
+---@class ShanghaiWindy.Core.API.CameraAPI
+local CameraAPI = {}
+
+return CameraAPI
+
 ---@class ShanghaiWindy.Core.API.ComponentAPI
 local ComponentAPI = {}
 

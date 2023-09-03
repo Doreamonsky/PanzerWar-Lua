@@ -34,6 +34,7 @@ function M:OnStartMode()
     self.blueTeamMaxScore = 0
 
     self.isCountDown = false
+    self.isGameLogic = true
 
     ---@type table<number,ShanghaiWindy.Core.AbstractBattlePlayer>
     self.countDownPlayerList = {}
@@ -140,6 +141,9 @@ function M:OnPickMainPlayerVehicle(evtData)
 
     self.mainBattlePlayer.OnVehicleDestroyed:AddListener(function()
         self:OnBattlePlayerDestroyed(self.mainBattlePlayer)
+
+        local cameraTrans = CameraAPI.GetCameraTransform()
+        SpawnVehicleAPI.CreateFreeCamera(cameraTrans.position, cameraTrans.rotation)
     end)
 
     SpawnAPI.AsyncSpawn(self.mainBattlePlayer:GetTeam(), function(trans)
@@ -166,7 +170,7 @@ function M:OnPickMainPlayerVehicle(evtData)
     self:CreateVehiclesFromRanks(TeamAPI.GetEnemyTeam(), enemyRanks)
 
     self.isCountDown = true
-    
+
     ModeAPI.EnableCountDown(10, "Blitzkrieg", "DestroyAllEnemyVehicles", function()
         self.isCountDown = false
         for k, player in pairs(self.countDownPlayerList) do
@@ -255,8 +259,10 @@ function M:UpdateScore()
         if (self.redTeamScore >= self.redTeamMaxScore and self.team == ENUM_TEAM[1]) or
             (self.blueTeamScore >= self.blueTeamMaxScore and self.team == ENUM_TEAM[2]) then
             ModeAPI.ShowVictoryOrDefeat(true)
+            self.isGameLogic = false
         else
             ModeAPI.ShowVictoryOrDefeat(false)
+            self.isGameLogic = false
         end
     end
 end
