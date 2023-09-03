@@ -5,31 +5,10 @@ local M = class("TotalWar")
 
 GameMode()
 
-local TEAM_OPTION_DEFINES = { "red", "blue" }
-local TOGGLE_OPTION_DEFINES = { "closed", "opened" }
 local STORARAGE_DEFINE = "skirmish"
 
 function M:ctor()
     self:InitModeMeta()
-
-    -- Config
-    self:GetConfigStorage()
-
-    -- Runtimes
-    self.isGameLogic = false
-    self.index = 0
-
-    self.redTeamScore = 0
-    self.blueTeamScore = 0
-
-    ---@type table<number,ShanghaiWindy.Core.AbstractBattlePlayer>
-    self.friendTankBotPlayers = {}
-
-    ---@type table<number,ShanghaiWindy.Core.AbstractBattlePlayer>
-    self.enemyTankBotPlayers = {}
-
-    ---@type ShanghaiWindy.Core.AbstractBattlePlayer
-    self.mainBattlePlayer = nil
 end
 
 function M:InitModeMeta()
@@ -48,7 +27,7 @@ function M:GetGameModeName(userLang)
 end
 
 function M:GetConfigStorage()
-    self.team = StorageAPI.GetStringValue(STORARAGE_DEFINE, "Team", TEAM_OPTION_DEFINES[1])
+    self.team = StorageAPI.GetStringValue(STORARAGE_DEFINE, "Team", ENUM_TEAM[1])
 
     self.friendTankNum = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "FriendTankNum", 5)
     self.enemyTankNum = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "EnemyTankNum", 5)
@@ -62,7 +41,7 @@ function M:GetConfigStorage()
     self.enemyMinRank = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "EnemyMinRank", 5)
     self.enemyMaxRank = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "EnemyMaxRank", 7)
 
-    self.isArtillery = StorageAPI.GetStringValue(STORARAGE_DEFINE, "IsArtillery", TOGGLE_OPTION_DEFINES[1])
+    self.isArtillery = StorageAPI.GetStringValue(STORARAGE_DEFINE, "IsArtillery", ENUM_TOGGLE[1])
 
     self.scoreToEnd = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "ScoreToEnd", 50)
 end
@@ -90,6 +69,25 @@ function M:SetConfigStorage()
 end
 
 function M:OnStartMode()
+    -- Config
+    self:GetConfigStorage()
+
+    -- Runtimes
+    self.isGameLogic = false
+    self.index = 0
+
+    self.redTeamScore = 0
+    self.blueTeamScore = 0
+
+    ---@type table<number,ShanghaiWindy.Core.AbstractBattlePlayer>
+    self.friendTankBotPlayers = {}
+
+    ---@type table<number,ShanghaiWindy.Core.AbstractBattlePlayer>
+    self.enemyTankBotPlayers = {}
+
+    ---@type ShanghaiWindy.Core.AbstractBattlePlayer
+    self.mainBattlePlayer = nil
+
     self:RefreshOptions()
     self:AddListeners()
 end
@@ -128,7 +126,7 @@ function M:RefreshOptions()
 
     -- Team
     CustomOptionUIAPI.AddTitle("Team")
-    CustomOptionUIAPI.AddOption("PlayerTeam", self.team, TEAM_OPTION_DEFINES, function(res)
+    CustomOptionUIAPI.AddOption("PlayerTeam", self.team, ENUM_TEAM, function(res)
         self.team = res
     end)
 
@@ -168,7 +166,7 @@ function M:RefreshOptions()
         self.enemyMaxRank = res
     end)
 
-    CustomOptionUIAPI.AddOption("IsArtillery", self.isArtillery, TOGGLE_OPTION_DEFINES, function(res)
+    CustomOptionUIAPI.AddOption("IsArtillery", self.isArtillery, ENUM_TOGGLE, function(res)
         self.isArtillery = res
     end)
 
@@ -185,7 +183,7 @@ function M:OnConfirmInfo()
     self:SetConfigStorage()
 
     -- Set Team
-    if self.team == TEAM_OPTION_DEFINES[1] then
+    if self.team == ENUM_TEAM[1] then
         TeamAPI.SetPlayerTeamAsRedTeam()
     else
         TeamAPI.SetPlayerTeamAsBlueTeam()
@@ -229,7 +227,7 @@ function M:OnConfirmInfo()
 end
 
 function M:GetBotVehicleList(minRank, maxRank, vehicleType)
-    return VehicleAPI.GetFilteredBotVehicles(minRank, maxRank, self.isArtillery == TOGGLE_OPTION_DEFINES[2], vehicleType)
+    return VehicleAPI.GetFilteredBotVehicles(minRank, maxRank, self.isArtillery == ENUM_TOGGLE[2], vehicleType)
 end
 
 function M:CreateMainPlayer()
@@ -330,11 +328,11 @@ function M:OnBattlePlayerDestroyed(battlePlayer)
 end
 
 function M:UpdateScore()
-    ModeAPI.UpdateScore(self.redTeamScore, self.blueTeamScore, self.scoreToEnd)
+    ModeAPI.UpdateScore(self.redTeamScore, self.blueTeamScore, self.scoreToEnd, self.scoreToEnd)
 
     if self.redTeamScore >= self.scoreToEnd or self.blueTeamScore >= self.scoreToEnd then
-        if (self.redTeamScore >= self.scoreToEnd and self.team == TEAM_OPTION_DEFINES[1]) or
-            (self.blueTeamScore >= self.scoreToEnd and self.team == TEAM_OPTION_DEFINES[2]) then
+        if (self.redTeamScore >= self.scoreToEnd and self.team == ENUM_TEAM[1]) or
+            (self.blueTeamScore >= self.scoreToEnd and self.team == ENUM_TEAM[2]) then
             ModeAPI.ShowVictoryOrDefeat(true)
             self.isGameLogic = false
         else

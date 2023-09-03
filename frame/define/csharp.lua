@@ -700,7 +700,7 @@ function ModeAPI.RemoveBattlePlayer(uid) end
 ---Update score
 ---@static
 ---@function [ModeAPI.UpdateScore]
-function ModeAPI.UpdateScore(redTeamScore, blueTeamScore, totalScore) end
+function ModeAPI.UpdateScore(redTeamScore, blueTeamScore, totalRedTeamScore, totalBlueTeamScore) end
 ---注册占领点事件
 ---Register capture point
 ---@static
@@ -736,6 +736,16 @@ function ModeAPI.ToggleScore(isShownScore) end
 ---@static
 ---@function [ModeAPI.EnableCheat]
 function ModeAPI.EnableCheat() end
+---切换是否锁住载具
+---Toggle lock vehicle state
+---@static
+---@function [ModeAPI.ToggleVehicleLockState]
+function ModeAPI.ToggleVehicleLockState(isLock, vehicle) end
+---显示倒计时
+---Enable count down
+---@static
+---@function [ModeAPI.EnableCountDown]
+function ModeAPI.EnableCountDown(countDown, countDownTitle, countDownDescription, callback) end
 return ModeAPI
 
 ---位置点 API
