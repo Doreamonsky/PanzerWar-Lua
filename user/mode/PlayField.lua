@@ -29,6 +29,13 @@ function M:OnStartMode()
     self.mainBattlePlayer = BattlePlayerAPI.CreateOfflineMainPlayer(-1, nil)
     ModeAPI.AddBattlePlayer(self.mainBattlePlayer)
 
+    self.mainBattlePlayer.OnVehicleLoaded:AddListener(function()
+        ModeAPI.EnableCheat()
+    end)
+
+    self.mainBattlePlayer.OnGameObjectDestroyed:AddListener(function()
+        ModeAPI.DisableCheat()
+    end)
 
     ModeAPI.ShowPickVehicleUI(true)
     self.mainBattlePlayer.OnGameObjectDestroyed:AddListener(function()
@@ -36,8 +43,6 @@ function M:OnStartMode()
     end)
 
     ModeAPI.ToggleScore(false)
-
-    ModeAPI.EnableCheat()
 end
 
 function M:OnUpdated()
