@@ -124,6 +124,18 @@ function M:RefreshOptions()
         self:OnConfirmInfo()
     end)
 
+    -- -- Preset
+    -- CustomOptionUIAPI.AddTitle("Preset")
+
+    -- CustomOptionUIAPI.AddOption("Preset", "", {}, function(res)
+    -- end)
+    -- CustomOptionUIAPI.AddTextField("NewPresetName", function(res)
+
+    -- end)
+
+    -- CustomOptionUIAPI.AddButton("SavePreset", "Save", function()
+    -- end)
+
     -- Team
     CustomOptionUIAPI.AddTitle("Team")
     CustomOptionUIAPI.AddOption("PlayerTeam", self.team, ENUM_TEAM, function(res)
@@ -145,7 +157,7 @@ function M:RefreshOptions()
     end)
 
     CustomOptionUIAPI.AddSlider("EnemyFlightNum", self.enemyFlightNum, 0, 20, true, function(res)
-        self.friendFlightNum = res
+        self.enemyFlightNum = res
     end)
 
     -- Filter

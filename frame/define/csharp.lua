@@ -1,3 +1,8 @@
+---@class ShanghaiWindy.Core.UIEnum
+local UIEnum = {}
+
+return UIEnum
+
 ---飞行玩家状态类，继承自基础玩家状态类。
 ---FlightPlayerState class, inherits from the BasePlayerState.
 ---@class ShanghaiWindy.Core.FlightPlayerState
@@ -14,11 +19,6 @@
 local FlightPlayerState = {}
 
 return FlightPlayerState
-
----@class ShanghaiWindy.Core.UIEnum
-local UIEnum = {}
-
-return UIEnum
 
 ---@class ShanghaiWindy.Core.BaseFireSystem
 local BaseFireSystem = {}
@@ -566,6 +566,11 @@ function CustomOptionUIAPI.AddButton(optionName, buttonName, onValueChanged) end
 ---@static
 ---@function [CustomOptionUIAPI.AddTitle]
 function CustomOptionUIAPI.AddTitle(optionName) end
+---添加文本框
+---Add text
+---@static
+---@function [CustomOptionUIAPI.AddTextField]
+function CustomOptionUIAPI.AddTextField(optionName, onInputChanged) end
 ---清空 Options
 ---Clear Options
 ---@static
@@ -743,6 +748,11 @@ function ModeAPI.ToggleScore(isShownScore) end
 ---@static
 ---@function [ModeAPI.EnableCheat]
 function ModeAPI.EnableCheat() end
+---关闭作弊
+---Disable cheat
+---@static
+---@function [ModeAPI.DisableCheat]
+function ModeAPI.DisableCheat() end
 ---切换是否锁住载具
 ---Toggle lock vehicle state
 ---@static
@@ -885,6 +895,17 @@ function StorageAPI.GetStringValue(group, key, defaultValue) end
 ---@static
 ---@function [StorageAPI.SetStringValue]
 function StorageAPI.SetStringValue(group, key, value) end
+---获得 string array
+---Get string array
+---@static
+---@function [StorageAPI.GetStringArrayValue]
+---@return System.String[]
+function StorageAPI.GetStringArrayValue(group, key, defaultValue) end
+---设置 string array
+---Set string array
+---@static
+---@function [StorageAPI.SetStringArrayValue]
+function StorageAPI.SetStringArrayValue(group, key, value) end
 ---获得布尔
 ---Get Boolean
 ---@static

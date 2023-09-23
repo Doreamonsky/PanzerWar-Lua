@@ -166,8 +166,8 @@ function M:OnPickMainPlayerVehicle(evtData)
     end
 
 
-    self:CreateVehiclesFromRanks(TeamAPI.GetPlayerTeam(), friendRanks)
-    self:CreateVehiclesFromRanks(TeamAPI.GetEnemyTeam(), enemyRanks)
+    self:CreateVehiclesFromRanks(TeamAPI.GetPlayerTeam(), playerRank, friendRanks)
+    self:CreateVehiclesFromRanks(TeamAPI.GetEnemyTeam(), playerRank, enemyRanks)
 
     self.isCountDown = true
 
@@ -201,16 +201,26 @@ function M:GetRandomRanks(minRank, maxRank, number)
 end
 
 ---@type table<number,ShanghaiWindy.Core.AbstractBattlePlayer>
-function M:CreateVehiclesFromRanks(team, ranks)
+function M:CreateVehiclesFromRanks(team, playerRank, ranks)
     local battlePlayerList = {}
     local rankVehicleMap = {}
 
     for rank, _ in pairs(ranks) do
-        rankVehicleMap[rank] = VehicleAPI.GetFilteredBotVehicles(rank, rank, false, VehicleInfo.Type.Ground)
+        local botVehicles = VehicleAPI.GetFilteredBotVehicles(rank, rank, false, VehicleInfo.Type.Ground)
+
+        if botVehicles.Count == 0 then
+            botVehicles = VehicleAPI.GetFilteredBotVehicles(playerRank, playerRank, false, VehicleInfo.Type.Ground)
+        end
+
+        rankVehicleMap[rank] = botVehicles
     end
 
     for rank, number in pairs(ranks) do
         for i = 1, number do
+            if rankVehicleMap[rank].Count == 0 then
+                error(string.format("Current rank do not have bot vehicles %s", rank))
+                return
+            end
             ---@type ShanghaiWindy.Core.AbstractBattlePlayer
             local botPlayer = BattlePlayerAPI.CreateOfflineBotPlayer(self.index, "装纷派蒙", {})
             botPlayer.BotTeam = team
