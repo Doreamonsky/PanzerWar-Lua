@@ -3,6 +3,45 @@ local UIEnum = {}
 
 return UIEnum
 
+---@class ShanghaiWindy.Data.WaveTransformInfo
+---@field pos UnityEngine.Vector3
+---@field eulerAngle UnityEngine.Vector3
+local WaveTransformInfo = {}
+
+return WaveTransformInfo
+
+---@class ShanghaiWindy.Data.WaveAttackInfo
+---@field vehicleGuid System.String
+---@field canShowWayPoint System.Boolean
+---@field waveWayPoints UnityEngine.Vector3[]
+---@field comment System.String
+---@field waveTransformInfos ShanghaiWindy.Data.WaveTransformInfo[]
+local WaveAttackInfo = {}
+
+return WaveAttackInfo
+
+---@class ShanghaiWindy.Data.WaveInfo
+---@field friendWaveList ShanghaiWindy.Data.WaveAttackInfo[]
+---@field enemyWaveList ShanghaiWindy.Data.WaveAttackInfo[]
+---@field destSize UnityEngine.Vector3
+---@field destTransformInfo ShanghaiWindy.Data.WaveTransformInfo
+local WaveInfo = {}
+
+return WaveInfo
+
+---@class ShanghaiWindy.Data.WaveMissionConfig
+---@field missionName System.String
+---@field displayName ShanghaiWindy.Core.LocalizedName
+---@field mapGuid System.String
+---@field playerTeam ShanghaiWindy.Core.TeamManager+Team
+---@field playerPickMinRank System.Int32
+---@field playerPickMaxRank System.Int32
+---@field playerTransformInfo ShanghaiWindy.Data.WaveTransformInfo
+---@field waveInfos ShanghaiWindy.Data.WaveInfo[]
+local WaveMissionConfig = {}
+
+return WaveMissionConfig
+
 ---飞行玩家状态类，继承自基础玩家状态类。
 ---FlightPlayerState class, inherits from the BasePlayerState.
 ---@class ShanghaiWindy.Core.FlightPlayerState
@@ -355,6 +394,11 @@ local OnBattleSceneLoadedDelegate = {}
 
 return OnBattleSceneLoadedDelegate
 
+---@class ShanghaiWindy.Core.Delegate.OnBattleUILoadedDelegate
+local OnBattleUILoadedDelegate = {}
+
+return OnBattleUILoadedDelegate
+
 ---音频事件加载完成时的委托
 ---Post Event Loaded Delegate
 ---@class ShanghaiWindy.Core.Delegate.PostEventLoadedDelegate
@@ -523,6 +567,23 @@ function ComponentAPI.GetNativeComponentsInParent(target, componentName) end
 function ComponentAPI.GetNativeComponentsInChildren(target, componentName) end
 return ComponentAPI
 
+---@class ShanghaiWindy.Core.API.ConfigAPI
+local ConfigAPI = {}
+
+---获取防守任务配置列表
+---Get wave mission config list
+---@static
+---@function [ConfigAPI.GetWaveMissionConfigs]
+---@return ShanghaiWindy.Data.WaveMissionConfig[]
+function ConfigAPI.GetWaveMissionConfigs() end
+---获取防守任务配置
+---Get wave mission config
+---@static
+---@function [ConfigAPI.GetWaveMissionConfig]
+---@return ShanghaiWindy.Data.WaveMissionConfig
+function ConfigAPI.GetWaveMissionConfig(guid) end
+return ConfigAPI
+
 ---将 Lua Table 转为 C# 对象
 ---Convert Lua Table to C# object
 ---@class ShanghaiWindy.Core.API.ConvertAPI
@@ -660,6 +721,17 @@ function InputAPI.UnregisterRemoveKeyInput(onKeyUnregistered) end
 function InputAPI.GetBindings() end
 return InputAPI
 
+---Map api
+---@class ShanghaiWindy.Core.API.MapAPI
+local MapAPI = {}
+
+---Get map from guid
+---@static
+---@function [MapAPI.GetMapDataByGuid]
+---@return ShanghaiWindy.Core.MapData
+function MapAPI.GetMapDataByGuid(guid) end
+return MapAPI
+
 ---模式 API
 ---Mode API
 ---@class ShanghaiWindy.Core.API.ModeAPI
@@ -698,6 +770,11 @@ function ModeAPI.UnRegisterPickVehicleCallBack(pickDelegate) end
 ---@static
 ---@function [ModeAPI.LoadBattleScene]
 function ModeAPI.LoadBattleScene(mapData, callback) end
+---加载战斗 UI
+---Load battle ui
+---@static
+---@function [ModeAPI.LoadBattleUI]
+function ModeAPI.LoadBattleUI(callback) end
 ---添加玩家
 ---Add battle player
 ---@static
@@ -942,6 +1019,9 @@ return TankAPI
 ---@class ShanghaiWindy.Core.API.TeamAPI
 local TeamAPI = {}
 
+---@static
+---@function [TeamAPI.SetPlayerTeam]
+function TeamAPI.SetPlayerTeam(playerTeam) end
 ---设置自己队伍为 Red Team
 ---Set player team as red team
 ---@static
@@ -965,6 +1045,16 @@ function TeamAPI.GetPlayerTeam() end
 ---@return ShanghaiWindy.Core.TeamManager+Team 敌对团队 Enemy Team
 function TeamAPI.GetEnemyTeam() end
 return TeamAPI
+
+---@class ShanghaiWindy.Core.API.TransformAPI
+local TransformAPI = {}
+
+---From euler angle to rotation
+---@static
+---@function [TransformAPI.EulerToRot]
+---@return UnityEngine.Quaternion
+function TransformAPI.EulerToRot(eulerAngle) end
+return TransformAPI
 
 ---模式 UI API
 ---Mode UI API
@@ -1067,9 +1157,15 @@ function VehicleAPI.GetFireList(vehicle) end
 ---获取载具信息
 ---Get Vehicle Info
 ---@static
----@function [VehicleAPI.GetVehicleInfo]
+---@function [VehicleAPI.GetVehicleInfoByName]
 ---@return ShanghaiWindy.Core.VehicleInfo 载具信息 Vehicle Info
-function VehicleAPI.GetVehicleInfo(vehicleName) end
+function VehicleAPI.GetVehicleInfoByName(vehicleName) end
+---获取载具信息
+---Get vehicle info guid
+---@static
+---@function [VehicleAPI.GetVehicleInfoByGuid]
+---@return ShanghaiWindy.Core.VehicleInfo
+function VehicleAPI.GetVehicleInfoByGuid(guid) end
 ---获取所有可驾驶载具列表
 ---Get All Driveable Vehicle List
 ---@static

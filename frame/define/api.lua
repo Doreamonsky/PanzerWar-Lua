@@ -10,6 +10,8 @@ BuffAPI = CS.ShanghaiWindy.Core.API.BuffAPI
 CameraAPI = CS.ShanghaiWindy.Core.API.CameraAPI
 --- @class ShanghaiWindy.Core.API.ComponentAPI
 ComponentAPI = CS.ShanghaiWindy.Core.API.ComponentAPI
+--- @class ShanghaiWindy.Core.API.ConfigAPI
+ConfigAPI = CS.ShanghaiWindy.Core.API.ConfigAPI
 --- @class ShanghaiWindy.Core.API.ConvertAPI
 ConvertAPI = CS.ShanghaiWindy.Core.API.ConvertAPI
 --- @class ShanghaiWindy.Core.API.CustomOptionUIAPI
@@ -20,6 +22,8 @@ FlightAPI = CS.ShanghaiWindy.Core.API.FlightAPI
 GameAPI = CS.ShanghaiWindy.Core.API.GameAPI
 --- @class ShanghaiWindy.Core.API.InputAPI
 InputAPI = CS.ShanghaiWindy.Core.API.InputAPI
+--- @class ShanghaiWindy.Core.API.MapAPI
+MapAPI = CS.ShanghaiWindy.Core.API.MapAPI
 --- @class ShanghaiWindy.Core.API.ModeAPI
 ModeAPI = CS.ShanghaiWindy.Core.API.ModeAPI
 --- @class ShanghaiWindy.Core.API.PointAPI
@@ -38,6 +42,8 @@ StorageAPI = CS.ShanghaiWindy.Core.API.StorageAPI
 TankAPI = CS.ShanghaiWindy.Core.API.TankAPI
 --- @class ShanghaiWindy.Core.API.TeamAPI
 TeamAPI = CS.ShanghaiWindy.Core.API.TeamAPI
+--- @class ShanghaiWindy.Core.API.TransformAPI
+TransformAPI = CS.ShanghaiWindy.Core.API.TransformAPI
 --- @class ShanghaiWindy.Core.API.UIAPI
 UIAPI = CS.ShanghaiWindy.Core.API.UIAPI
 --- @class ShanghaiWindy.Core.API.VehicleAPI
