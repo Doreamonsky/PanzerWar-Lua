@@ -33,7 +33,9 @@ return WaveInfo
 ---@field missionName System.String
 ---@field displayName ShanghaiWindy.Core.LocalizedName
 ---@field mapGuid System.String
+---@field maxEscapeEnemyCount System.Int32
 ---@field playerTeam ShanghaiWindy.Core.TeamManager+Team
+---@field playerVehicleType ShanghaiWindy.Data.EPlayerVehicleType
 ---@field playerPickMinRank System.Int32
 ---@field playerPickMaxRank System.Int32
 ---@field playerTransformInfo ShanghaiWindy.Data.WaveTransformInfo
@@ -41,6 +43,11 @@ return WaveInfo
 local WaveMissionConfig = {}
 
 return WaveMissionConfig
+
+---@class ShanghaiWindy.Data.MaterialConfig
+local MaterialConfig = {}
+
+return MaterialConfig
 
 ---飞行玩家状态类，继承自基础玩家状态类。
 ---FlightPlayerState class, inherits from the BasePlayerState.
@@ -732,6 +739,28 @@ local MapAPI = {}
 function MapAPI.GetMapDataByGuid(guid) end
 return MapAPI
 
+---@class ShanghaiWindy.Core.API.MaterialAPI
+local MaterialAPI = {}
+
+---@static
+---@function [MaterialAPI.AsyncApplyMaterial]
+function MaterialAPI.AsyncApplyMaterial(guid, instance) end
+return MaterialAPI
+
+---@class ShanghaiWindy.Core.API.MeshAPI
+local MeshAPI = {}
+
+---@static
+---@function [MeshAPI.CreateMesh]
+function MeshAPI.CreateMesh(points, height) end
+---@static
+---@function [MeshAPI.GetMesh]
+function MeshAPI.GetMesh(meshId) end
+---@static
+---@function [MeshAPI.DeleteMesh]
+function MeshAPI.DeleteMesh(meshId) end
+return MeshAPI
+
 ---模式 API
 ---Mode API
 ---@class ShanghaiWindy.Core.API.ModeAPI
@@ -1012,6 +1041,9 @@ local TankAPI = {}
 ---@function [TankAPI.GetTankFireList]
 ---@return System.Collections.Generic.List`1[[ShanghaiWindy.Core.TankFire, Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]] 坦克火力系统列表 List of tank fire systems
 function TankAPI.GetTankFireList(vehicle) end
+---@static
+---@function [TankAPI.GetDefenceBotLogic]
+function TankAPI.GetDefenceBotLogic() end
 return TankAPI
 
 ---团队接口
@@ -1055,6 +1087,14 @@ local TransformAPI = {}
 ---@return UnityEngine.Quaternion
 function TransformAPI.EulerToRot(eulerAngle) end
 return TransformAPI
+
+---@class ShanghaiWindy.Core.API.TriggerAPI
+local TriggerAPI = {}
+
+---@static
+---@function [TriggerAPI.IsPointInPolygon]
+function TriggerAPI.IsPointInPolygon(point, polygonPoints) end
+return TriggerAPI
 
 ---模式 UI API
 ---Mode UI API

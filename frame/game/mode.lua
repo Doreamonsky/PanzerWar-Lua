@@ -26,10 +26,6 @@ function M:IsProxyBattle()
     error("override me plz")
 end
 
-function M:IsEnableCapturePoint()
-    error("override me plz")
-end
-
 function M:GetMapMode()
     error("override me plz")
 end

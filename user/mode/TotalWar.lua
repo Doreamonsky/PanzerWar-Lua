@@ -324,9 +324,6 @@ function M:IsProxyBattle()
     return true
 end
 
-function M:IsEnableCapturePoint()
-    return false
-end
 
 ---@param battlePlayer ShanghaiWindy.Core.AbstractBattlePlayer
 function M:OnBattlePlayerDestroyed(battlePlayer)

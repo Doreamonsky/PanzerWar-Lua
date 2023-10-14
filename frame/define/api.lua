@@ -24,6 +24,10 @@ GameAPI = CS.ShanghaiWindy.Core.API.GameAPI
 InputAPI = CS.ShanghaiWindy.Core.API.InputAPI
 --- @class ShanghaiWindy.Core.API.MapAPI
 MapAPI = CS.ShanghaiWindy.Core.API.MapAPI
+--- @class ShanghaiWindy.Core.API.MaterialAPI
+MaterialAPI = CS.ShanghaiWindy.Core.API.MaterialAPI
+--- @class ShanghaiWindy.Core.API.MeshAPI
+MeshAPI = CS.ShanghaiWindy.Core.API.MeshAPI
 --- @class ShanghaiWindy.Core.API.ModeAPI
 ModeAPI = CS.ShanghaiWindy.Core.API.ModeAPI
 --- @class ShanghaiWindy.Core.API.PointAPI
@@ -44,6 +48,8 @@ TankAPI = CS.ShanghaiWindy.Core.API.TankAPI
 TeamAPI = CS.ShanghaiWindy.Core.API.TeamAPI
 --- @class ShanghaiWindy.Core.API.TransformAPI
 TransformAPI = CS.ShanghaiWindy.Core.API.TransformAPI
+--- @class ShanghaiWindy.Core.API.TriggerAPI
+TriggerAPI = CS.ShanghaiWindy.Core.API.TriggerAPI
 --- @class ShanghaiWindy.Core.API.UIAPI
 UIAPI = CS.ShanghaiWindy.Core.API.UIAPI
 --- @class ShanghaiWindy.Core.API.VehicleAPI

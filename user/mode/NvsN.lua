@@ -281,10 +281,6 @@ function M:IsProxyBattle()
     return true
 end
 
-function M:IsEnableCapturePoint()
-    return false
-end
-
 function M:GetMapMode()
     return MODE_HOST_RANDOM
 end
