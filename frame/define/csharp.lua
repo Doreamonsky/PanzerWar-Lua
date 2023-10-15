@@ -3,19 +3,37 @@ local UIEnum = {}
 
 return UIEnum
 
----@class ShanghaiWindy.Data.WaveTransformInfo
+---@class ShanghaiWindy.Data.CaptureZone
+---@field zoneName System.String
+---@field zonePoints UnityEngine.Vector3[]
+---@field captureFlagPoint UnityEngine.Vector3
+---@field captureFlagRadius UnityEngine.Vector3
+---@field transformInfos ShanghaiWindy.Data.TransformInfo[]
+local CaptureZone = {}
+
+return CaptureZone
+
+---@class ShanghaiWindy.Data.CaptureZoneModeConfig
+---@field mapGuid System.String
+---@field captureZoneName System.String
+---@field captureZones ShanghaiWindy.Data.CaptureZone[]
+local CaptureZoneModeConfig = {}
+
+return CaptureZoneModeConfig
+
+---@class ShanghaiWindy.Data.TransformInfo
 ---@field pos UnityEngine.Vector3
 ---@field eulerAngle UnityEngine.Vector3
-local WaveTransformInfo = {}
+local TransformInfo = {}
 
-return WaveTransformInfo
+return TransformInfo
 
 ---@class ShanghaiWindy.Data.WaveAttackInfo
+---@field comment System.String
 ---@field vehicleGuid System.String
 ---@field canShowWayPoint System.Boolean
 ---@field waveWayPoints UnityEngine.Vector3[]
----@field comment System.String
----@field waveTransformInfos ShanghaiWindy.Data.WaveTransformInfo[]
+---@field waveTransformInfos ShanghaiWindy.Data.TransformInfo[]
 local WaveAttackInfo = {}
 
 return WaveAttackInfo
@@ -24,7 +42,7 @@ return WaveAttackInfo
 ---@field friendWaveList ShanghaiWindy.Data.WaveAttackInfo[]
 ---@field enemyWaveList ShanghaiWindy.Data.WaveAttackInfo[]
 ---@field destSize UnityEngine.Vector3
----@field destTransformInfo ShanghaiWindy.Data.WaveTransformInfo
+---@field destTransformInfo ShanghaiWindy.Data.TransformInfo
 local WaveInfo = {}
 
 return WaveInfo
@@ -38,7 +56,7 @@ return WaveInfo
 ---@field playerVehicleType ShanghaiWindy.Data.EPlayerVehicleType
 ---@field playerPickMinRank System.Int32
 ---@field playerPickMaxRank System.Int32
----@field playerTransformInfo ShanghaiWindy.Data.WaveTransformInfo
+---@field playerTransformInfo ShanghaiWindy.Data.TransformInfo
 ---@field waveInfos ShanghaiWindy.Data.WaveInfo[]
 local WaveMissionConfig = {}
 
@@ -521,6 +539,20 @@ local CameraAPI = {}
 
 return CameraAPI
 
+---@class ShanghaiWindy.Core.API.CaptureZoneAPI
+local CaptureZoneAPI = {}
+
+---@static
+---@function [CaptureZoneAPI.AddCaptureZone]
+function CaptureZoneAPI.AddCaptureZone(zoneName, point) end
+---@static
+---@function [CaptureZoneAPI.CapturingZone]
+function CaptureZoneAPI.CapturingZone(id, team, delta) end
+---@static
+---@function [CaptureZoneAPI.RemoveCaptureZone]
+function CaptureZoneAPI.RemoveCaptureZone(id) end
+return CaptureZoneAPI
+
 ---@class ShanghaiWindy.Core.API.ComponentAPI
 local ComponentAPI = {}
 
@@ -589,6 +621,12 @@ function ConfigAPI.GetWaveMissionConfigs() end
 ---@function [ConfigAPI.GetWaveMissionConfig]
 ---@return ShanghaiWindy.Data.WaveMissionConfig
 function ConfigAPI.GetWaveMissionConfig(guid) end
+---获取占领区任务配置
+---Get capture zone config
+---@static
+---@function [ConfigAPI.GetCaptureZoneConfig]
+---@return ShanghaiWindy.Data.CaptureZoneModeConfig
+function ConfigAPI.GetCaptureZoneConfig(guid) end
 return ConfigAPI
 
 ---将 Lua Table 转为 C# 对象
@@ -900,11 +938,6 @@ function PointAPI.GetPatrolPoints() end
 ---@function [PointAPI.GetCapturePoints]
 ---@return ShanghaiWindy.Core.PointFunctions[]
 function PointAPI.GetCapturePoints() end
----刷新占领点状态
----Refresh point status
----@static
----@function [PointAPI.RefreshPointStatus]
-function PointAPI.RefreshPointStatus(index, progress) end
 return PointAPI
 
 ---随机 API

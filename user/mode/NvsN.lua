@@ -218,7 +218,7 @@ function M:CreateVehiclesFromRanks(team, playerRank, ranks)
     for rank, number in pairs(ranks) do
         for i = 1, number do
             if rankVehicleMap[rank].Count == 0 then
-                error(string.format("Current rank do not have bot vehicles %s", rank))
+                print(string.format("Current rank do not have bot vehicles %s", rank))
                 return
             end
             ---@type ShanghaiWindy.Core.AbstractBattlePlayer

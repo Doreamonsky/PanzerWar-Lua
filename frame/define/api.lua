@@ -8,6 +8,8 @@ BattlePlayerAPI = CS.ShanghaiWindy.Core.API.BattlePlayerAPI
 BuffAPI = CS.ShanghaiWindy.Core.API.BuffAPI
 --- @class ShanghaiWindy.Core.API.CameraAPI
 CameraAPI = CS.ShanghaiWindy.Core.API.CameraAPI
+--- @class ShanghaiWindy.Core.API.CaptureZoneAPI
+CaptureZoneAPI = CS.ShanghaiWindy.Core.API.CaptureZoneAPI
 --- @class ShanghaiWindy.Core.API.ComponentAPI
 ComponentAPI = CS.ShanghaiWindy.Core.API.ComponentAPI
 --- @class ShanghaiWindy.Core.API.ConfigAPI
