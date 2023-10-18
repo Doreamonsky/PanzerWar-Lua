@@ -62,8 +62,16 @@ function M:OnBattleSceneLoaded()
 
         MaterialAPI.AsyncApplyMaterial("6873b9de-42d2-45f9-8960-5738d67d0540", mesh)
 
-        CaptureZoneAPI.AddCaptureZone(captureZone.zoneCapturePoint.pointName, captureZone.zoneCapturePoint.position)
+        local id = CaptureZoneAPI.AddCaptureZone(captureZone.zoneCapturePoint.pointName,
+            captureZone.zoneCapturePoint.position)
+
+        if captureZone.zoneCapturePoint.defaultOwner ~= TeamAPI.GetNoneTeam() then
+            CaptureZoneAPI.CapturingZone(id, captureZone.zoneCapturePoint.defaultOwner, 1)
+        end
     end
+
+    CameraAPI.SetBackgroundCameraPosition(self.curConfig.backgroundCameraTransformInfo.pos)
+    CameraAPI.SetBackgroundCameraEulerAngles(self.curConfig.backgroundCameraTransformInfo.eulerAngle)
 
     ModeAPI.LoadBattleUI(function()
         LuaUIManager.CreateUI(CaptureZoneView.new(), CaptureZoneController.new(), "f5ec298e-6852-487a-95a8-00191a792ad4",
@@ -75,6 +83,7 @@ function M:OnUpdated()
 end
 
 function M:OnExitMode()
+    CustomOptionUIAPI.ToggleUI(false)
     self:RemoveListeners()
 end
 

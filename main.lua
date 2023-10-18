@@ -25,3 +25,13 @@ end
 LuaUIManager.removeResourceDelegate = function(resourceRef)
     AssetAPI.ReleasePoolAsset(resourceRef)
 end
+
+function print_func_ref_by_csharp()
+    local registry = debug.getregistry()
+    for k, v in pairs(registry) do
+        if type(k) == 'number' and type(v) == 'function' and registry[v] == k then
+            local info = debug.getinfo(v)
+            print(string.format('func ref by c# %s:%d', info.short_src, info.linedefined))
+        end
+    end
+end

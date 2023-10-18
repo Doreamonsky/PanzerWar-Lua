@@ -39,4 +39,10 @@ traceback = function(err)
     error("lua error " .. err)
 end
 
+handler = function(instance, method)
+    return function(...)
+        return method(instance, ...)
+    end
+end
+
 LuaProfiler = profiler.new()

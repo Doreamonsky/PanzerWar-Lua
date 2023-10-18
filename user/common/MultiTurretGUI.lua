@@ -1,54 +1,66 @@
-local MultiTurret = class("MultiTurret")
+---@class MultiTurretGUI
+local MultiTurretGUI = class("MultiTurretGUI")
+local M = MultiTurretGUI
 
 Common()
 
 -- 构造函数 (Constructor)
-function MultiTurret:ctor()
+function M:ctor()
     self.tankfireList = {}
     self.tankFireDataDict = {}
 end
 
-function MultiTurret:OnStarted()
-    self:BindEvent()
+function M:OnStarted()
+    self.onVehicleLoaded = handler(self, self.OnVehicleLoaded)
+    self:AddListeners()
 end
 
--- 绑定事件 (Bind event)
-function MultiTurret:BindEvent()
-    GameAPI.RegisterVehicleLoadedEvent(function(vehicle)
-        -- 判断是否开启多炮塔GUI (Check if MultiTurretGUI is enabled)
-        if not LuaModeConfig.config.MultiTurretGUI then
-            return
-        end
+function M:OnDispose()
+    self:RemoveListener()
+end
 
-        -- 判断是否是本地玩家 (Check if it's the local player)
-        if CSharpAPI.isLocalPlayer(vehicle) then
-            local ret = VehicleAPI.IsTankVehicle(vehicle)
+function M:AddListeners()
+    GameAPI.RegisterVehicleLoadedEvent(self.onVehicleLoaded)
+end
 
-            if ret then
-                self.vehicle = vehicle
-                self.tankFireDataDict = {}
+function M:RemoveListener()
+    GameAPI.UnRegisterVehicleLoadedEvent(self.onVehicleLoaded)
+end
 
-                -- 获取炮塔列表 (Get turret list)
-                self.tankfireList = TankAPI.GetTankFireList(vehicle)
+function M:OnVehicleLoaded(vehicle)
+    -- 判断是否开启多炮塔GUI (Check if MGUI is enabled)
+    if not LuaModeConfig.config.MGUI then
+        return
+    end
 
-                -- 如果炮塔数量大于1个，才需要创建多炮塔管理 (Create multi-turret management only if there are more than one turret)
-                if self.tankfireList.Count > 1 then
-                    -- 请求 AssetBundle 资源 (Request AssetBundle resource)
-                    AssetAPI.LoadAssetBundle(
-                        "multifirecanvas",
-                        "mod",
-                        function(asset)
-                            self:OnAssetLoaded(asset)
-                        end
-                    )
-                end
+    -- 判断是否是本地玩家 (Check if it's the local player)
+    if CSharpAPI.isLocalPlayer(vehicle) then
+        local ret = VehicleAPI.IsTankVehicle(vehicle)
+
+        if ret then
+            self.vehicle = vehicle
+            self.tankFireDataDict = {}
+
+            -- 获取炮塔列表 (Get turret list)
+            self.tankfireList = TankAPI.GetTankFireList(vehicle)
+
+            -- 如果炮塔数量大于1个，才需要创建多炮塔管理 (Create multi-turret management only if there are more than one turret)
+            if self.tankfireList.Count > 1 then
+                -- 请求 AssetBundle 资源 (Request AssetBundle resource)
+                AssetAPI.LoadAssetBundle(
+                    "multifirecanvas",
+                    "mod",
+                    function(asset)
+                        self:OnAssetLoaded(asset)
+                    end
+                )
             end
         end
-    end)
+    end
 end
 
 -- 资源加载后的处理 (Process after resource is loaded)
-function MultiTurret:OnAssetLoaded(asset)
+function M:OnAssetLoaded(asset)
     if asset ~= nil then
         local ui_instance = GameObject.Instantiate(asset)
         local template = ui_instance.transform:Find("Panel/Template").gameObject
@@ -100,8 +112,8 @@ function MultiTurret:OnAssetLoaded(asset)
 end
 
 -- 更新函数 (Update function)
-function MultiTurret:OnUpdated()
-    if not LuaModeConfig.config.MultiTurretGUI then
+function M:OnUpdated()
+    if not LuaModeConfig.config.MGUI then
         return
     end
 
@@ -112,5 +124,4 @@ function MultiTurret:OnUpdated()
     end
 end
 
-return MultiTurret
-
+return M

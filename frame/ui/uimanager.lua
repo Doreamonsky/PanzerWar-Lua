@@ -20,8 +20,9 @@ function M.CreateUI(view, controller, ...)
         resourceRef = nil
     }
 
-    M.createResourceDelegate(function(root, resourceRef)
+    M.createResourceDelegate(function(instance, resourceRef)
         if M.RefMap[M.Index] ~= nil then
+            local root = instance.transform
             view:InitUI(root)
             controller.view = view
 
@@ -44,7 +45,7 @@ function M.RemoveUI(index)
     if ref ~= nil then
         ---@type BaseController
         local controller = ref.controller
-        controller:Dispose()
+        controller:Destroy()
 
         M.removeResourceDelegate(ref.resourceRef)
         M.RefMap[index] = nil

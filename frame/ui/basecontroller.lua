@@ -8,7 +8,7 @@ function M:Awake()
     error("override me plz")
 end
 
-function M:Dispose()
+function M:Destroy()
     error("override me plz")
 end
 
