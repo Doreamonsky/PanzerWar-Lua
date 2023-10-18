@@ -3,20 +3,28 @@ local UIEnum = {}
 
 return UIEnum
 
+---@class ShanghaiWindy.Data.ZoneCapturePoint
+---@field pointName System.String
+---@field position UnityEngine.Vector3
+---@field radius System.Single
+local ZoneCapturePoint = {}
+
+return ZoneCapturePoint
+
 ---@class ShanghaiWindy.Data.CaptureZone
----@field zoneName System.String
 ---@field zonePoints UnityEngine.Vector3[]
----@field captureFlagPoint UnityEngine.Vector3
----@field captureFlagRadius UnityEngine.Vector3
----@field transformInfos ShanghaiWindy.Data.TransformInfo[]
+---@field zoneCapturePoint ShanghaiWindy.Data.ZoneCapturePoint
+---@field spawnTransformInfos ShanghaiWindy.Data.TransformInfo[]
 local CaptureZone = {}
 
 return CaptureZone
 
 ---@class ShanghaiWindy.Data.CaptureZoneModeConfig
----@field mapGuid System.String
 ---@field captureZoneName System.String
+---@field displayName ShanghaiWindy.Core.LocalizedName
+---@field mapGuid System.String
 ---@field captureZones ShanghaiWindy.Data.CaptureZone[]
+---@field backgroundCameraTransformInfo ShanghaiWindy.Data.TransformInfo
 local CaptureZoneModeConfig = {}
 
 return CaptureZoneModeConfig
@@ -369,6 +377,11 @@ local AssetLoadedDelegate = {}
 
 return AssetLoadedDelegate
 
+---@class ShanghaiWindy.Core.Delegate.LoadPoolAssetDelegate
+local LoadPoolAssetDelegate = {}
+
+return LoadPoolAssetDelegate
+
 ---当载具资源和组件加载时触发全局游戏事件。
 ---Dispatch global event when vehicle assets and components are loaded.
 ---@class ShanghaiWindy.Core.Delegate.OnGameVehicleLoadedDelegate
@@ -477,11 +490,21 @@ return ArmyAPI
 ---@class ShanghaiWindy.Core.API.AssetAPI
 local AssetAPI = {}
 
----加载资源包
----Load Asset Bundle
+---（弃用）加载资源包
+---（Deprecated）Load Asset Bundle
 ---@static
 ---@function [AssetAPI.LoadAssetBundle]
 function AssetAPI.LoadAssetBundle(abName, format, callBack) end
+---从对象池加载资源
+---Load asset from object pool
+---@static
+---@function [AssetAPI.LoadPoolAsset]
+function AssetAPI.LoadPoolAsset(id, fileName, callBack) end
+---将对方返回对象池
+---Release asset to object pool
+---@static
+---@function [AssetAPI.ReleasePoolAsset]
+function AssetAPI.ReleasePoolAsset(assetPoolRef) end
 ---强制解析资源包
 ---Force Resolve Package
 ---@static
@@ -537,6 +560,18 @@ return BuffAPI
 ---@class ShanghaiWindy.Core.API.CameraAPI
 local CameraAPI = {}
 
+---获取摄像机 Transform
+---Get camera transform
+---@static
+---@function [CameraAPI.GetCameraTransform]
+---@return UnityEngine.Transform
+function CameraAPI.GetCameraTransform() end
+---@static
+---@function [CameraAPI.SetBackgroundCameraPosition]
+function CameraAPI.SetBackgroundCameraPosition(position) end
+---@static
+---@function [CameraAPI.SetBackgroundCameraEulerAngles]
+function CameraAPI.SetBackgroundCameraEulerAngles(eulerAngles) end
 return CameraAPI
 
 ---@class ShanghaiWindy.Core.API.CaptureZoneAPI
@@ -621,6 +656,12 @@ function ConfigAPI.GetWaveMissionConfigs() end
 ---@function [ConfigAPI.GetWaveMissionConfig]
 ---@return ShanghaiWindy.Data.WaveMissionConfig
 function ConfigAPI.GetWaveMissionConfig(guid) end
+---获取占领点配置列表
+---Get capture zone config list
+---@static
+---@function [ConfigAPI.GetCaptureZoneConfigs]
+---@return ShanghaiWindy.Data.CaptureZoneModeConfig[]
+function ConfigAPI.GetCaptureZoneConfigs() end
 ---获取占领区任务配置
 ---Get capture zone config
 ---@static
@@ -983,6 +1024,11 @@ local SpawnAPI = {}
 ---@static
 ---@function [SpawnAPI.AsyncSpawn]
 function SpawnAPI.AsyncSpawn(team, onSpawnPoint) end
+---异步寻找当前的出生点可用点
+---Find spawn given point in async
+---@static
+---@function [SpawnAPI.AsyncSpawnGivenPoints]
+function SpawnAPI.AsyncSpawnGivenPoints(points, onSpawnPoint) end
 return SpawnAPI
 
 ---载具生成API

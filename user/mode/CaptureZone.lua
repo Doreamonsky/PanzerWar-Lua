@@ -55,16 +55,23 @@ function M:OnStartMode()
 end
 
 function M:OnBattleSceneLoaded()
-    for k, captureZone in pairs(self.curConfig.captureZones) do
+    for i = 0, self.curConfig.captureZones.Length - 1 do
+        local captureZone = self.curConfig.captureZones[i]
         local meshId = MeshAPI.CreateMesh(captureZone.zonePoints, 5)
         local mesh = MeshAPI.GetMesh(meshId)
 
         MaterialAPI.AsyncApplyMaterial("6873b9de-42d2-45f9-8960-5738d67d0540", mesh)
 
-        CaptureZoneAPI.AddCaptureZone(captureZone.zoneName, captureZone.captureFlagPoint)
+        CaptureZoneAPI.AddCaptureZone(captureZone.zoneCapturePoint.pointName, captureZone.zoneCapturePoint.position)
     end
 
-    ModeAPI.LoadBattleUI()
+    ModeAPI.LoadBattleUI(function()
+        LuaUIManager.CreateUI(CaptureZoneView.new(), CaptureZoneController.new(), "f5ec298e-6852-487a-95a8-00191a792ad4",
+            "LuaCaptureZone.prefab")
+    end)
+end
+
+function M:OnUpdated()
 end
 
 function M:OnExitMode()
