@@ -39,6 +39,7 @@ OnKeyUnregistered = CS.ShanghaiWindy.Core.Delegate.OnKeyUnregistered
 OnBattleSceneLoadedDelegate = CS.ShanghaiWindy.Core.Delegate.OnBattleSceneLoadedDelegate
 OnBattleUILoadedDelegate = CS.ShanghaiWindy.Core.Delegate.OnBattleUILoadedDelegate
 PostEventLoadedDelegate = CS.ShanghaiWindy.Core.Delegate.PostEventLoadedDelegate
+OnQuarterTickDelegate = CS.ShanghaiWindy.Core.Delegate.OnQuarterTickDelegate
 OnTickDelegate = CS.ShanghaiWindy.Core.Delegate.OnTickDelegate
 OnVehicleLoadedDelegate = CS.ShanghaiWindy.Core.Delegate.OnVehicleLoadedDelegate
 OnVehicleDestroyedDelegate = CS.ShanghaiWindy.Core.Delegate.OnVehicleDestroyedDelegate
