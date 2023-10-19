@@ -7,6 +7,8 @@ Lib()
 local M = CaptureZoneController
 
 function M:ctor()
+    ---@type CaptureZone
+    self._mode = nil
     self._uiMap = {}
     self._selectPointId = -1
     self._mainPlayerVehicle = nil
@@ -31,23 +33,23 @@ end
 function M:RemoveListener()
     -- C#
     TimeAPI.UnRegisterQuarterTick(self.onTick)
-    ModeAPI.UnRegisterPickVehicleCallBack(self.OnPickMainPlayerVehicle)
+    ModeAPI.UnRegisterPickVehicleCallBack(self.onPickMainPlayerVehicle)
 
     -- Lua
-    self.view.vPickVehicle.onClick:RemoveListener(self.onPickVehicleClicked)
-    self.view.vBattle.onClick:RemoveListener(self.onBattleClicked)
+    self.view.vPickVehicle.onClick:RemoveAllListeners(self.onPickVehicleClicked)
+    self.view.vBattle.onClick:RemoveAllListeners(self.onBattleClicked)
     EventSystem.RemoveListener(EventDefine.OnZonePickBarVisibilityChanged, self.OnPickBarChanged, self)
 end
 
 function M:Awake()
-    ---@type CaptureZone
-    self.mode = ModeAPI.GetModeInstance()
+    self._mode = ModeAPI.GetModeInstance()
 
     local captureZones = CaptureZoneAPI.GetCaptureZoneInfos()
 
     for i = 0, captureZones.Length - 1 do
         local captureZone = captureZones[i]
         local instance = GameObjectAPI.Clone(self.view.vPointTemplate)
+        GameObjectAPI.SetActive(instance, true)
 
         local btn = ComponentAPI.GetNativeComponent(instance, "Button")
         btn.onClick:AddListener(function()
@@ -66,7 +68,9 @@ function M:Awake()
         }
     end
 
-    self:PickMainPlayerVehicle(self.mode.mainPlayerList[0])
+    GameObjectAPI.SetActive(self.view.vPointTemplate, false)
+
+    self:PickMainPlayerVehicle(self._mode.mainPlayerList[0])
     self:RefreshCaptureStatus()
     self:RefreshCaptureScreen()
     self:AddListeners()
@@ -84,10 +88,11 @@ end
 
 function M:OnTick()
     self:RefreshCaptureStatus()
+    self:RefreshCaptureScreen()
 end
 
 function M:OnPickVehicleClicked()
-    ModeAPI.ShowPickVehicleUIWithList(false, self.mode.mainPlayerList)
+    ModeAPI.ShowPickVehicleUIWithList(false, self._mode.mainPlayerList)
 end
 
 function M:OnPickMainPlayerVehicle(evtData)
@@ -111,7 +116,7 @@ function M:OnPickBarChanged(isActive)
 end
 
 function M:OnBattleClicked()
-    self.mode:SpawnMainPlayer(self._mainPlayerVehicle, self._selectPointId)
+    self._mode:SpawnMainPlayer(self._mainPlayerVehicle, self._selectPointId)
 end
 
 function M:CreateBotPlayerList(num, team)
@@ -130,9 +135,14 @@ function M:CreateBotPlayerList(num, team)
     return list
 end
 
-
 function M:RefreshCaptureScreen()
     local bgCam = CameraAPI.GetBackGroundCamera()
+
+    local config = self._mode.curConfig
+
+    CameraAPI.SetBackgroundCameraPosition(config.backgroundCameraTransformInfo.pos)
+    CameraAPI.SetBackgroundCameraEulerAngles(config.backgroundCameraTransformInfo.eulerAngle)
+
     local captureZones = CaptureZoneAPI.GetCaptureZoneInfos()
 
     for i = 0, captureZones.Length - 1 do
@@ -141,7 +151,6 @@ function M:RefreshCaptureScreen()
         local screenPoint = CameraAPI.WorldToScreenPoint(bgCam, captureZone.point)
         instance.transform.position = screenPoint
     end
-    
 end
 
 function M:RefreshCaptureStatus()

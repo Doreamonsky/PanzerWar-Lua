@@ -221,8 +221,6 @@ function M:OnBattleSceneLoaded()
     self:CreateBotPlayerVehicle(self.friendFlightBotPlayers, self.friendFlightVehicleList)
     self:CreateBotPlayerVehicle(self.enemyFlightBotPlayers, self.enemyFlightVehicleList)
 
-    self:SetBackgroundCamera()
-
     ModeAPI.LoadBattleUI(function()
         self.captureZoneUIIndex = LuaUIManager.CreateUI(CaptureZoneView.new(), CaptureZoneController.new(),
             "f5ec298e-6852-487a-95a8-00191a792ad4",
@@ -327,14 +325,8 @@ function M:RandomSpawnBotVehicle(battlePlayer, vehicleList)
     end
 end
 
-function M:SetBackgroundCamera()
-    CameraAPI.SetBackgroundCameraPosition(self.curConfig.backgroundCameraTransformInfo.pos)
-    CameraAPI.SetBackgroundCameraEulerAngles(self.curConfig.backgroundCameraTransformInfo.eulerAngle)
-end
-
 function M:OnMainPlayerGameObjectDestroyed(battlePlayer)
     EventSystem.DispatchEvent(EventDefine.OnZonePickBarVisibilityChanged, true)
-    self:SetBackgroundCamera()
 end
 
 ---@param battlePlayer ShanghaiWindy.Core.AbstractBattlePlayer
