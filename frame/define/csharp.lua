@@ -355,6 +355,7 @@ return ILuaControllableVehicle
 ---GameMode() 定义下的类型接口。Lua 游戏模式模块接口，用于定义游戏模式的行为和逻辑。
 ---Interface for GameMode() define. Lua game mode module interface, providing game mode behaviors and logic.
 ---@class ShanghaiWindy.Core.Lua.ILuaGameMode
+---@field luaClass XLua.LuaTable
 local ILuaGameMode = {}
 
 ---获取游戏模式的名称。
@@ -914,6 +915,11 @@ function GameObjectAPI.Clone(go) end
 ---@static
 ---@function [GameObjectAPI.DestroyObject]
 function GameObjectAPI.DestroyObject(go) end
+---是否显示物体
+---Set object active
+---@static
+---@function [GameObjectAPI.SetActive]
+function GameObjectAPI.SetActive(go, isActive) end
 return GameObjectAPI
 
 ---输入处理 API
@@ -1104,6 +1110,12 @@ function ModeAPI.ToggleVehicleLockState(isLock, vehicle) end
 ---@static
 ---@function [ModeAPI.EnableCountDown]
 function ModeAPI.EnableCountDown(countDown, countDownTitle, countDownDescription, callback) end
+---获取模式 lua class 的实例
+---Get mode instance of lua class
+---@static
+---@function [ModeAPI.GetModeInstance]
+---@return XLua.LuaTable
+function ModeAPI.GetModeInstance() end
 return ModeAPI
 
 ---位置点 API
