@@ -1,5 +1,10 @@
 --- 事件定义
 local EventDefine = {}
 
-EventDefine.OnGizmoConfigChanged = "OnCameraControllerTypeChanged"
+-- Gizmo Config
+EventDefine.OnGizmoConfigChanged = "OnGizmoConfigChanged"
+
+-- Capture Zone
+EventDefine.OnZonePickBarVisibilityChanged = "OnPickBarVisibilityChanged"
+
 return EventDefine

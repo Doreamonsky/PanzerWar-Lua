@@ -14,6 +14,12 @@ function M:InitUI(root)
     self.vPointTemplate = root:Find("#obj_CapturePickBar/#obj_PointTemplate").gameObject
     --- @type Image
     self.vVehicleThumbnail = root:Find("#obj_CapturePickBar/#img_VehicleThumbnail"):GetComponent("Image")
+    --- @type Text
+    self.vVehicleName = root:Find("#obj_CapturePickBar/#img_VehicleThumbnail/#txt_VehicleName"):GetComponent("Text")
+    --- @type Text
+    self.vVehicleRank = root:Find("#obj_CapturePickBar/#img_VehicleThumbnail/#txt_VehicleRank"):GetComponent("Text")
     --- @type Button
     self.vPickVehicle = root:Find("#obj_CapturePickBar/#btn_PickVehicle"):GetComponent("Button")
+    --- @type Button
+    self.vBattle = root:Find("#obj_CapturePickBar/#btn_Battle"):GetComponent("Button")
 end

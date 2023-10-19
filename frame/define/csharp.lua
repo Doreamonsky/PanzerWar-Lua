@@ -99,6 +99,43 @@ local FlightPlayerState = {}
 
 return FlightPlayerState
 
+---@class ShanghaiWindy.Core.VehicleInfo
+local VehicleInfo = {}
+
+---@instance
+---@function [VehicleInfo:GetDisplayName]
+---@return System.String
+function VehicleInfo:GetDisplayName() end
+---@instance
+---@function [VehicleInfo:GetVehicleName]
+---@return System.String
+function VehicleInfo:GetVehicleName() end
+---@instance
+---@function [VehicleInfo:GetRepairCost]
+---@return System.Int32
+function VehicleInfo:GetRepairCost(isMultiplayer) end
+---@instance
+---@function [VehicleInfo:GetResearchExp]
+---@return System.Int32
+function VehicleInfo:GetResearchExp() end
+---@instance
+---@function [VehicleInfo:IsResearched]
+---@return System.Boolean
+function VehicleInfo:IsResearched() end
+---@instance
+---@function [VehicleInfo:IsSupportModuleMode]
+---@return System.Boolean
+function VehicleInfo:IsSupportModuleMode() end
+---@instance
+---@function [VehicleInfo:GetRank]
+---@return System.Int32
+function VehicleInfo:GetRank() end
+---@instance
+---@function [VehicleInfo:GetUUID]
+---@return System.String
+function VehicleInfo:GetUUID() end
+return VehicleInfo
+
 ---@class ShanghaiWindy.Core.BaseFireSystem
 local BaseFireSystem = {}
 
@@ -137,10 +174,10 @@ local BasePlayerState = {}
 return BasePlayerState
 
 ---@class ShanghaiWindy.Core.CaptureZoneInfo
----@field capturingTeam ShanghaiWindy.Core.PropValue`1[ShanghaiWindy.Core.TeamManager+Team]
 ---@field zoneName System.String
 ---@field point UnityEngine.Vector3
 ---@field currentCaptureProgress System.Single
+---@field capturingTeam ShanghaiWindy.Core.TeamManager+Team
 local CaptureZoneInfo = {}
 
 ---@instance
@@ -530,6 +567,12 @@ return OnVehicleRemovedDelegate
 local OnFiredDelegate = {}
 
 return OnFiredDelegate
+
+---载具缩略图加载完毕回调
+---@class ShanghaiWindy.Core.Delegate.OnVehicleThumbnailLoadedDelegate
+local OnVehicleThumbnailLoadedDelegate = {}
+
+return OnVehicleThumbnailLoadedDelegate
 
 ---陆军相关 API
 ---Army-related API
@@ -1368,6 +1411,12 @@ function TransformAPI.EulerToRot(eulerAngle) end
 ---@function [TransformAPI.Find]
 ---@return UnityEngine.Transform
 function TransformAPI.Find(trans, path) end
+---创建 Transform
+---Create transform
+---@static
+---@function [TransformAPI.CreateTransform]
+---@return UnityEngine.Transform
+function TransformAPI.CreateTransform(transformName) end
 return TransformAPI
 
 ---@class ShanghaiWindy.Core.API.TriggerAPI
@@ -1508,5 +1557,9 @@ function VehicleAPI.GetFilteredVehicles(minRank, maxRank) end
 ---@function [VehicleAPI.GetFilteredBotVehicles]
 ---@return System.Collections.Generic.List`1[[ShanghaiWindy.Core.VehicleInfo, Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
 function VehicleAPI.GetFilteredBotVehicles(minRank, maxRank, allowArtillery, vehicleType) end
+---加载缩略图
+---@static
+---@function [VehicleAPI.LoadVehicleThumbnail]
+function VehicleAPI.LoadVehicleThumbnail(vehicleInfo, callback) end
 return VehicleAPI
 
