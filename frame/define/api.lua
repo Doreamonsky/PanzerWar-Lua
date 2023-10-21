@@ -1,4 +1,5 @@
 UIEnum = CS.ShanghaiWindy.Core.UIEnum
+ZoneChain = CS.ShanghaiWindy.Data.ZoneChain
 ZoneCapturePoint = CS.ShanghaiWindy.Data.ZoneCapturePoint
 CaptureZone = CS.ShanghaiWindy.Data.CaptureZone
 CaptureZoneModeConfig = CS.ShanghaiWindy.Data.CaptureZoneModeConfig

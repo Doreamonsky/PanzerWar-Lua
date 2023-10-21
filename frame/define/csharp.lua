@@ -3,6 +3,13 @@ local UIEnum = {}
 
 return UIEnum
 
+---@class ShanghaiWindy.Data.ZoneChain
+---@field fromZone System.String
+---@field toZone System.String
+local ZoneChain = {}
+
+return ZoneChain
+
 ---@class ShanghaiWindy.Data.ZoneCapturePoint
 ---@field defaultOwner ShanghaiWindy.Core.TeamManager+Team
 ---@field pointName System.String
@@ -25,6 +32,7 @@ return CaptureZone
 ---@field displayName ShanghaiWindy.Core.LocalizedName
 ---@field mapGuid System.String
 ---@field captureZones ShanghaiWindy.Data.CaptureZone[]
+---@field zoneChains ShanghaiWindy.Data.ZoneChain[]
 ---@field backgroundCameraTransformInfo ShanghaiWindy.Data.TransformInfo
 local CaptureZoneModeConfig = {}
 
@@ -795,6 +803,13 @@ function CaptureZoneAPI.CapturingZone(id, team, delta) end
 ---@return ShanghaiWindy.Core.CaptureZoneInfo
 ---@param id System.Int64
 function CaptureZoneAPI.GetCaptureZone(id) end
+---从名称获取占领点
+---Get capture zone from index
+---@static
+---@function [CaptureZoneAPI.GetCaptureZoneFromName]
+---@return ShanghaiWindy.Core.CaptureZoneInfo
+---@param name System.String
+function CaptureZoneAPI.GetCaptureZoneFromName(name) end
 ---销毁一个占领区域
 ---Remove a capture zone
 ---@static

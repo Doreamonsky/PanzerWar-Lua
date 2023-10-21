@@ -45,6 +45,8 @@ function M:OnStartMode()
     self.playerSpawnQueue = {}
     ---@type table<ShanghaiWindy.Core.AbstractBattlePlayer,table<ShanghaiWindy.Core.VehicleInfo>> 人机与载具列表
     self.botPlayerVehicleListMap = {}
+    ---@type table<number,table<number,number>> 占领点的连通区判断
+    self.zoneConnectedMap = {}
 
     self:GetConfigStorage()
     self:RefreshOptions()
@@ -225,6 +227,23 @@ function M:OnBattleSceneLoaded()
             end)
     end
 
+    for i = 0, #self.curConfig.zoneChains do
+        local zoneChain = self.curConfig.zoneChains[i]
+        local fromId = CaptureZoneAPI.GetCaptureZoneFromName(zoneChain.fromZone):GetIndex()
+        local toId = CaptureZoneAPI.GetCaptureZoneFromName(zoneChain.toZone):GetIndex()
+
+        if self.zoneConnectedMap[fromId] == nil then
+            self.zoneConnectedMap[fromId] = {}
+        end
+
+        if self.zoneConnectedMap[toId] == nil then
+            self.zoneConnectedMap[toId] = {}
+        end
+
+        table.insert(self.zoneConnectedMap[fromId], toId)
+        table.insert(self.zoneConnectedMap[toId], fromId)
+    end
+
     --------------------------------- Players ---------------------------------
     -- Set Players
     self.mainPlayerList = VehicleAPI.GetFilteredVehicles(self.friendMinRank, self.friendMaxRank)
@@ -343,7 +362,6 @@ function M:InitBotPlayerVehicle(battlePlayerList, vehicleList)
         battlePlayer.OnVehicleDestroyed:AddListener(function()
             self:OnBattlePlayerDestroyed(battlePlayer)
         end)
-
     end
 end
 
@@ -443,7 +461,20 @@ function M:OnQuarterTick(deltaTime)
         if vehicle:IsNull() or vehicle.IsDestroyed then
             self.vehicleCaptureZoneIndexMap[vehicle] = nil
         else
-            CaptureZoneAPI.CapturingZone(zoneIndex, vehicle.OwnerTeam, deltaTime * 0.1)
+            local canCaptureFlag = false
+
+            if self.zoneConnectedMap[zoneIndex] then
+                for k, zoneId in pairs(self.zoneConnectedMap[zoneIndex]) do
+                    local zone = CaptureZoneAPI.GetCaptureZone(zoneId)
+
+                    if zone == vehicle.OwnerTeam then
+                        canCaptureFlag = true
+                    end
+                end
+            end
+            if canCaptureFlag then
+                CaptureZoneAPI.CapturingZone(zoneIndex, vehicle.OwnerTeam, deltaTime * 0.1)
+            end
         end
     end
 
