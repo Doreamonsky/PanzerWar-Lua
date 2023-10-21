@@ -70,6 +70,8 @@ ConvertAPI = CS.ShanghaiWindy.Core.API.ConvertAPI
 CustomOptionUIAPI = CS.ShanghaiWindy.Core.API.CustomOptionUIAPI
 --- @class ShanghaiWindy.Core.API.FlightAPI
 FlightAPI = CS.ShanghaiWindy.Core.API.FlightAPI
+--- @class ShanghaiWindy.Core.API.FontAPI
+FontAPI = CS.ShanghaiWindy.Core.API.FontAPI
 --- @class ShanghaiWindy.Core.API.GameAPI
 GameAPI = CS.ShanghaiWindy.Core.API.GameAPI
 --- @class ShanghaiWindy.Core.API.GameObjectAPI

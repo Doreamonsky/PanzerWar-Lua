@@ -15,6 +15,7 @@ LuaUIManager.createResourceDelegate = function(cb, ...)
 
     AssetAPI.LoadPoolAsset(id, fileName, function(assetPoolRef)
         if assetPoolRef:IsValid() then
+            FontAPI.ReplaceAsMainFont(assetPoolRef.go)
             cb(assetPoolRef.go, assetPoolRef)
         else
             error(string.format("can not load ui for %s", id))

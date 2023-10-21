@@ -11,15 +11,27 @@ function M:InitUI(root)
     --- @type GameObject
     self.vCapturePickBar = root:Find("#obj_CapturePickBar").gameObject
     --- @type Image
-    self.vVehicleThumbnail = root:Find("#obj_CapturePickBar/#img_VehicleThumbnail"):GetComponent("Image")
+    self.vVehicleThumbnail = root:Find("#obj_CapturePickBar/VehickeBackground'/#img_VehicleThumbnail"):GetComponent("Image")
     --- @type Text
-    self.vVehicleName = root:Find("#obj_CapturePickBar/#img_VehicleThumbnail/#txt_VehicleName"):GetComponent("Text")
+    self.vVehicleName = root:Find("#obj_CapturePickBar/VehickeBackground'/#img_VehicleThumbnail/#txt_VehicleName"):GetComponent("Text")
     --- @type Text
-    self.vVehicleRank = root:Find("#obj_CapturePickBar/#img_VehicleThumbnail/#txt_VehicleRank"):GetComponent("Text")
+    self.vVehicleRank = root:Find("#obj_CapturePickBar/VehickeBackground'/#img_VehicleThumbnail/#txt_VehicleRank"):GetComponent("Text")
+    --- @type GameObject
+    self.vPickPoint = root:Find("#obj_CapturePickBar/#obj_PickPoint").gameObject
+    --- @type GameObject
+    self.vSpawnWarning = root:Find("#obj_CapturePickBar/#obj_PickPoint/#obj_SpawnWarning").gameObject
+    --- @type Text
+    self.vPickPointName = root:Find("#obj_CapturePickBar/#obj_PickPoint/#txt_PickPointName"):GetComponent("Text")
+    --- @type Image
+    self.vPickPointFill = root:Find("#obj_CapturePickBar/#obj_PickPoint/#img_PickPointFill"):GetComponent("Image")
     --- @type Button
     self.vPickVehicle = root:Find("#obj_CapturePickBar/#btn_PickVehicle"):GetComponent("Button")
     --- @type Button
     self.vBattle = root:Find("#obj_CapturePickBar/#btn_Battle"):GetComponent("Button")
+    --- @type GameObject
+    self.vCoolDownMask = root:Find("#obj_CapturePickBar/#btn_Battle/#obj_CoolDownMask").gameObject
+    --- @type Text
+    self.vCoolDownTime = root:Find("#obj_CapturePickBar/#btn_Battle/#obj_CoolDownMask/#txt_CoolDownTime"):GetComponent("Text")
     --- @type GameObject
     self.vPointTemplate = root:Find("#obj_PointTemplate").gameObject
 end

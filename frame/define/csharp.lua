@@ -1009,6 +1009,16 @@ local FlightAPI = {}
 function FlightAPI.GetFlightFireList(vehicle) end
 return FlightAPI
 
+---@class ShanghaiWindy.Core.API.FontAPI
+local FontAPI = {}
+
+---@static
+---@function [FontAPI.ReplaceAsMainFont]
+---@return System.Void
+---@param instance UnityEngine.GameObject
+function FontAPI.ReplaceAsMainFont(instance) end
+return FontAPI
+
 ---游戏相关全局 API
 ---Game related global api
 ---@class ShanghaiWindy.Core.API.GameAPI

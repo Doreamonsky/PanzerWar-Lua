@@ -32,6 +32,7 @@ end
 function M:OnStartMode()
     self.index = 0
     self.isGameLogic = true
+    self.coolDownTime = 15
     ---@type ShanghaiWindy.Data.CaptureZoneModeConfig
     self.curConfig = nil
     ---@type table<number,table<Transform>> 占领点序号与出生点数组的字典
@@ -40,7 +41,7 @@ function M:OnStartMode()
     self.captureZoneMeshMap = {}
     ---@type table<ShanghaiWindy.Core.BaseInitSystem,number> 占领点载具与占领点序号
     self.vehicleCaptureZoneIndexMap = {}
-    ---@type table<SpawnQueue> 重生列表
+    ---@type table<number,SpawnQueue> 重生列表
     self.playerSpawnQueue = {}
     ---@type table<ShanghaiWindy.Core.AbstractBattlePlayer,table<ShanghaiWindy.Core.VehicleInfo>> 人机与载具列表
     self.botPlayerVehicleListMap = {}
@@ -335,25 +336,14 @@ end
 ---@param battlePlayerList table<number,ShanghaiWindy.Core.AbstractBattlePlayer>
 ---@param vehicleList table<number,VehicleInfo>
 function M:InitBotPlayerVehicle(battlePlayerList, vehicleList)
-    self.botPlayerVehicleListMap[battlePlayerList] = vehicleList
-
     for k, battlePlayer in pairs(battlePlayerList) do
+        self.botPlayerVehicleListMap[battlePlayer] = vehicleList
         self:RandomSpawnBotVehicle(battlePlayer, vehicleList)
 
         battlePlayer.OnVehicleDestroyed:AddListener(function()
             self:OnBattlePlayerDestroyed(battlePlayer)
         end)
 
-        battlePlayer.OnGameObjectDestroyed:AddListener(function()
-            if self.isGameLogic then
-                table.insert(self.playerSpawnQueue, {
-                    player = battlePlayer,
-                    killTime = TimeAPI.GetTime()
-                })
-
-                -- self:RandomSpawnBotVehicle(battlePlayer, vehicleList)
-            end
-        end)
     end
 end
 
@@ -381,6 +371,12 @@ end
 
 ---@param battlePlayer ShanghaiWindy.Core.AbstractBattlePlayer
 function M:OnBattlePlayerDestroyed(battlePlayer)
+    if self.isGameLogic then
+        table.insert(self.playerSpawnQueue, {
+            player = battlePlayer,
+            killTime = TimeAPI.GetTime()
+        })
+    end
     -- if battlePlayer:GetTeam() == TeamManager.Team.red then
     --     self.blueTeamScore = self.blueTeamScore + 1
     -- elseif battlePlayer:GetTeam() == TeamManager.Team.blue then
@@ -454,12 +450,11 @@ function M:OnQuarterTick(deltaTime)
     for i = #self.playerSpawnQueue, 1, -1 do
         ---@type SpawnQueue
         local spawnInfo = self.playerSpawnQueue[i]
-
-        if not spawnInfo.player:IsLocalPlayer() then
-            if TimeAPI.GetTime() > spawnInfo.killTime + 10 then
+        if TimeAPI.GetTime() > spawnInfo.killTime + self.coolDownTime then
+            if not spawnInfo.player:IsLocalPlayer() then
                 self:RandomSpawnBotVehicle(spawnInfo.player, self.botPlayerVehicleListMap[spawnInfo.player])
-                table.remove(self.playerSpawnQueue, i)
             end
+            table.remove(self.playerSpawnQueue, i)
         end
     end
 end

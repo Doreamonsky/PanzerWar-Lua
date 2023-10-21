@@ -17,10 +17,10 @@ end
 
 function M:AddListeners()
     -- C#
-    self.onTick = handler(self, self.OnTick)
+    self.onQuarterTick = handler(self, self.OnQuarterTick)
     self.onLateTick = handler(self, self.OnLateTick)
     self.onPickMainPlayerVehicle = handler(self, self.OnPickMainPlayerVehicle)
-    TimeAPI.RegisterQuarterTick(self.onTick)
+    TimeAPI.RegisterQuarterTick(self.onQuarterTick)
     TimeAPI.RegisterLateFrameTick(self.onLateTick)
     ModeAPI.RegisterPickVehicleCallBack(self.onPickMainPlayerVehicle)
 
@@ -35,7 +35,7 @@ end
 
 function M:RemoveListener()
     -- C#
-    TimeAPI.UnRegisterQuarterTick(self.onTick)
+    TimeAPI.UnRegisterQuarterTick(self.onQuarterTick)
     TimeAPI.UnRegisterLateFrameTick(self.onLateTick)
     ModeAPI.UnRegisterPickVehicleCallBack(self.onPickMainPlayerVehicle)
 
@@ -91,13 +91,19 @@ function M:Destroy()
     self._uiMap = {}
 end
 
-function M:OnTick()
+function M:OnQuarterTick()
     self:RefreshCaptureStatus()
 
     if self._isPickBar then
+        self:RefreshPickedCapturePointStatus()
         self:RefreshCaptureScreenUI()
         self:RefreshBackgroundCamera()
     end
+end
+
+function M:OnLateTick()
+    self:RefreshCaptureScreenUI()
+    self:RefreshCoolDownMask()
 end
 
 function M:OnPickVehicleClicked()
@@ -174,19 +180,55 @@ end
 function M:RefreshCaptureStatus()
     for index, res in pairs(self._uiMap) do
         local captureZone = CaptureZoneAPI.GetCaptureZone(index)
-
-        if captureZone.capturingTeam == TeamAPI.GetRedTeam() then
-            res.img.color = ColorAPI.GetColor(1, 0, 0, 1)
-        elseif captureZone.capturingTeam == TeamAPI.GetBlueTeam() then
-            res.img.color = ColorAPI.GetColor(0, 0, 1, 1)
-        else
-            res.img.color = ColorAPI.GetColor(1, 1, 1, 1)
-        end
-
+        res.img.color = self:GetTeamColor(captureZone.capturingTeam)
         res.img.fillAmount = captureZone.currentCaptureProgress
     end
 end
 
-function M:OnLateTick()
-    self:RefreshCaptureScreenUI()
+function M:RefreshPickedCapturePointStatus()
+    local isPicked = self._selectPointId ~= -1
+    GameObjectAPI.SetActive(self.view.vPickPoint, isPicked)
+
+    if isPicked then
+        local captureZone = CaptureZoneAPI.GetCaptureZone(self._selectPointId)
+        self.view.vPickPointName.text = captureZone.zoneName
+
+        self.view.vPickPointFill.color = self:GetTeamColor(captureZone.capturingTeam)
+        self.view.vPickPointFill.fillAmount = captureZone.currentCaptureProgress
+
+        local canSpawn = captureZone.capturingTeam ~= TeamAPI.GetPlayerTeam()
+        GameObjectAPI.SetActive(self.view.vSpawnWarning, canSpawn)
+    else
+        GameObjectAPI.SetActive(self.view.vSpawnWarning, false)
+    end
+end
+
+function M:RefreshCoolDownMask()
+    local isCoolDown = false
+
+    for index, spawnInfo in pairs(self._mode.playerSpawnQueue) do
+        if spawnInfo.player:IsLocalPlayer() then
+            isCoolDown = true
+            local leftTime = math.ceil(self._mode.coolDownTime - (TimeAPI.GetTime() - spawnInfo.killTime))
+
+            if leftTime < 0 then
+                leftTime = 0
+            end
+
+            self.view.vCoolDownTime.text = leftTime
+        end
+    end
+
+    self.view.vBattle.interactable = not isCoolDown
+    GameObjectAPI.SetActive(self.view.vCoolDownMask, isCoolDown)
+end
+
+function M:GetTeamColor(team)
+    if team == TeamAPI.GetRedTeam() then
+        return ColorAPI.GetColor(1, 0, 0, 1)
+    elseif team == TeamAPI.GetBlueTeam() then
+        return ColorAPI.GetColor(0, 0, 1, 1)
+    else
+        return ColorAPI.GetColor(1, 1, 1, 1)
+    end
 end
