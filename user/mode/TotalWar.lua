@@ -216,11 +216,11 @@ function M:OnConfirmInfo()
         VehicleInfo.Type.Aviation)
     self.enemyFlightVehicleList = self:GetBotVehicleList(self.enemyMinRank, self.enemyMaxRank, VehicleInfo.Type.Aviation)
 
-    self:CreateBotPlayerVehicle(self.friendTankBotPlayers, self.friendTankVehicleList)
-    self:CreateBotPlayerVehicle(self.enemyTankBotPlayers, self.enemyTankVehicleList)
+    self:InitBotPlayerVehicle(self.friendTankBotPlayers, self.friendTankVehicleList)
+    self:InitBotPlayerVehicle(self.enemyTankBotPlayers, self.enemyTankVehicleList)
 
-    self:CreateBotPlayerVehicle(self.friendFlightBotPlayers, self.friendFlightVehicleList)
-    self:CreateBotPlayerVehicle(self.enemyFlightBotPlayers, self.enemyFlightVehicleList)
+    self:InitBotPlayerVehicle(self.friendFlightBotPlayers, self.friendFlightVehicleList)
+    self:InitBotPlayerVehicle(self.enemyFlightBotPlayers, self.enemyFlightVehicleList)
 
     self.isGameLogic = true
 end
@@ -258,7 +258,7 @@ end
 
 ---@param battlePlayerList table<number,ShanghaiWindy.Core.AbstractBattlePlayer>
 ---@param vehicleList table<number,VehicleInfo>
-function M:CreateBotPlayerVehicle(battlePlayerList, vehicleList)
+function M:InitBotPlayerVehicle(battlePlayerList, vehicleList)
     for k, battlePlayer in pairs(battlePlayerList) do
         self:RandomSpawnBotVehicle(battlePlayer, vehicleList)
 

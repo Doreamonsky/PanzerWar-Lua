@@ -104,8 +104,6 @@ TeamAPI = CS.ShanghaiWindy.Core.API.TeamAPI
 TimeAPI = CS.ShanghaiWindy.Core.API.TimeAPI
 --- @class ShanghaiWindy.Core.API.TransformAPI
 TransformAPI = CS.ShanghaiWindy.Core.API.TransformAPI
---- @class ShanghaiWindy.Core.API.TriggerAPI
-TriggerAPI = CS.ShanghaiWindy.Core.API.TriggerAPI
 --- @class ShanghaiWindy.Core.API.UIAPI
 UIAPI = CS.ShanghaiWindy.Core.API.UIAPI
 --- @class ShanghaiWindy.Core.API.VehicleAPI

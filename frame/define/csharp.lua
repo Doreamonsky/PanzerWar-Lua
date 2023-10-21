@@ -198,8 +198,23 @@ return CaptureZoneInfo
 ---@field OnVehicleLoaded UnityEngine.Events.UnityEvent
 ---@field OnVehicleDestroyed UnityEngine.Events.UnityEvent
 ---@field OnGameObjectDestroyed UnityEngine.Events.UnityEvent
+---@field IsAlive System.Boolean
 local AbstractBattlePlayer = {}
 
+---@instance
+---@function [AbstractBattlePlayer:IsLocalPlayer]
+---@return System.Boolean
+function AbstractBattlePlayer:IsLocalPlayer() end
+---@instance
+---@function [AbstractBattlePlayer:GetVehicleName]
+---@return System.String
+function AbstractBattlePlayer:GetVehicleName() end
+---获取总伤害
+---Get total damaged
+---@instance
+---@function [AbstractBattlePlayer:GetTotalDamage]
+---@return System.Int32
+function AbstractBattlePlayer:GetTotalDamage() end
 ---获取总击毁数
 ---Get total destroyed number
 ---@instance
@@ -748,6 +763,12 @@ function CameraAPI.ScreenToWorldPoint(camera, screenPoint) end
 ---@param camera UnityEngine.Camera
 ---@param worldPoint UnityEngine.Vector3
 function CameraAPI.WorldToScreenPoint(camera, worldPoint) end
+---获取当前的游戏摄像机
+---Get the current main game camera
+---@static
+---@function [CameraAPI.GetGameCamera]
+---@return UnityEngine.Camera
+function CameraAPI.GetGameCamera() end
 return CameraAPI
 
 ---@class ShanghaiWindy.Core.API.CaptureZoneAPI
@@ -1163,6 +1184,20 @@ function MeshAPI.GetMesh(meshId) end
 ---@function [MeshAPI.DeleteMesh]
 ---@param meshId System.Int32
 function MeshAPI.DeleteMesh(meshId) end
+---@static
+---@function [MeshAPI.CreateSphereTriggerBox]
+---@return System.Int32
+---@param position UnityEngine.Vector3
+---@param radius System.Single
+---@param onEnter System.Action`1[[UnityEngine.Collider, UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
+---@param onExit System.Action`1[[UnityEngine.Collider, UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
+function MeshAPI.CreateSphereTriggerBox(position, radius, onEnter, onExit) end
+---@static
+---@function [MeshAPI.IsPointInPolygon]
+---@return System.Boolean
+---@param point UnityEngine.Vector3
+---@param polygonPoints UnityEngine.Vector3[]
+function MeshAPI.IsPointInPolygon(point, polygonPoints) end
 return MeshAPI
 
 ---模式 API
@@ -1623,6 +1658,10 @@ function TimeAPI.GetDeltaTime() end
 ---@function [TimeAPI.GetFixedDeltaTime]
 ---@return System.Single
 function TimeAPI.GetFixedDeltaTime() end
+---@static
+---@function [TimeAPI.GetTime]
+---@return System.Single
+function TimeAPI.GetTime() end
 return TimeAPI
 
 ---@class ShanghaiWindy.Core.API.TransformAPI
@@ -1650,17 +1689,6 @@ function TransformAPI.Find(trans, path) end
 ---@param transformName System.String
 function TransformAPI.CreateTransform(transformName) end
 return TransformAPI
-
----@class ShanghaiWindy.Core.API.TriggerAPI
-local TriggerAPI = {}
-
----@static
----@function [TriggerAPI.IsPointInPolygon]
----@return System.Boolean
----@param point UnityEngine.Vector3
----@param polygonPoints UnityEngine.Vector3[]
-function TriggerAPI.IsPointInPolygon(point, polygonPoints) end
-return TriggerAPI
 
 ---模式 UI API
 ---Mode UI API
@@ -1768,6 +1796,12 @@ function VehicleAPI.IsFlightVehicle(vehicle) end
 ---@return System.Boolean 返回载具是否为陆军类型 true if ArmyVehicle, false otherwise
 ---@param vehicle ShanghaiWindy.Core.BaseInitSystem
 function VehicleAPI.IsArmyVehicle(vehicle) end
+---@static
+---@function [VehicleAPI.TryGetBaseInitSystemFromGameObject]
+---@return System.Boolean
+---@param gameObject UnityEngine.GameObject
+---@param baseInitSystem ShanghaiWindy.Core.BaseInitSystem&
+function VehicleAPI.TryGetBaseInitSystemFromGameObject(gameObject, baseInitSystem) end
 ---@static
 ---@function [VehicleAPI.TryGetTankInitSystemFromGameObject]
 ---@return System.Boolean

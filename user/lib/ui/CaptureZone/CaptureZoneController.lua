@@ -12,13 +12,16 @@ function M:ctor()
     self._uiMap = {}
     self._selectPointId = -1
     self._mainPlayerVehicle = nil
+    self._isPickBar = false
 end
 
 function M:AddListeners()
     -- C#
     self.onTick = handler(self, self.OnTick)
+    self.onLateTick = handler(self, self.OnLateTick)
     self.onPickMainPlayerVehicle = handler(self, self.OnPickMainPlayerVehicle)
     TimeAPI.RegisterQuarterTick(self.onTick)
+    TimeAPI.RegisterLateFrameTick(self.onLateTick)
     ModeAPI.RegisterPickVehicleCallBack(self.onPickMainPlayerVehicle)
 
     -- Lua
@@ -33,6 +36,7 @@ end
 function M:RemoveListener()
     -- C#
     TimeAPI.UnRegisterQuarterTick(self.onTick)
+    TimeAPI.UnRegisterLateFrameTick(self.onLateTick)
     ModeAPI.UnRegisterPickVehicleCallBack(self.onPickMainPlayerVehicle)
 
     -- Lua
@@ -69,10 +73,11 @@ function M:Awake()
     end
 
     GameObjectAPI.SetActive(self.view.vPointTemplate, false)
-
+    self:OnPickBarChanged(true)
     self:PickMainPlayerVehicle(self._mode.mainPlayerList[0])
     self:RefreshCaptureStatus()
-    self:RefreshCaptureScreen()
+    self:RefreshCaptureScreenUI()
+    self:RefreshBackgroundCamera()
     self:AddListeners()
 end
 
@@ -88,7 +93,11 @@ end
 
 function M:OnTick()
     self:RefreshCaptureStatus()
-    self:RefreshCaptureScreen()
+
+    if self._isPickBar then
+        self:RefreshCaptureScreenUI()
+        self:RefreshBackgroundCamera()
+    end
 end
 
 function M:OnPickVehicleClicked()
@@ -111,8 +120,11 @@ function M:PickMainPlayerVehicle(vehicleInfo)
 end
 
 function M:OnPickBarChanged(isActive)
+    self._isPickBar = isActive
+
     GameObjectAPI.SetActive(self.view.vCapturePickBar, isActive)
-    self:RefreshCaptureScreen()
+    self:RefreshCaptureScreenUI()
+    self:RefreshBackgroundCamera()
 end
 
 function M:OnBattleClicked()
@@ -135,21 +147,27 @@ function M:CreateBotPlayerList(num, team)
     return list
 end
 
-function M:RefreshCaptureScreen()
-    local bgCam = CameraAPI.GetBackGroundCamera()
-
+function M:RefreshBackgroundCamera()
     local config = self._mode.curConfig
 
     CameraAPI.SetBackgroundCameraPosition(config.backgroundCameraTransformInfo.pos)
     CameraAPI.SetBackgroundCameraEulerAngles(config.backgroundCameraTransformInfo.eulerAngle)
+end
 
+function M:RefreshCaptureScreenUI()
+    local cam = CameraAPI.GetGameCamera()
     local captureZones = CaptureZoneAPI.GetCaptureZoneInfos()
 
     for i = 0, captureZones.Length - 1 do
         local captureZone = captureZones[i]
         local instance = self._uiMap[captureZone:GetIndex()].root
-        local screenPoint = CameraAPI.WorldToScreenPoint(bgCam, captureZone.point)
-        instance.transform.position = screenPoint
+        local screenPoint = CameraAPI.WorldToScreenPoint(cam, captureZone.point + Vector3(0, 10, 0))
+
+        if screenPoint.z > 0 then
+            instance.transform.position = screenPoint
+        else
+            instance.transform.position = Vector3(0, 9999, 0)
+        end
     end
 end
 
@@ -167,4 +185,8 @@ function M:RefreshCaptureStatus()
 
         res.img.fillAmount = captureZone.currentCaptureProgress
     end
+end
+
+function M:OnLateTick()
+    self:RefreshCaptureScreenUI()
 end

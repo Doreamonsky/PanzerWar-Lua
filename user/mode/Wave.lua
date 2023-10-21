@@ -219,7 +219,7 @@ function M:OnUpdated()
         for k = #self.enemyPlayerList, 1, -1 do
             ---@type ShanghaiWindy.Core.AbstractBattlePlayer
             local botPlayer = self.enemyPlayerList[k]
-            local isPointInPolygon = TriggerAPI.IsPointInPolygon(botPlayer.Vehicle:GetPosition(), self.dstPoints)
+            local isPointInPolygon = MeshAPI.IsPointInPolygon(botPlayer.Vehicle:GetPosition(), self.dstPoints)
 
             if isPointInPolygon then
                 self.escapeEnemyCount = self.escapeEnemyCount + 1
