@@ -145,6 +145,13 @@ function VehicleInfo:GetRank() end
 function VehicleInfo:GetUUID() end
 return VehicleInfo
 
+---@class ShanghaiWindy.Core.CaptureZoneTask
+---@field ZoneId System.Int32
+---@field Weight System.Int32
+local CaptureZoneTask = {}
+
+return CaptureZoneTask
+
 ---@class ShanghaiWindy.Core.BaseFireSystem
 local BaseFireSystem = {}
 
@@ -155,6 +162,13 @@ return BaseFireSystem
 ---@class ShanghaiWindy.Core.BaseInitSystem
 ---@field basePlayerState ShanghaiWindy.Core.BasePlayerState @基础玩家状态类，用于处理玩家状态的改变，如受到伤害、击中反弹等事件。             Base player state class for handling changes in player states such as taking damage, ricocheting hits, etc.
 ---@field equipmentBuffDataList System.Collections.Generic.List`1[ShanghaiWindy.Core.EquipmentBuffData] @装备 Buff 数据列表             Equipment Buff Data List
+---@field OnVehicleLoaded UnityEngine.Events.UnityEvent
+---@field OnVehicleDestroyed UnityEngine.Events.UnityEvent
+---@field OnGameObjectDestroyed UnityEngine.Events.UnityEvent
+---@field OnDamagedInternalModule ShanghaiWindy.Core.BaseInitSystem+DamagedInternalModule
+---@field OwnerTeam ShanghaiWindy.Core.TeamManager+Team
+---@field IsDestroyed System.Boolean
+---@field IsLoaded System.Boolean
 local BaseInitSystem = {}
 
 return BaseInitSystem
@@ -185,10 +199,15 @@ return BasePlayerState
 ---@class ShanghaiWindy.Core.CaptureZoneInfo
 ---@field zoneName System.String
 ---@field point UnityEngine.Vector3
+---@field radius System.Single
 ---@field currentCaptureProgress System.Single
 ---@field capturingTeam ShanghaiWindy.Core.TeamManager+Team
 local CaptureZoneInfo = {}
 
+---@instance
+---@function [CaptureZoneInfo:IsComplete]
+---@return System.Boolean
+function CaptureZoneInfo:IsComplete() end
 ---@instance
 ---@function [CaptureZoneInfo:GetIndex]
 ---@return System.Int64
@@ -292,6 +311,13 @@ return TankFire
 ---@field CurMainTankFireParam ShanghaiWindy.Core.TankFireParameter
 ---@field CurMainTurretParam ShanghaiWindy.Core.MouseTurretParameter
 ---@field CurPlayerStateParam ShanghaiWindy.Core.PlayerStateParameter
+---@field OnVehicleLoaded UnityEngine.Events.UnityEvent
+---@field OnVehicleDestroyed UnityEngine.Events.UnityEvent
+---@field OnGameObjectDestroyed UnityEngine.Events.UnityEvent
+---@field OnDamagedInternalModule ShanghaiWindy.Core.BaseInitSystem+DamagedInternalModule
+---@field OwnerTeam ShanghaiWindy.Core.TeamManager+Team
+---@field IsDestroyed System.Boolean
+---@field IsLoaded System.Boolean
 local TankInitSystem = {}
 
 return TankInitSystem
@@ -687,6 +713,24 @@ function BattlePlayerAPI.CreateOfflineBotPlayer(uid, nickName, info) end
 function BattlePlayerAPI.CreateOfflineMainPlayer(uid, info) end
 return BattlePlayerAPI
 
+---@class ShanghaiWindy.Core.API.BotAPI
+local BotAPI = {}
+
+---@static
+---@function [BotAPI.GetTankDefenceBotLogic]
+---@return ShanghaiWindy.Core.DefenceBotLogic
+function BotAPI.GetTankDefenceBotLogic() end
+---@static
+---@function [BotAPI.GetTankBotTaskLogic]
+---@return ShanghaiWindy.Core.TankBotTaskLogic
+function BotAPI.GetTankBotTaskLogic() end
+---@static
+---@function [BotAPI.AddCaptureTaskToBot]
+---@return ShanghaiWindy.Core.CaptureZoneTask
+---@param logic ShanghaiWindy.Core.TankBotTaskLogic
+function BotAPI.AddCaptureTaskToBot(logic) end
+return BotAPI
+
 ---Buff API
 ---@class ShanghaiWindy.Core.API.BuffAPI
 local BuffAPI = {}
@@ -788,7 +832,8 @@ local CaptureZoneAPI = {}
 ---@function [CaptureZoneAPI.AddCaptureZone]
 ---@param zoneName System.String
 ---@param point UnityEngine.Vector3
-function CaptureZoneAPI.AddCaptureZone(zoneName, point) end
+---@param radius System.Single
+function CaptureZoneAPI.AddCaptureZone(zoneName, point, radius) end
 ---@static
 ---@function [CaptureZoneAPI.CapturingZone]
 ---@return System.Void
@@ -1393,12 +1438,6 @@ function PointAPI.GetTeamBStartPoints() end
 ---@function [PointAPI.GetPatrolPoints]
 ---@return UnityEngine.GameObject[] 包含巡逻点的 GameObject 数组
 function PointAPI.GetPatrolPoints() end
----获取占领点
----Get capture point
----@static
----@function [PointAPI.GetCapturePoints]
----@return ShanghaiWindy.Core.PointFunctions[]
-function PointAPI.GetCapturePoints() end
 return PointAPI
 
 ---随机 API
@@ -1590,10 +1629,6 @@ local TankAPI = {}
 ---@return System.Collections.Generic.List`1[[ShanghaiWindy.Core.TankFire, Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]] 坦克火力系统列表 List of tank fire systems
 ---@param vehicle ShanghaiWindy.Core.TankInitSystem
 function TankAPI.GetTankFireList(vehicle) end
----@static
----@function [TankAPI.GetDefenceBotLogic]
----@return ShanghaiWindy.Core.DefenceBotLogic
-function TankAPI.GetDefenceBotLogic() end
 return TankAPI
 
 ---团队接口

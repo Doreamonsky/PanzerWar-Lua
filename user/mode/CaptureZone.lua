@@ -30,23 +30,26 @@ function M:GetGameModeName(lang)
 end
 
 function M:OnStartMode()
-    self.index = 0
-    self.isGameLogic = true
-    self.coolDownTime = 15
+    self._index = 0
+    self._isGameLogic = true
+    self._coolDownTime = 15
     ---@type ShanghaiWindy.Data.CaptureZoneModeConfig
-    self.curConfig = nil
+    self._curConfig = nil
     ---@type table<number,table<Transform>> 占领点序号与出生点数组的字典
-    self.captureSpawnPointMap = {}
+    self._captureSpawnPointMap = {}
     ---@type table<number,GameObject> 占领点序号与边缘 Mesh
-    self.captureZoneMeshMap = {}
+    self._captureZoneMeshMap = {}
     ---@type table<ShanghaiWindy.Core.BaseInitSystem,number> 占领点载具与占领点序号
-    self.vehicleCaptureZoneIndexMap = {}
+    self._vehicleCaptureZoneIndexMap = {}
     ---@type table<number,SpawnQueue> 重生列表
-    self.playerSpawnQueue = {}
+    self._playerSpawnQueue = {}
     ---@type table<ShanghaiWindy.Core.AbstractBattlePlayer,table<ShanghaiWindy.Core.VehicleInfo>> 人机与载具列表
-    self.botPlayerVehicleListMap = {}
+    self._botPlayerVehicleListMap = {}
     ---@type table<number,table<number,number>> 占领点的连通区判断
-    self.zoneConnectedMap = {}
+    self._zoneConnectedMap = {}
+    ---@type table<ShanghaiWindy.Core.AbstractBattlePlayer, ShanghaiWindy.Core.CaptureZoneTask>
+    self._botPlayerCaptureTaskMap = {}
+    self._botTaskLastUpdatedTime = 0
 
     self:GetConfigStorage()
     self:RefreshOptions()
@@ -57,7 +60,7 @@ function M:OnUpdated()
 end
 
 function M:OnExitMode()
-    self.isGameLogic = false
+    self._isGameLogic = false
 
     CustomOptionUIAPI.ToggleUI(false)
     LuaUIManager.RemoveUI(self.captureZoneUIIndex)
@@ -80,14 +83,14 @@ function M:RefreshOptions()
     CustomOptionUIAPI.ToggleUI(true)
     local configs = ConfigAPI.GetCaptureZoneConfigs()
 
+    CustomOptionUIAPI.AddTitle("CaptureZone")
+    CustomOptionUIAPI.AddButton("Exit", ">", function()
+        ModeAPI.ExitMode()
+    end)
+
     for i = 0, configs.Length - 1 do
         local config = configs[i]
         local displayName = config.displayName:GetDisplayName()
-
-        CustomOptionUIAPI.AddTitle("CaptureZone")
-        CustomOptionUIAPI.AddButton("Exit", ">", function()
-            ModeAPI.ExitMode()
-        end)
 
         CustomOptionUIAPI.AddButton(displayName, "Play", function()
             self:OnConfirmInfo(config)
@@ -149,11 +152,11 @@ function M:RefreshOptions()
 end
 
 function M:OnConfirmInfo(config)
-    self.curConfig = config
+    self._curConfig = config
 
     CustomOptionUIAPI.ToggleUI(false)
 
-    local mapData = MapAPI.GetMapDataByGuid(self.curConfig.mapGuid)
+    local mapData = MapAPI.GetMapDataByGuid(self._curConfig.mapGuid)
     ModeAPI.LoadBattleScene(mapData, function()
         self:OnBattleSceneLoaded()
     end)
@@ -170,17 +173,17 @@ function M:OnBattleSceneLoaded()
     --------------------------------- Capture ---------------------------------
 
     -- Set capture infos
-    for i = 0, self.curConfig.captureZones.Length - 1 do
-        local captureZone = self.curConfig.captureZones[i]
+    for i = 0, self._curConfig.captureZones.Length - 1 do
+        local captureZone = self._curConfig.captureZones[i]
         local meshId = MeshAPI.CreateMesh(captureZone.zonePoints, 5)
         local mesh = MeshAPI.GetMesh(meshId)
 
-        table.insert(self.captureZoneMeshMap, mesh)
+        table.insert(self._captureZoneMeshMap, mesh)
 
         MaterialAPI.AsyncApplyMaterial("6873b9de-42d2-45f9-8960-5738d67d0540", mesh)
 
         local zoneId = CaptureZoneAPI.AddCaptureZone(captureZone.zoneCapturePoint.pointName,
-            captureZone.zoneCapturePoint.position)
+            captureZone.zoneCapturePoint.position, captureZone.zoneCapturePoint.radius)
 
         if captureZone.zoneCapturePoint.defaultOwner ~= TeamAPI.GetNoneTeam() then
             CaptureZoneAPI.CapturingZone(zoneId, captureZone.zoneCapturePoint.defaultOwner, 1)
@@ -197,7 +200,7 @@ function M:OnBattleSceneLoaded()
             table.insert(spawnPointTransforms, trans)
         end
 
-        self.captureSpawnPointMap[zoneId] = spawnPointTransforms
+        self._captureSpawnPointMap[zoneId] = spawnPointTransforms
 
         local capturePoints = {}
 
@@ -216,32 +219,27 @@ function M:OnBattleSceneLoaded()
             function(collider)
                 local ret, vehicle = VehicleAPI.TryGetBaseInitSystemFromGameObject(collider.gameObject)
                 if ret then
-                    self.vehicleCaptureZoneIndexMap[vehicle] = zoneId
+                    self._vehicleCaptureZoneIndexMap[vehicle] = zoneId
                 end
             end,
             function(collider)
                 local ret, vehicle = VehicleAPI.TryGetBaseInitSystemFromGameObject(collider.gameObject)
                 if ret then
-                    self.vehicleCaptureZoneIndexMap[vehicle] = nil
+                    self._vehicleCaptureZoneIndexMap[vehicle] = nil
                 end
             end)
     end
 
-    for i = 0, #self.curConfig.zoneChains do
-        local zoneChain = self.curConfig.zoneChains[i]
+    for i = 0, self._curConfig.zoneChains.Length - 1 do
+        local zoneChain = self._curConfig.zoneChains[i]
         local fromId = CaptureZoneAPI.GetCaptureZoneFromName(zoneChain.fromZone):GetIndex()
         local toId = CaptureZoneAPI.GetCaptureZoneFromName(zoneChain.toZone):GetIndex()
 
-        if self.zoneConnectedMap[fromId] == nil then
-            self.zoneConnectedMap[fromId] = {}
+        if self._zoneConnectedMap[toId] == nil then
+            self._zoneConnectedMap[toId] = {}
         end
 
-        if self.zoneConnectedMap[toId] == nil then
-            self.zoneConnectedMap[toId] = {}
-        end
-
-        table.insert(self.zoneConnectedMap[fromId], toId)
-        table.insert(self.zoneConnectedMap[toId], fromId)
+        table.insert(self._zoneConnectedMap[toId], fromId)
     end
 
     --------------------------------- Players ---------------------------------
@@ -309,7 +307,7 @@ function M:SpawnMainPlayer(vehicleInfo, pointIndex)
     if curPointIndex ~= -1 then
         EventSystem.DispatchEvent(EventDefine.OnZonePickBarVisibilityChanged, false)
 
-        local transformList = self.captureSpawnPointMap[curPointIndex]
+        local transformList = self._captureSpawnPointMap[curPointIndex]
         SpawnAPI.AsyncSpawnGivenPoints(transformList, function(trans)
             self.mainBattlePlayer:CreateVehicle(vehicleInfo, trans.position, trans.rotation)
         end)
@@ -336,13 +334,13 @@ function M:CreateBotPlayerList(num, team)
     local list = {}
 
     for i = 1, num do
-        local bot = BattlePlayerAPI.CreateOfflineBotPlayer(self.index, "黑暗降临", nil)
+        local bot = BattlePlayerAPI.CreateOfflineBotPlayer(self._index, "黑暗降临", nil)
         bot.BotTeam = team
 
         ModeAPI.AddBattlePlayer(bot)
 
         table.insert(list, bot)
-        self.index = self.index + 1
+        self._index = self._index + 1
     end
 
     return list
@@ -356,7 +354,7 @@ end
 ---@param vehicleList table<number,VehicleInfo>
 function M:InitBotPlayerVehicle(battlePlayerList, vehicleList)
     for k, battlePlayer in pairs(battlePlayerList) do
-        self.botPlayerVehicleListMap[battlePlayer] = vehicleList
+        self._botPlayerVehicleListMap[battlePlayer] = vehicleList
         self:RandomSpawnBotVehicle(battlePlayer, vehicleList)
 
         battlePlayer.OnVehicleDestroyed:AddListener(function()
@@ -370,7 +368,7 @@ function M:RandomSpawnBotVehicle(battlePlayer, vehicleList)
     local pointIndex = self:GetSpawnablePointIndex(battlePlayer:GetTeam())
 
     if pointIndex ~= -1 then
-        SpawnAPI.AsyncSpawnGivenPoints(self.captureSpawnPointMap[pointIndex], function(trans)
+        SpawnAPI.AsyncSpawnGivenPoints(self._captureSpawnPointMap[pointIndex], function(trans)
             local vehicleInfo = RandomAPI.GetRandomVehicleFromList(vehicleList)
             local spawnPos = trans.position
 
@@ -378,7 +376,23 @@ function M:RandomSpawnBotVehicle(battlePlayer, vehicleList)
                 spawnPos = spawnPos + Vector3(0, 500, 0)
             end
 
-            battlePlayer:CreateVehicle(vehicleInfo, spawnPos, trans.rotation)
+            local vehicle = battlePlayer:CreateVehicle(vehicleInfo, spawnPos, trans.rotation)
+
+            if vehicleInfo.type == VehicleInfo.Type.Ground then
+                local logic = BotAPI.GetTankBotTaskLogic()
+                vehicle.thinkLogic = logic
+
+                vehicle.OnVehicleLoaded:AddListener(function()
+                    local captureTask = BotAPI.AddCaptureTaskToBot(logic)
+                    self._botPlayerCaptureTaskMap[battlePlayer] = captureTask
+                    self:UpdateCaptureTask()
+                end)
+
+                vehicle.OnGameObjectDestroyed:AddListener(function()
+                    self._botPlayerCaptureTaskMap[battlePlayer] = nil
+                    self:UpdateCaptureTask()
+                end)
+            end
         end)
     end
 end
@@ -389,8 +403,8 @@ end
 
 ---@param battlePlayer ShanghaiWindy.Core.AbstractBattlePlayer
 function M:OnBattlePlayerDestroyed(battlePlayer)
-    if self.isGameLogic then
-        table.insert(self.playerSpawnQueue, {
+    if self._isGameLogic then
+        table.insert(self._playerSpawnQueue, {
             player = battlePlayer,
             killTime = TimeAPI.GetTime()
         })
@@ -447,7 +461,7 @@ function M:SetConfigStorage()
 end
 
 function M:OnZonePickBarVisibilityChanged(isActive)
-    for k, meshGo in pairs(self.captureZoneMeshMap) do
+    for k, meshGo in pairs(self._captureZoneMeshMap) do
         GameObjectAPI.SetActive(meshGo, isActive)
     end
 end
@@ -457,35 +471,98 @@ function M:IsProxyBattle()
 end
 
 function M:OnQuarterTick(deltaTime)
-    for vehicle, zoneIndex in pairs(self.vehicleCaptureZoneIndexMap) do
+    for vehicle, zoneIndex in pairs(self._vehicleCaptureZoneIndexMap) do
         if vehicle:IsNull() or vehicle.IsDestroyed then
-            self.vehicleCaptureZoneIndexMap[vehicle] = nil
+            self._vehicleCaptureZoneIndexMap[vehicle] = nil
         else
-            local canCaptureFlag = false
-
-            if self.zoneConnectedMap[zoneIndex] then
-                for k, zoneId in pairs(self.zoneConnectedMap[zoneIndex]) do
-                    local zone = CaptureZoneAPI.GetCaptureZone(zoneId)
-
-                    if zone == vehicle.OwnerTeam then
-                        canCaptureFlag = true
-                    end
-                end
-            end
-            if canCaptureFlag then
+            if self:IsZoneConnected(zoneIndex, vehicle.OwnerTeam) then
                 CaptureZoneAPI.CapturingZone(zoneIndex, vehicle.OwnerTeam, deltaTime * 0.1)
             end
         end
     end
 
-    for i = #self.playerSpawnQueue, 1, -1 do
+    for i = #self._playerSpawnQueue, 1, -1 do
         ---@type SpawnQueue
-        local spawnInfo = self.playerSpawnQueue[i]
-        if TimeAPI.GetTime() > spawnInfo.killTime + self.coolDownTime then
+        local spawnInfo = self._playerSpawnQueue[i]
+        if TimeAPI.GetTime() > spawnInfo.killTime + self._coolDownTime then
             if not spawnInfo.player:IsLocalPlayer() then
-                self:RandomSpawnBotVehicle(spawnInfo.player, self.botPlayerVehicleListMap[spawnInfo.player])
+                self:RandomSpawnBotVehicle(spawnInfo.player, self._botPlayerVehicleListMap[spawnInfo.player])
             end
-            table.remove(self.playerSpawnQueue, i)
+            table.remove(self._playerSpawnQueue, i)
+        end
+    end
+
+    if TimeAPI.GetTime() - self._botTaskLastUpdatedTime > 10 then
+        self:UpdateCaptureTask()
+    end
+end
+
+function M:IsZoneConnected(zoneIndex, team)
+    local isConnected = false
+
+    if self._zoneConnectedMap[zoneIndex] then
+        for k, zoneId in pairs(self._zoneConnectedMap[zoneIndex]) do
+            local zone = CaptureZoneAPI.GetCaptureZone(zoneId)
+
+            if zone.capturingTeam == team then
+                isConnected = true
+            end
+        end
+    end
+
+    return isConnected
+end
+
+function M:GetUnCapturedZones(team)
+    local unCaptureZones = {}
+    local zones = CaptureZoneAPI.GetCaptureZoneInfos()
+
+    for i = 0, zones.Length - 1 do
+        local zone = zones[i]
+
+        if not zone:IsComplete() or zone.capturingTeam ~= team then
+            if self:IsZoneConnected(zone:GetIndex(), team) then
+                table.insert(unCaptureZones, zone)
+            end
+        end
+    end
+
+    return unCaptureZones
+end
+
+function M:UpdateCaptureTask()
+    self._botTaskLastUpdatedTime = TimeAPI.GetTime()
+
+    ---@type table<number,ShanghaiWindy.Core.CaptureZoneInfo>
+
+    local teamAZones = self:GetUnCapturedZones(TeamAPI.GetRedTeam())
+    ---@type table<number,ShanghaiWindy.Core.CaptureZoneInfo>
+    local teamBZones = self:GetUnCapturedZones(TeamAPI.GetBlueTeam())
+
+    local teamACaptureCount = 0
+    local teamBCaptureCount = 0
+
+    for battlePlayer, captureTask in pairs(self._botPlayerCaptureTaskMap) do
+        if not battlePlayer.IsAlive then
+            self._botPlayerCaptureTaskMap[battlePlayer] = nil
+        else
+            if battlePlayer.BotTeam == TeamAPI.GetRedTeam() and #teamAZones > 0 and teamACaptureCount < 2 then
+                teamACaptureCount = teamACaptureCount + 1
+                local zone = teamAZones[#teamAZones]
+                captureTask.ZoneId = zone:GetIndex()
+                captureTask.Weight = 1 / teamACaptureCount
+                table.remove(teamAZones)
+                -- print("Team A let" .. battlePlayer:GetVehicleName() .. " is capturing " .. zone.zoneName)
+            elseif battlePlayer.BotTeam == TeamAPI.GetBlueTeam() and #teamBZones > 0 and teamBCaptureCount < 2 then
+                teamBCaptureCount = teamBCaptureCount + 1
+                local zone = teamBZones[#teamBZones]
+                captureTask.ZoneId = zone:GetIndex()
+                captureTask.Weight = 1 / teamBCaptureCount
+                table.remove(teamBZones)
+                -- print("Team B let" .. battlePlayer:GetVehicleName() .. " is capturing " .. zone.zoneName)
+            else
+                captureTask.ZoneId = 0
+            end
         end
     end
 end

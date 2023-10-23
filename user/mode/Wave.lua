@@ -158,7 +158,7 @@ function M:GenerateAttackInfo(attackInfos, botTeam)
 
             if botTeam == TeamAPI.GetEnemyTeam() then
                 -- TODO: add a more generic bot fsm
-                local defenceLogic = TankAPI.GetDefenceBotLogic()
+                local defenceLogic = BotAPI.GetTankDefenceBotLogic()
                 vehicle.thinkLogic = defenceLogic
 
                 botPlayer.OnVehicleLoaded:AddListener(function()

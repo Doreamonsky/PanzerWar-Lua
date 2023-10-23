@@ -154,7 +154,7 @@ function M:CreateBotPlayerList(num, team)
 end
 
 function M:RefreshBackgroundCamera()
-    local config = self._mode.curConfig
+    local config = self._mode._curConfig
 
     CameraAPI.SetBackgroundCameraPosition(config.backgroundCameraTransformInfo.pos)
     CameraAPI.SetBackgroundCameraEulerAngles(config.backgroundCameraTransformInfo.eulerAngle)
@@ -170,6 +170,7 @@ function M:RefreshCaptureScreenUI()
         local screenPoint = CameraAPI.WorldToScreenPoint(cam, captureZone.point + Vector3(0, 10, 0))
 
         if screenPoint.z > 0 then
+            screenPoint.z = 0
             instance.transform.position = screenPoint
         else
             instance.transform.position = Vector3(0, 9999, 0)
@@ -206,10 +207,10 @@ end
 function M:RefreshCoolDownMask()
     local isCoolDown = false
 
-    for index, spawnInfo in pairs(self._mode.playerSpawnQueue) do
+    for index, spawnInfo in pairs(self._mode._playerSpawnQueue) do
         if spawnInfo.player:IsLocalPlayer() then
             isCoolDown = true
-            local leftTime = math.ceil(self._mode.coolDownTime - (TimeAPI.GetTime() - spawnInfo.killTime))
+            local leftTime = math.ceil(self._mode._coolDownTime - (TimeAPI.GetTime() - spawnInfo.killTime))
 
             if leftTime < 0 then
                 leftTime = 0

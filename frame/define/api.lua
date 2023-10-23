@@ -10,6 +10,7 @@ WaveMissionConfig = CS.ShanghaiWindy.Data.WaveMissionConfig
 MaterialConfig = CS.ShanghaiWindy.Data.MaterialConfig
 FlightPlayerState = CS.ShanghaiWindy.Core.FlightPlayerState
 VehicleInfo = CS.ShanghaiWindy.Core.VehicleInfo
+CaptureZoneTask = CS.ShanghaiWindy.Core.CaptureZoneTask
 BaseFireSystem = CS.ShanghaiWindy.Core.BaseFireSystem
 BaseInitSystem = CS.ShanghaiWindy.Core.BaseInitSystem
 BasePlayerState = CS.ShanghaiWindy.Core.BasePlayerState
@@ -53,6 +54,8 @@ ArmyAPI = CS.ShanghaiWindy.Core.API.ArmyAPI
 AssetAPI = CS.ShanghaiWindy.Core.API.AssetAPI
 --- @class ShanghaiWindy.Core.API.BattlePlayerAPI
 BattlePlayerAPI = CS.ShanghaiWindy.Core.API.BattlePlayerAPI
+--- @class ShanghaiWindy.Core.API.BotAPI
+BotAPI = CS.ShanghaiWindy.Core.API.BotAPI
 --- @class ShanghaiWindy.Core.API.BuffAPI
 BuffAPI = CS.ShanghaiWindy.Core.API.BuffAPI
 --- @class ShanghaiWindy.Core.API.CameraAPI
