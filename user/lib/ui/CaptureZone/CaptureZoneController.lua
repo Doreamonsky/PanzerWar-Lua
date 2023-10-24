@@ -9,7 +9,7 @@ local M = CaptureZoneController
 function M:ctor()
     ---@type CaptureZone
     self._mode = nil
-    self._uiMap = {}
+    self._captureSceneUI = {}
     self._selectPointId = -1
     self._mainPlayerVehicle = nil
     self._isPickBar = false
@@ -65,7 +65,7 @@ function M:Awake()
 
         local img = ComponentAPI.GetNativeComponent(GameObjectAPI.Find(instance, "Fill"), "Image")
 
-        self._uiMap[captureZone:GetIndex()] = {
+        self._captureSceneUI[captureZone:GetIndex()] = {
             root = instance,
             img = img,
             text = text
@@ -84,11 +84,11 @@ end
 function M:Destroy()
     self:RemoveListener()
 
-    for k, v in pairs(self._uiMap) do
+    for k, v in pairs(self._captureSceneUI) do
         GameObjectAPI.DestroyObject(v.root)
     end
 
-    self._uiMap = {}
+    self._captureSceneUI = {}
 end
 
 function M:OnQuarterTick()
@@ -166,7 +166,7 @@ function M:RefreshCaptureScreenUI()
 
     for i = 0, captureZones.Length - 1 do
         local captureZone = captureZones[i]
-        local instance = self._uiMap[captureZone:GetIndex()].root
+        local instance = self._captureSceneUI[captureZone:GetIndex()].root
         local screenPoint = CameraAPI.WorldToScreenPoint(cam, captureZone.point + Vector3(0, 10, 0))
 
         if screenPoint.z > 0 then
@@ -179,7 +179,7 @@ function M:RefreshCaptureScreenUI()
 end
 
 function M:RefreshCaptureStatus()
-    for index, res in pairs(self._uiMap) do
+    for index, res in pairs(self._captureSceneUI) do
         local captureZone = CaptureZoneAPI.GetCaptureZone(index)
         res.img.color = self:GetTeamColor(captureZone.capturingTeam)
         res.img.fillAmount = captureZone.currentCaptureProgress
@@ -225,11 +225,9 @@ function M:RefreshCoolDownMask()
 end
 
 function M:GetTeamColor(team)
-    if team == TeamAPI.GetRedTeam() then
-        return ColorAPI.GetColor(1, 0, 0, 1)
-    elseif team == TeamAPI.GetBlueTeam() then
-        return ColorAPI.GetColor(0, 0, 1, 1)
+    if team == TeamAPI.GetPlayerTeam() then
+        return FRIEND_TEAM_COLOR
     else
-        return ColorAPI.GetColor(1, 1, 1, 1)
+        return ENEMY_TEAM_COLOR
     end
 end

@@ -36,3 +36,6 @@ function print_func_ref_by_csharp()
         end
     end
 end
+
+FRIEND_TEAM_COLOR = ColorAPI.GetColor(0.01176471, 0.6627451, 0.9568627, 1)
+ENEMY_TEAM_COLOR = ColorAPI.GetColor(0.8941177, 0.2235294, 0.2078431, 1)

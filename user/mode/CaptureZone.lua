@@ -155,7 +155,8 @@ function M:OnConfirmInfo(config)
     self._curConfig = config
 
     CustomOptionUIAPI.ToggleUI(false)
-
+    self:SetConfigStorage()
+    
     local mapData = MapAPI.GetMapDataByGuid(self._curConfig.mapGuid)
     ModeAPI.LoadBattleScene(mapData, function()
         self:OnBattleSceneLoaded()

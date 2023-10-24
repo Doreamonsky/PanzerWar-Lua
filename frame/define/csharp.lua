@@ -1339,11 +1339,11 @@ function ModeAPI.RemoveBattlePlayer(uid) end
 ---Update score
 ---@static
 ---@function [ModeAPI.UpdateScore]
----@param redTeamScore System.Int32
----@param blueTeamScore System.Int32
----@param totalRedTeamScore System.Int32
----@param totalBlueTeamScore System.Int32
-function ModeAPI.UpdateScore(redTeamScore, blueTeamScore, totalRedTeamScore, totalBlueTeamScore) end
+---@param friendTeamScore System.Int32
+---@param enemyTeamScore System.Int32
+---@param totalFriendTeamScore System.Int32
+---@param totalEnemyTeamScore System.Int32
+function ModeAPI.UpdateScore(friendTeamScore, enemyTeamScore, totalFriendTeamScore, totalEnemyTeamScore) end
 ---注册占领点事件
 ---Register capture point
 ---@static

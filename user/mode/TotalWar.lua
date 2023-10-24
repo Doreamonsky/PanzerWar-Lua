@@ -76,8 +76,8 @@ function M:OnStartMode()
     self.isGameLogic = false
     self.index = 0
 
-    self.redTeamScore = 0
-    self.blueTeamScore = 0
+    self.enemyTeamScore = 0
+    self.friendTeamScore = 0
 
     ---@type table<number,ShanghaiWindy.Core.AbstractBattlePlayer>
     self.friendTankBotPlayers = {}
@@ -311,30 +311,24 @@ function M:IsProxyBattle()
     return true
 end
 
-
 ---@param battlePlayer ShanghaiWindy.Core.AbstractBattlePlayer
 function M:OnBattlePlayerDestroyed(battlePlayer)
-    if battlePlayer:GetTeam() == TeamManager.Team.red then
-        self.blueTeamScore = self.blueTeamScore + 1
-    elseif battlePlayer:GetTeam() == TeamManager.Team.blue then
-        self.redTeamScore = self.redTeamScore + 1
+    if battlePlayer:GetTeam() == TeamAPI.GetPlayerTeam() then
+        self.friendTeamScore = self.friendTeamScore + 1
+    else
+        self.enemyTeamScore = self.enemyTeamScore + 1
     end
 
     self:UpdateScore()
 end
 
 function M:UpdateScore()
-    ModeAPI.UpdateScore(self.redTeamScore, self.blueTeamScore, self.scoreToEnd, self.scoreToEnd)
+    ModeAPI.UpdateScore(self.friendTeamScore, self.enemyTeamScore, self.scoreToEnd, self.scoreToEnd)
 
-    if self.redTeamScore >= self.scoreToEnd or self.blueTeamScore >= self.scoreToEnd then
-        if (self.redTeamScore >= self.scoreToEnd and self.team == ENUM_TEAM[1]) or
-            (self.blueTeamScore >= self.scoreToEnd and self.team == ENUM_TEAM[2]) then
-            ModeAPI.ShowVictoryOrDefeat(true)
-            self.isGameLogic = false
-        else
-            ModeAPI.ShowVictoryOrDefeat(false)
-            self.isGameLogic = false
-        end
+    if self.enemyTeamScore >= self.scoreToEnd or self.friendTeamScore >= self.scoreToEnd then
+        local isVictory = self.friendTeamScore >= self.scoreToEnd
+        ModeAPI.ShowVictoryOrDefeat(isVictory)
+        self.isGameLogic = false
     end
 end
 

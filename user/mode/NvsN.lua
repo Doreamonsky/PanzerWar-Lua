@@ -27,11 +27,11 @@ function M:OnStartMode()
     self:GetConfigStorage()
     self.index = 0
 
-    self.redTeamScore = 0
-    self.blueTeamScore = 0
+    self.friendTeamScore = 0
+    self.enemyTeamScore = 0
 
-    self.redTeamMaxScore = 0
-    self.blueTeamMaxScore = 0
+    self.friendTeamMaxScore = 0
+    self.enemyTeamMaxScore = 0
 
     self.isCountDown = false
     self.isGameLogic = true
@@ -111,15 +111,12 @@ function M:OnConfirmInfo()
 
     if self.team == ENUM_TEAM[1] then
         TeamAPI.SetPlayerTeamAsRedTeam()
-
-        self.redTeamMaxScore = self.friendTankNum
-        self.blueTeamMaxScore = self.enemyTankNum
     else
         TeamAPI.SetPlayerTeamAsBlueTeam()
-
-        self.blueTeamMaxScore = self.friendTankNum
-        self.redTeamMaxScore = self.enemyTankNum
     end
+
+    self.friendTeamMaxScore = self.friendTankNum
+    self.enemyTeamMaxScore = self.enemyTankNum
 
     ModeAPI.ShowPickVehicleUI(true)
 end
@@ -253,27 +250,26 @@ end
 
 ---@param battlePlayer ShanghaiWindy.Core.AbstractBattlePlayer
 function M:OnBattlePlayerDestroyed(battlePlayer)
-    if battlePlayer:GetTeam() == TeamManager.Team.red then
-        self.blueTeamScore = self.blueTeamScore + 1
-    elseif battlePlayer:GetTeam() == TeamManager.Team.blue then
-        self.redTeamScore = self.redTeamScore + 1
+    if battlePlayer:GetTeam() == TeamAPI.GetPlayerTeam() then
+        self.friendTeamScore = self.friendTeamScore + 1
+    else
+        self.enemyTeamScore = self.enemyTankNum + 1
     end
 
     self:UpdateScore()
 end
 
 function M:UpdateScore()
-    ModeAPI.UpdateScore(self.redTeamScore, self.blueTeamScore, self.redTeamMaxScore, self.blueTeamMaxScore)
+    ModeAPI.UpdateScore(self.friendTeamScore, self.enemyTeamScore, self.friendTeamMaxScore, self.enemyTeamMaxScore)
 
-    if self.redTeamScore >= self.redTeamMaxScore or self.blueTeamScore >= self.blueTeamMaxScore then
-        if (self.redTeamScore >= self.redTeamMaxScore and self.team == ENUM_TEAM[1]) or
-            (self.blueTeamScore >= self.blueTeamMaxScore and self.team == ENUM_TEAM[2]) then
-            ModeAPI.ShowVictoryOrDefeat(true)
-            self.isGameLogic = false
-        else
-            ModeAPI.ShowVictoryOrDefeat(false)
-            self.isGameLogic = false
-        end
+    if self.friendTeamScore >= self.friendTeamMaxScore then
+        ModeAPI.ShowVictoryOrDefeat(true)
+        self.isGameLogic = false
+    end
+
+    if self.enemyTeamScore >= self.enemyTeamMaxScore then
+        ModeAPI.ShowVictoryOrDefeat(false)
+        self.isGameLogic = false
     end
 end
 
