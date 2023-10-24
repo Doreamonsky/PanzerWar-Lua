@@ -4,12 +4,26 @@ CaptureZoneController = class("CaptureZoneController", BaseController)
 
 Lib()
 
+---@class ZoneUI
+---@field index number
+---@field root GameObject
+---@field capturedGo GameObject
+---@field unCapturedGo GameObject
+---@field capturedFillImg Image
+---@field unCapturedFillImg Image
+---@field text Text
+---@field isSceneUI boolean
+---------------------------------
+
+
 local M = CaptureZoneController
 
 function M:ctor()
     ---@type CaptureZone
     self._mode = nil
-    self._captureSceneUI = {}
+
+    ---@type table<number,ZoneUI>
+    self._uis = {}
     self._selectPointId = -1
     self._mainPlayerVehicle = nil
     self._isPickBar = false
@@ -48,29 +62,8 @@ end
 function M:Awake()
     self._mode = ModeAPI.GetModeInstance()
 
-    local captureZones = CaptureZoneAPI.GetCaptureZoneInfos()
-
-    for i = 0, captureZones.Length - 1 do
-        local captureZone = captureZones[i]
-        local instance = GameObjectAPI.Clone(self.view.vPointTemplate)
-        GameObjectAPI.SetActive(instance, true)
-
-        local btn = ComponentAPI.GetNativeComponent(instance, "Button")
-        btn.onClick:AddListener(function()
-            self._selectPointId = captureZone:GetIndex()
-        end)
-
-        local text = ComponentAPI.GetNativeComponent(GameObjectAPI.Find(instance, "Text"), "Text")
-        text.text = captureZone.zoneName
-
-        local img = ComponentAPI.GetNativeComponent(GameObjectAPI.Find(instance, "Fill"), "Image")
-
-        self._captureSceneUI[captureZone:GetIndex()] = {
-            root = instance,
-            img = img,
-            text = text
-        }
-    end
+    self:CreateZoneUI(true)
+    self:CreateZoneUI(false)
 
     GameObjectAPI.SetActive(self.view.vPointTemplate, false)
     self:OnPickBarChanged(true)
@@ -84,11 +77,11 @@ end
 function M:Destroy()
     self:RemoveListener()
 
-    for k, v in pairs(self._captureSceneUI) do
+    for k, v in pairs(self._uis) do
         GameObjectAPI.DestroyObject(v.root)
     end
 
-    self._captureSceneUI = {}
+    self._uis = nil
 end
 
 function M:OnQuarterTick()
@@ -104,6 +97,42 @@ end
 function M:OnLateTick()
     self:RefreshCaptureScreenUI()
     self:RefreshCoolDownMask()
+end
+
+function M:CreateZoneUI(isSceneUI)
+    local captureZones = CaptureZoneAPI.GetCaptureZoneInfos()
+
+    for i = 0, captureZones.Length - 1 do
+        local captureZone = captureZones[i]
+        local instance = GameObjectAPI.Clone(self.view.vPointTemplate)
+        GameObjectAPI.SetActive(instance, true)
+
+        local btn = ComponentAPI.GetNativeComponent(instance, "Button")
+        btn.onClick:AddListener(function()
+            self._selectPointId = captureZone:GetIndex()
+        end)
+
+        local text = ComponentAPI.GetNativeComponent(GameObjectAPI.Find(instance, "Text"), "Text")
+        text.text = captureZone.zoneName
+
+        local capturedFill = ComponentAPI.GetNativeComponent(GameObjectAPI.Find(instance, "Captured/Fill"), "Image")
+        local unCapturedFill = ComponentAPI.GetNativeComponent(GameObjectAPI.Find(instance, "UnCaptured/Fill"), "Image")
+
+        table.insert(self._uis,
+            {
+                index = captureZone:GetIndex(),
+                root = instance,
+                capturedGo = GameObjectAPI.Find(instance, "Captured"),
+                unCapturedGo = GameObjectAPI.Find(instance, "UnCaptured"),
+                capturedFillImg = capturedFill,
+                unCapturedFillImg = unCapturedFill,
+                text = text,
+                isSceneUI = isSceneUI
+            })
+        if not isSceneUI then
+            instance.transform:SetParent(self.view.vZoneList.transform)
+        end
+    end
 end
 
 function M:OnPickVehicleClicked()
@@ -131,6 +160,12 @@ function M:OnPickBarChanged(isActive)
     GameObjectAPI.SetActive(self.view.vCapturePickBar, isActive)
     self:RefreshCaptureScreenUI()
     self:RefreshBackgroundCamera()
+
+    
+    for k, v in pairs(self._uis) do
+        local img = ComponentAPI.GetNativeComponent(v.root, "Image")
+        img.raycastTarget = isActive
+    end
 end
 
 function M:OnBattleClicked()
@@ -161,28 +196,36 @@ function M:RefreshBackgroundCamera()
 end
 
 function M:RefreshCaptureScreenUI()
-    local cam = CameraAPI.GetGameCamera()
-    local captureZones = CaptureZoneAPI.GetCaptureZoneInfos()
+    for k, ui in pairs(self._uis) do
+        local captureZone = CaptureZoneAPI.GetCaptureZone(ui.index)
+        local instance = ui.root
 
-    for i = 0, captureZones.Length - 1 do
-        local captureZone = captureZones[i]
-        local instance = self._captureSceneUI[captureZone:GetIndex()].root
-        local screenPoint = CameraAPI.WorldToScreenPoint(cam, captureZone.point + Vector3(0, 10, 0))
+        if ui.isSceneUI then
+            local screenPos, eIconPosition = CameraAPI.GetScreenPosition(captureZone.point + Vector3(0, 15, 0))
+            instance.transform.position = screenPos
 
-        if screenPoint.z > 0 then
-            screenPoint.z = 0
-            instance.transform.position = screenPoint
-        else
-            instance.transform.position = Vector3(0, 9999, 0)
+            GameObjectAPI.SetVisible(instance, eIconPosition ~= EIconPosition.Top)
         end
     end
 end
 
 function M:RefreshCaptureStatus()
-    for index, res in pairs(self._captureSceneUI) do
-        local captureZone = CaptureZoneAPI.GetCaptureZone(index)
-        res.img.color = self:GetTeamColor(captureZone.capturingTeam)
-        res.img.fillAmount = captureZone.currentCaptureProgress
+    for k, ui in pairs(self._uis) do
+        local captureZone = CaptureZoneAPI.GetCaptureZone(ui.index)
+
+        if captureZone.captureStage == ECaptureStage.Own then
+            GameObjectAPI.SetVisible(ui.capturedGo, true)
+            GameObjectAPI.SetVisible(ui.unCapturedGo, false)
+        else
+            GameObjectAPI.SetVisible(ui.capturedGo, false)
+            GameObjectAPI.SetVisible(ui.unCapturedGo, true)
+        end
+
+        ui.capturedFillImg.color = self:GetTeamColor(captureZone.capturingTeam)
+        ui.capturedFillImg.fillAmount = captureZone.currentCaptureProgress
+
+        ui.unCapturedFillImg.color = self:GetTeamColor(captureZone.capturingTeam)
+        ui.unCapturedFillImg.fillAmount = captureZone.currentCaptureProgress
     end
 end
 

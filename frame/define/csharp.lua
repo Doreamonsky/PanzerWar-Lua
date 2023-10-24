@@ -196,12 +196,18 @@ local BasePlayerState = {}
 
 return BasePlayerState
 
+---@class ShanghaiWindy.Core.ECaptureStage
+local ECaptureStage = {}
+
+return ECaptureStage
+
 ---@class ShanghaiWindy.Core.CaptureZoneInfo
 ---@field zoneName System.String
 ---@field point UnityEngine.Vector3
 ---@field radius System.Single
 ---@field currentCaptureProgress System.Single
 ---@field capturingTeam ShanghaiWindy.Core.TeamManager+Team
+---@field captureStage ShanghaiWindy.Core.ECaptureStage
 local CaptureZoneInfo = {}
 
 ---@instance
@@ -213,6 +219,11 @@ function CaptureZoneInfo:IsComplete() end
 ---@return System.Int64
 function CaptureZoneInfo:GetIndex() end
 return CaptureZoneInfo
+
+---@class ShanghaiWindy.Core.EIconPosition
+local EIconPosition = {}
+
+return EIconPosition
 
 ---战斗玩家数据
 ---Battle Player
@@ -821,6 +832,12 @@ function CameraAPI.WorldToScreenPoint(camera, worldPoint) end
 ---@function [CameraAPI.GetGameCamera]
 ---@return UnityEngine.Camera
 function CameraAPI.GetGameCamera() end
+---@static
+---@function [CameraAPI.GetScreenPosition]
+---@return UnityEngine.Vector3
+---@param worldPos UnityEngine.Vector3
+---@param iconPosition ShanghaiWindy.Core.EIconPosition&
+function CameraAPI.GetScreenPosition(worldPos, iconPosition) end
 return CameraAPI
 
 ---@class ShanghaiWindy.Core.API.CaptureZoneAPI
@@ -1152,13 +1169,20 @@ function GameObjectAPI.Clone(go) end
 ---@function [GameObjectAPI.DestroyObject]
 ---@param go UnityEngine.GameObject
 function GameObjectAPI.DestroyObject(go) end
----是否显示物体
+---是否激活物体
 ---Set object active
 ---@static
 ---@function [GameObjectAPI.SetActive]
 ---@param go UnityEngine.GameObject
 ---@param isActive System.Boolean
 function GameObjectAPI.SetActive(go, isActive) end
+---是否显示物体
+---Set object visible
+---@static
+---@function [GameObjectAPI.SetVisible]
+---@param go UnityEngine.GameObject
+---@param isVisible System.Boolean
+function GameObjectAPI.SetVisible(go, isVisible) end
 return GameObjectAPI
 
 ---输入处理 API

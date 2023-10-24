@@ -156,7 +156,7 @@ function M:OnConfirmInfo(config)
 
     CustomOptionUIAPI.ToggleUI(false)
     self:SetConfigStorage()
-    
+
     local mapData = MapAPI.GetMapDataByGuid(self._curConfig.mapGuid)
     ModeAPI.LoadBattleScene(mapData, function()
         self:OnBattleSceneLoaded()
@@ -296,7 +296,8 @@ function M:SpawnMainPlayer(vehicleInfo, pointIndex)
 
     if curPointIndex ~= -1 then
         -- check if point is ours
-        if CaptureZoneAPI.GetCaptureZone(curPointIndex).capturingTeam ~= TeamAPI.GetPlayerTeam() then
+        local zone = CaptureZoneAPI.GetCaptureZone(curPointIndex)
+        if not zone:IsComplete() or zone.capturingTeam ~= TeamAPI.GetPlayerTeam() then
             curPointIndex = -1
         end
     end
@@ -312,6 +313,8 @@ function M:SpawnMainPlayer(vehicleInfo, pointIndex)
         SpawnAPI.AsyncSpawnGivenPoints(transformList, function(trans)
             self.mainBattlePlayer:CreateVehicle(vehicleInfo, trans.position, trans.rotation)
         end)
+    else
+        error("failed to find point index...")
     end
 end
 
@@ -320,10 +323,10 @@ function M:GetSpawnablePointIndex(team)
     local captureZones = CaptureZoneAPI.GetCaptureZoneInfos()
 
     for i = 0, captureZones.Length - 1 do
-        local captureZone = captureZones[i]
+        local zone = captureZones[i]
 
-        if captureZone.capturingTeam == team then
-            return captureZone:GetIndex()
+        if zone:IsComplete() and zone.capturingTeam == team then
+            return zone:GetIndex()
         end
     end
 
