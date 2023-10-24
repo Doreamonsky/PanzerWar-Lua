@@ -195,6 +195,7 @@ function M:RefreshBackgroundCamera()
     CameraAPI.SetBackgroundCameraEulerAngles(config.backgroundCameraTransformInfo.eulerAngle)
 end
 
+--- Update the screen position of capture point
 function M:RefreshCaptureScreenUI()
     for k, ui in pairs(self._uis) do
         local captureZone = CaptureZoneAPI.GetCaptureZone(ui.index)
@@ -209,6 +210,7 @@ function M:RefreshCaptureScreenUI()
     end
 end
 
+--- Update the capture progress and owner of the points
 function M:RefreshCaptureStatus()
     for k, ui in pairs(self._uis) do
         local captureZone = CaptureZoneAPI.GetCaptureZone(ui.index)
@@ -229,6 +231,7 @@ function M:RefreshCaptureStatus()
     end
 end
 
+--- Update the picked point status
 function M:RefreshPickedCapturePointStatus()
     local isPicked = self._selectPointId ~= -1
     GameObjectAPI.SetActive(self.view.vPickPoint, isPicked)
@@ -247,6 +250,7 @@ function M:RefreshPickedCapturePointStatus()
     end
 end
 
+--- Add mask to vehicle when time is cooling
 function M:RefreshCoolDownMask()
     local isCoolDown = false
 

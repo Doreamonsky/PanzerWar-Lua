@@ -51,6 +51,9 @@ function M:OnStartMode()
     self._botPlayerCaptureTaskMap = {}
     self._botTaskLastUpdatedTime = 0
 
+    self.friendTeamScore = 0
+    self.enemyTeamScore = 0
+
     self:GetConfigStorage()
     self:RefreshOptions()
     self:AddListeners()
@@ -146,7 +149,7 @@ function M:RefreshOptions()
     -- Battle Type
     CustomOptionUIAPI.AddTitle("BattleType")
 
-    CustomOptionUIAPI.AddSlider("ScoreToEnd", self.scoreToEnd, 1, 200, true, function(res)
+    CustomOptionUIAPI.AddSlider("ScoreToEnd", self.scoreToEnd, 600, 3000, true, function(res)
         self.scoreToEnd = res
     end)
 end
@@ -413,13 +416,33 @@ function M:OnBattlePlayerDestroyed(battlePlayer)
             killTime = TimeAPI.GetTime()
         })
     end
-    -- if battlePlayer:GetTeam() == TeamManager.Team.red then
-    --     self.blueTeamScore = self.blueTeamScore + 1
-    -- elseif battlePlayer:GetTeam() == TeamManager.Team.blue then
-    --     self.redTeamScore = self.redTeamScore + 1
-    -- end
 
-    -- self:UpdateScore()
+    if battlePlayer:GetTeam() == TeamAPI.GetPlayerTeam() then
+        self.enemyTeamScore = self.enemyTeamScore + battlePlayer.VehicleInfo:GetRank()
+    else
+        self.friendTeamScore = self.friendTeamScore + battlePlayer.VehicleInfo:GetRank()
+    end
+
+    self:UpdateScore()
+end
+
+function M:UpdateScore()
+    if self.friendTeamScore < 0 then
+        self.friendTeamScore = 0 
+    end
+
+    if self.enemyTeamScore < 0 then
+        self.enemyTeamScore = 0 
+    end
+
+    ModeAPI.UpdateScore(math.floor(self.friendTeamScore), math.floor(self.enemyTeamScore), self.scoreToEnd,
+        self.scoreToEnd)
+
+    if self.enemyTeamScore >= self.scoreToEnd or self.friendTeamScore >= self.scoreToEnd then
+        local isVictory = self.friendTeamScore >= self.scoreToEnd
+        ModeAPI.ShowVictoryOrDefeat(isVictory)
+        self._isGameLogic = false
+    end
 end
 
 function M:GetConfigStorage()
@@ -439,7 +462,7 @@ function M:GetConfigStorage()
 
     self.isArtillery = StorageAPI.GetStringValue(STORARAGE_DEFINE, "IsArtillery", ENUM_TOGGLE[1])
 
-    self.scoreToEnd = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "ScoreToEnd", 50)
+    self.scoreToEnd = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "ScoreToEnd", 200)
 end
 
 function M:SetConfigStorage()
@@ -482,6 +505,23 @@ function M:OnQuarterTick(deltaTime)
             if self:IsZoneConnected(zoneIndex, vehicle.OwnerTeam) then
                 CaptureZoneAPI.CapturingZone(zoneIndex, vehicle.OwnerTeam, deltaTime * 0.1)
             end
+        end
+    end
+
+    local zones = CaptureZoneAPI.GetCaptureZoneInfos()
+
+    for i = 0, zones.Length - 1 do
+        local zone = zones[i]
+        if zone:IsComplete() then
+            if zone.capturingTeam == TeamAPI.GetPlayerTeam() then
+                self.friendTeamScore = self.friendTeamScore + deltaTime
+                self.enemyTeamScore = self.enemyTeamScore - deltaTime 
+            else
+                self.enemyTeamScore = self.enemyTeamScore + deltaTime 
+                self.friendTeamScore = self.friendTeamScore - deltaTime
+            end
+
+            self:UpdateScore()
         end
     end
 

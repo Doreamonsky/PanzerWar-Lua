@@ -251,9 +251,9 @@ end
 ---@param battlePlayer ShanghaiWindy.Core.AbstractBattlePlayer
 function M:OnBattlePlayerDestroyed(battlePlayer)
     if battlePlayer:GetTeam() == TeamAPI.GetPlayerTeam() then
-        self.friendTeamScore = self.friendTeamScore + 1
-    else
         self.enemyTeamScore = self.enemyTankNum + 1
+    else
+        self.friendTeamScore = self.friendTeamScore + 1
     end
 
     self:UpdateScore()
