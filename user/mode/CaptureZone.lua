@@ -442,6 +442,7 @@ function M:UpdateScore()
         local isVictory = self.friendTeamScore >= self.scoreToEnd
         ModeAPI.ShowVictoryOrDefeat(isVictory)
         self._isGameLogic = false
+        self._botPlayerCaptureTaskMap = {}
     end
 end
 
