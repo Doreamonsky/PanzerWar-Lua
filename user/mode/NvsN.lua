@@ -214,34 +214,34 @@ function M:CreateVehiclesFromRanks(team, playerRank, ranks)
 
     for rank, number in pairs(ranks) do
         for i = 1, number do
-            if rankVehicleMap[rank].Count == 0 then
+            if rankVehicleMap[rank].Count ~= 0 then
+                ---@type ShanghaiWindy.Core.AbstractBattlePlayer
+                local botPlayer = BattlePlayerAPI.CreateOfflineBotPlayer(self.index, "装纷派蒙", {})
+                botPlayer.BotTeam = team
+
+                ModeAPI.AddBattlePlayer(botPlayer)
+
+                SpawnAPI.AsyncSpawn(team, function(trans)
+                    botPlayer:CreateVehicle(RandomAPI.GetRandomVehicleFromList(rankVehicleMap[rank]), trans.position,
+                        trans.rotation)
+                end)
+
+                botPlayer.OnVehicleLoaded:AddListener(function()
+                    if self.isCountDown then
+                        ModeAPI.ToggleVehicleLockState(true, botPlayer.Vehicle)
+                        table.insert(self.countDownPlayerList, botPlayer)
+                    end
+                end)
+
+                botPlayer.OnVehicleDestroyed:AddListener(function()
+                    self:OnBattlePlayerDestroyed(botPlayer)
+                end)
+
+                table.insert(battlePlayerList, botPlayer)
+                self.index = self.index + 1
+            else
                 print(string.format("Current rank do not have bot vehicles %s", rank))
-                return
             end
-            ---@type ShanghaiWindy.Core.AbstractBattlePlayer
-            local botPlayer = BattlePlayerAPI.CreateOfflineBotPlayer(self.index, "装纷派蒙", {})
-            botPlayer.BotTeam = team
-
-            ModeAPI.AddBattlePlayer(botPlayer)
-
-            SpawnAPI.AsyncSpawn(team, function(trans)
-                botPlayer:CreateVehicle(RandomAPI.GetRandomVehicleFromList(rankVehicleMap[rank]), trans.position,
-                    trans.rotation)
-            end)
-
-            botPlayer.OnVehicleLoaded:AddListener(function()
-                if self.isCountDown then
-                    ModeAPI.ToggleVehicleLockState(true, botPlayer.Vehicle)
-                    table.insert(self.countDownPlayerList, botPlayer)
-                end
-            end)
-
-            botPlayer.OnVehicleDestroyed:AddListener(function()
-                self:OnBattlePlayerDestroyed(botPlayer)
-            end)
-
-            table.insert(battlePlayerList, botPlayer)
-            self.index = self.index + 1
         end
     end
 
