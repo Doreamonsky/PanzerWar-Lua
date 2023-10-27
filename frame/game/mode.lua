@@ -27,7 +27,7 @@ function M:IsProxyBattle()
 end
 
 function M:GetMapMode()
-    error("override me plz")
+    return MODE_INFINITE
 end
 
 return M

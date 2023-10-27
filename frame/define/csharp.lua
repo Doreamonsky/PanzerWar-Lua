@@ -1437,6 +1437,14 @@ function ModeAPI.EnableCountDown(countDown, countDownTitle, countDownDescription
 ---@function [ModeAPI.GetModeInstance]
 ---@return XLua.LuaTable
 function ModeAPI.GetModeInstance() end
+---@static
+---@function [ModeAPI.StartRecord]
+---@return System.Void
+function ModeAPI.StartRecord() end
+---@static
+---@function [ModeAPI.EndRecord]
+---@return System.Void
+function ModeAPI.EndRecord() end
 return ModeAPI
 
 ---位置点 API
