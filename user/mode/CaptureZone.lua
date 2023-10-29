@@ -93,11 +93,14 @@ function M:RefreshOptions()
 
     for i = 0, configs.Length - 1 do
         local config = configs[i]
-        local displayName = config.displayName:GetDisplayName()
+        local mapData = MapAPI.GetMapDataByGuid(config.mapGuid)
 
-        CustomOptionUIAPI.AddButton(displayName, "Play", function()
-            self:OnConfirmInfo(config)
-        end)
+        if mapData ~= nil then
+            local displayName = config.displayName:GetDisplayName()
+            CustomOptionUIAPI.AddButton(displayName, "Play", function()
+                self:OnConfirmInfo(config)
+            end)
+        end
     end
 
 
@@ -428,11 +431,11 @@ end
 
 function M:UpdateScore()
     if self.friendTeamScore < 0 then
-        self.friendTeamScore = 0 
+        self.friendTeamScore = 0
     end
 
     if self.enemyTeamScore < 0 then
-        self.enemyTeamScore = 0 
+        self.enemyTeamScore = 0
     end
 
     ModeAPI.UpdateScore(math.floor(self.friendTeamScore), math.floor(self.enemyTeamScore), self.scoreToEnd,
@@ -516,9 +519,9 @@ function M:OnQuarterTick(deltaTime)
         if zone:IsComplete() then
             if zone.capturingTeam == TeamAPI.GetPlayerTeam() then
                 self.friendTeamScore = self.friendTeamScore + deltaTime
-                self.enemyTeamScore = self.enemyTeamScore - deltaTime 
+                self.enemyTeamScore = self.enemyTeamScore - deltaTime
             else
-                self.enemyTeamScore = self.enemyTeamScore + deltaTime 
+                self.enemyTeamScore = self.enemyTeamScore + deltaTime
                 self.friendTeamScore = self.friendTeamScore - deltaTime
             end
 

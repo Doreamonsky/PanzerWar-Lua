@@ -115,8 +115,8 @@ function M:OnConfirmInfo()
         TeamAPI.SetPlayerTeamAsBlueTeam()
     end
 
-    self.friendTeamMaxScore = self.friendTankNum
-    self.enemyTeamMaxScore = self.enemyTankNum
+    self.friendTeamMaxScore = self.enemyTankNum
+    self.enemyTeamMaxScore = self.friendTankNum
 
     ModeAPI.ShowPickVehicleUI(true)
 end
