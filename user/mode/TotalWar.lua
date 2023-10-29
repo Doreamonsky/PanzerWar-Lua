@@ -44,6 +44,9 @@ function M:GetConfigStorage()
     self.isArtillery = StorageAPI.GetStringValue(STORARAGE_DEFINE, "IsArtillery", ENUM_TOGGLE[1])
 
     self.scoreToEnd = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "ScoreToEnd", 50)
+
+    self.friendMaxRank = math.max(self.friendMinRank, self.friendMaxRank)
+    self.enemyMaxRank = math.max(self.enemyMinRank, self.enemyMaxRank)
 end
 
 function M:SetConfigStorage()
