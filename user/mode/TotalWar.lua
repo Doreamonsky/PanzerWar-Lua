@@ -232,7 +232,8 @@ function M:OnConfirmInfo()
 end
 
 function M:GetBotVehicleList(minRank, maxRank, vehicleType)
-    return VehicleAPI.GetFilteredBotVehicles(minRank, maxRank, self.isArtillery == ENUM_TOGGLE[2], vehicleType)
+    local vehicleList = VehicleAPI.GetFilteredBotVehicles(minRank, maxRank, self.isArtillery == ENUM_TOGGLE[2], vehicleType)
+    return BotVehicleUtil.GetSafeBotVehicleList(vehicleList)
 end
 
 function M:CreateMainPlayer()
