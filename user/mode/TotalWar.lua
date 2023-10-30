@@ -181,6 +181,10 @@ function M:RefreshOptions()
     CustomOptionUIAPI.AddSlider("ScoreToEnd", self.scoreToEnd, 1, 200, true, function(res)
         self.scoreToEnd = res
     end)
+
+    CustomOptionUIAPI.AddButton("HostBP", ">", function()
+        BanPick.ShowBanPick()
+    end)
 end
 
 function M:OnConfirmInfo()

@@ -103,6 +103,10 @@ function M:RefreshOptions()
     CustomOptionUIAPI.AddSlider("EnemyTankNum", self.enemyTankNum, 0, 20, true, function(res)
         self.enemyTankNum = res
     end)
+
+    CustomOptionUIAPI.AddButton("HostBP", ">", function()
+        BanPick.ShowBanPick()
+    end)
 end
 
 function M:OnConfirmInfo()
