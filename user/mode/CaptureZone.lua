@@ -468,7 +468,10 @@ function M:GetConfigStorage()
 
     self.scoreToEnd = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "ScoreToEnd", 200)
 
+    self.friendMinRank = math.min(self.friendMinRank, self.friendMaxRank)
     self.friendMaxRank = math.max(self.friendMinRank, self.friendMaxRank)
+   
+    self.enemyMinRank = math.min(self.enemyMinRank, self.enemyMaxRank)
     self.enemyMaxRank = math.max(self.enemyMinRank, self.enemyMaxRank)
 end
 
