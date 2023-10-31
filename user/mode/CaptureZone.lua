@@ -362,19 +362,21 @@ end
 
 function M:GetBotVehicleList(minRank, maxRank, vehicleType)
     local vehicleList = VehicleAPI.GetFilteredBotVehicles(minRank, maxRank, self.isArtillery == ENUM_TOGGLE[2], vehicleType)
-    return BotVehicleUtil.GetSafeBotVehicleList(vehicleList)
+    return vehicleList
 end
 
 ---@param battlePlayerList table<number,ShanghaiWindy.Core.AbstractBattlePlayer>
 ---@param vehicleList table<number,VehicleInfo>
 function M:InitBotPlayerVehicle(battlePlayerList, vehicleList)
-    for k, battlePlayer in pairs(battlePlayerList) do
-        self._botPlayerVehicleListMap[battlePlayer] = vehicleList
-        self:RandomSpawnBotVehicle(battlePlayer, vehicleList)
+    if vehicleList.Count > 0 then
+        for k, battlePlayer in pairs(battlePlayerList) do
+            self._botPlayerVehicleListMap[battlePlayer] = vehicleList
+            self:RandomSpawnBotVehicle(battlePlayer, vehicleList)
 
-        battlePlayer.OnVehicleDestroyed:AddListener(function()
-            self:OnBattlePlayerDestroyed(battlePlayer)
-        end)
+            battlePlayer.OnVehicleDestroyed:AddListener(function()
+                self:OnBattlePlayerDestroyed(battlePlayer)
+            end)
+        end
     end
 end
 
