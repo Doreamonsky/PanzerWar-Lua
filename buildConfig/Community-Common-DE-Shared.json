@@ -1,0 +1,25 @@
+{
+    "description": "普通版内置载具 （决定版的）",
+    "infos": [
+        {
+            "modNames": [
+                "BuildPipline-Community-DE-Shared"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/LuaProject/resources/android/default/common-ver-vehicle-de-shared"
+                },
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/common-ver-vehicle-de-shared"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/LuaProject/resources/ios/default/common-ver-vehicle-de-shared"
+                }
+            ],
+            "isCleanDstFolder": true
+        }
+    ]
+}
