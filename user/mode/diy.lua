@@ -65,10 +65,12 @@ function DIY:OnStartMode()
         end
     )
 
+    self.onFrameTick = handler(self, self.OnFrameTick)
+    TimeAPI.RegisterLateFrameTick(self.onFrameTick)
     -- Application.lowMemory("+", self.onLowMemory)
 end
 
-function DIY:OnUpdated()
+function DIY:OnFrameTick()
     if self.isEditMode then
         if self.isDirty and Time.time - self.lastdirtyTime > 0.05 then
             if self.bindingData then
@@ -1372,6 +1374,7 @@ function DIY:OnExitMode()
     CSharpAPI.OnDIYPickItem:RemoveListener(self.OnDIYPickItemCb)
 
     EventSystem.RemoveListener(EventDefine.OnGizmoConfigChanged, self.RefreshAllSlotScale, self)
+    TimeAPI.UnRegisterLateFrameTick(self.onFrameTick)
 
     self.slotModifyBtnPools:Dispose()
 end

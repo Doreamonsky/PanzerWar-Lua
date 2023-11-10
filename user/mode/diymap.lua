@@ -53,6 +53,9 @@ function DIYMap:OnStartMode()
             )
         end
     )
+
+    self.onFrameTick = handler(self, self.OnFrameTick)
+    TimeAPI.RegisterLateFrameTick(self.onFrameTick)
 end
 
 function DIYMap:onUtilCreated(root)
@@ -424,7 +427,7 @@ function DIYMap:onUtilCreated(root)
     CSharpAPI.OnMapInstallClicked:AddListener(self.OnMapInstallClickedCb)
 end
 
-function DIYMap:OnUpdated()
+function DIYMap:OnFrameTick()
     if self.isEditMode then
         -- 意外情况下，Handler 强制更新位置
         if self.itemComponent ~= nil and not self.itemComponent:IsNull() then
@@ -448,6 +451,7 @@ function DIYMap:OnExitMode()
     CSharpAPI.OnDIYScaleHandleChanged:RemoveListener(self.OnDIYScaleHandleChangedCb)
     CSharpAPI.OnMapPickItemComponent:RemoveListener(self.OnMapPickItemComponentCb)
     CSharpAPI.OnMapInstallClicked:RemoveListener(self.OnMapInstallClickedCb)
+    TimeAPI.UnRegisterLateFrameTick(self.onFrameTick)
 end
 
 --- @param baseData DIYMapBaseData
