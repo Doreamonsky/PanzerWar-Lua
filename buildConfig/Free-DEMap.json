@@ -1,0 +1,17 @@
+{
+    "description": "共享的决定版地图",
+    "infos": [
+        {
+            "modNames": [
+                "BuildPipline-Community-DE-SharedMap"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/LuaProject/resources/android/default/de-shared-map"
+                }
+            ],
+            "isCleanDstFolder": true
+        }
+    ]
+}

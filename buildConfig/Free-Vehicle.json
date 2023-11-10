@@ -1,0 +1,17 @@
+{
+    "description": "普通版载具",
+    "infos": [
+        {
+            "modNames": [
+                "BuildPipline-Community"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "F:/Projects/Free-LuaProject/resources/android/default/common-ver-vehicle"
+                }
+            ],
+            "isCleanDstFolder": true
+        }
+    ]
+}

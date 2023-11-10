@@ -1,0 +1,17 @@
+{
+    "description": "普通版与决定版共享的载具",
+    "infos": [
+        {
+            "modNames": [
+                "BuildPipline-Community-DE-Shared"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "F:/Projects/Free-LuaProject/resources/android/default/de-shared-vehicle"
+                }
+            ],
+            "isCleanDstFolder": true
+        }
+    ]
+}
