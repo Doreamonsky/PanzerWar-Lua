@@ -1,14 +1,14 @@
 {
-    "description": "共享给普通版的决定版地图",
+    "description": "普通版配置文件",
     "infos": [
         {
             "modNames": [
-                "BuildPipline-Community-DE-SharedMap"
+                "Config"
             ],
             "copyInfo": [
                 {
                     "platform": "Android",
-                    "dstDir": "D:/Projects/LuaProject/resources/android/default/de-shared-map"
+                    "dstDir": "F:/Projects/Free-LuaProject/resources/android/default/config"
                 }
             ],
             "isCleanDstFolder": true
