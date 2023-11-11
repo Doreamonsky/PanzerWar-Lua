@@ -11,6 +11,7 @@ function DIYMap:ctor()
     self.modName = "DIYMap"
     self.author = "超级哆啦酱"
     self.description = "创建自定义地图"
+    self.isDefinitiveOnly = true
 end
 
 function DIYMap:GetGameModeName(userLang)

@@ -11,6 +11,7 @@ function M:ctor()
     self.modName = "Wave"
     self.author = "官方"
     self.description = "防守战"
+    self.isDefinitiveOnly = true
 end
 
 function M:GetGameModeName(lang)

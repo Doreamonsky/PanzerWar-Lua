@@ -8,7 +8,7 @@
             "copyInfo": [
                 {
                     "platform": "Android",
-                    "dstDir": "D:/Projects/LuaProject/resources/android/default/de-shared-map"
+                    "dstDir": "F:/Projects/Free-LuaProject/resources/android/default/de-shared-map"
                 }
             ],
             "isCleanDstFolder": true

@@ -19,6 +19,7 @@ function DIY:ctor()
     self.modName = "DIY"
     self.author = "超级哆啦酱"
     self.description = "创建自定义坦克"
+    self.isDefinitiveOnly = true
 end
 
 function DIY:GetGameModeName(userLang)
