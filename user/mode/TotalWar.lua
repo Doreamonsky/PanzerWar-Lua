@@ -43,7 +43,8 @@ function M:GetConfigStorage()
 
     self.isArtillery = StorageAPI.GetStringValue(STORARAGE_DEFINE, "IsArtillery", ENUM_TOGGLE[1])
 
-    self.scoreToEnd = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "ScoreToEnd", 50)
+    self.friendScoreToEnd = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "FriendScoreToEnd", 50)
+    self.enemyScoreToEnd = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "EnemyScoreToEnd", 50)
 
     self.friendMinRank = math.min(self.friendMinRank, self.friendMaxRank)
     self.friendMaxRank = math.max(self.friendMinRank, self.friendMaxRank)
@@ -69,7 +70,8 @@ function M:SetConfigStorage()
 
     StorageAPI.SetStringValue(STORARAGE_DEFINE, "IsArtillery", self.isArtillery)
 
-    StorageAPI.SetNumberValue(STORARAGE_DEFINE, "ScoreToEnd", self.scoreToEnd)
+    StorageAPI.SetNumberValue(STORARAGE_DEFINE, "FriendScoreToEnd", self.friendScoreToEnd)
+    StorageAPI.SetNumberValue(STORARAGE_DEFINE, "EnemyScoreToEnd", self.enemyScoreToEnd)
 
     StorageAPI.SaveStorage()
 end
@@ -178,8 +180,12 @@ function M:RefreshOptions()
     -- Battle Type
     CustomOptionUIAPI.AddTitle("BattleType")
 
-    CustomOptionUIAPI.AddSlider("ScoreToEnd", self.scoreToEnd, 1, 200, true, function(res)
-        self.scoreToEnd = res
+    CustomOptionUIAPI.AddSlider("FriendScoreToEnd", self.friendScoreToEnd, 1, 200, true, function(res)
+        self.friendScoreToEnd = res
+    end)
+
+    CustomOptionUIAPI.AddSlider("EnemyScoreToEnd", self.enemyScoreToEnd, 1, 200, true, function(res)
+        self.friendScoreToEnd = res
     end)
 
     CustomOptionUIAPI.AddButton("HostBP", ">", function()
@@ -336,10 +342,10 @@ function M:OnBattlePlayerDestroyed(battlePlayer)
 end
 
 function M:UpdateScore()
-    ModeAPI.UpdateScore(self.friendTeamScore, self.enemyTeamScore, self.scoreToEnd, self.scoreToEnd)
+    ModeAPI.UpdateScore(self.friendTeamScore, self.enemyTeamScore, self.friendScoreToEnd, self.enemyScoreToEnd)
 
-    if self.enemyTeamScore >= self.scoreToEnd or self.friendTeamScore >= self.scoreToEnd then
-        local isVictory = self.friendTeamScore >= self.scoreToEnd
+    if self.enemyTeamScore >= self.enemyScoreToEnd or self.friendTeamScore >= self.friendScoreToEnd then
+        local isVictory = self.friendTeamScore >= self.friendScoreToEnd
         ModeAPI.ShowVictoryOrDefeat(isVictory)
         self.isGameLogic = false
     end
