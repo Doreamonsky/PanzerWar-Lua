@@ -9,6 +9,10 @@
                 {
                     "platform": "Android",
                     "dstDir": "F:/Projects/Free-LuaProject/resources/android/default/de-shared-vehicle"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/Free-LuaProject/resources/ios/default/de-shared-vehicle"
                 }
             ],
             "isCleanDstFolder": true
