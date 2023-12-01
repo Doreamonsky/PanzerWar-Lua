@@ -20,7 +20,7 @@
             "copyInfo": [
                 {
                     "platform": "Android",
-                    "dstDir": "D:/Projects/LuaProject/resources/android/default/runtime-support"
+                    "dstDir": "F:/Projects/Free-LuaProject/LuaProject/resources/android/default/runtime-support"
                 },
                 {
                     "platform": "StandaloneWindows64",
@@ -40,7 +40,7 @@
             "copyInfo": [
                 {
                     "platform": "Android",
-                    "dstDir": "D:/Projects/LuaProject/resources/android/default/free-map"
+                    "dstDir": "F:/Projects/Free-LuaProject/resources/android/default/free-map"
                 },
                 {
                     "platform": "StandaloneWindows64",
