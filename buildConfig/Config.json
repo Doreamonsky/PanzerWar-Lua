@@ -20,6 +20,26 @@
                 }
             ],
             "isCleanDstFolder": true
+        },
+        {
+            "modNames": [
+                "BuildPipline-RuntimeSupport"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/LuaProject/resources/android/default/runtime-support"
+                },
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Tools/ContentBuilder/content/Windows/dlc/PanzerWar-DE/BuiltInRes/runtime-support"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/LuaProject/resources/ios/default/runtime-support"
+                }
+            ],
+            "isCleanDstFolder": true
         }
     ]
 }
