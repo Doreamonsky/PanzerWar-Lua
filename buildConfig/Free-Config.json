@@ -32,6 +32,26 @@
                 }
             ],
             "isCleanDstFolder": true
+        },
+        {
+            "modNames": [
+                "BuildPipline-FreeMap"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/LuaProject/resources/android/default/free-map"
+                },
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Tools/ContentBuilder/content/Windows/dlc/PanzerWar/BuiltInRes/free-map"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/Free-LuaProject/resources/ios/default/free-map"
+                }
+            ],
+            "isCleanDstFolder": true
         }
     ]
 }
