@@ -9,6 +9,10 @@
                 {
                     "platform": "Android",
                     "dstDir": "F:/Projects/Free-LuaProject/resources/android/default/config"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/Free-LuaProject/resources/ios/default/config"
                 }
             ],
             "isCleanDstFolder": true
