@@ -24,7 +24,7 @@
             "copyInfo": [
                 {
                     "platform": "Android",
-                    "dstDir": "F:/Projects/Free-LuaProject/LuaProject/resources/android/default/runtime-support"
+                    "dstDir": "F:/Projects/Free-LuaProject/resources/android/default/runtime-support"
                 },
                 {
                     "platform": "StandaloneWindows64",
