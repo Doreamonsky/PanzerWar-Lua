@@ -185,7 +185,7 @@ function M:RefreshOptions()
     end)
 
     CustomOptionUIAPI.AddSlider("EnemyScoreToEnd", self.enemyScoreToEnd, 1, 200, true, function(res)
-        self.friendScoreToEnd = res
+        self.enemyScoreToEnd = res
     end)
 
     CustomOptionUIAPI.AddButton("HostBP", ">", function()
