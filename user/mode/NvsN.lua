@@ -67,10 +67,6 @@ function M:GetConfigStorage()
 
     self.friendTankNum = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "FriendTankNum", 5)
     self.enemyTankNum = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "EnemyTankNum", 5)
-    self.friendMinRankRange = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "FriendMinRankRange", 2)
-    self.friendMaxRankRange = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "FriendMaxRankRange", 1)
-    self.enemyMinRankRange = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "EnemyMinRankRange", 2)
-    self.enemyMaxRankRange = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "EnemyMaxRankRange", 1)
 end
 
 function M:SetConfigStorage()
@@ -78,10 +74,7 @@ function M:SetConfigStorage()
 
     StorageAPI.SetNumberValue(STORARAGE_DEFINE, "FriendTankNum", self.friendTankNum)
     StorageAPI.SetNumberValue(STORARAGE_DEFINE, "EnemyTankNum", self.enemyTankNum)
-    StorageAPI.SetNumberValue(STORARAGE_DEFINE, "FriendMinRankRange", self.friendMinRankRange)
-    StorageAPI.SetNumberValue(STORARAGE_DEFINE, "FriendMaxRankRange", self.friendMaxRankRange)
-    StorageAPI.SetNumberValue(STORARAGE_DEFINE, "EnemyMinRankRange", self.enemyMinRankRange)
-    StorageAPI.SetNumberValue(STORARAGE_DEFINE, "EnemyMaxRankRange", self.enemyMaxRankRange)
+
 
     StorageAPI.SaveStorage()
 end
@@ -110,21 +103,6 @@ function M:RefreshOptions()
     CustomOptionUIAPI.AddSlider("EnemyTankNum", self.enemyTankNum, 0, 20, true, function(res)
         self.enemyTankNum = res
     end)
-
-    CustomOptionUIAPI.AddTitle("Matching")
-    CustomOptionUIAPI.AddSlider("FriendMinRankRange", self.friendMinRankRange, 0, 4, true, function(res)
-        self.friendMinRankRange = res
-    end)
-    CustomOptionUIAPI.AddSlider("FriendMaxRankRange", self.friendMaxRankRange, 0, 4, true, function(res)
-        self.friendMaxRankRange = res
-    end)
-    CustomOptionUIAPI.AddSlider("EnemyMinRankRange", self.enemyMinRankRange, 0, 4, true, function(res)
-        self.enemyMinRankRange = res
-    end)
-    CustomOptionUIAPI.AddSlider("EnemyMaxRankRange", self.enemyMaxRankRange, 0, 4, true, function(res)
-        self.enemyMaxRankRange = res
-    end)
-
 
     CustomOptionUIAPI.AddButton("HostBP", ">", function()
         BanPick.ShowBanPick()
@@ -173,20 +151,14 @@ function M:OnPickMainPlayerVehicle(evtData)
         self.mainBattlePlayer:CreateVehicle(vehicleInfo, trans.position, trans.rotation)
     end)
 
-    local friendMinRankPattern = self:CreateMinRandomPattern(playerRank, self.friendMinRankRange)
-    local friendMaxRankPattern = self:CreateMaxRandomPattern(playerRank, self.friendMaxRankRange)
+    local minRankPattern = { playerRank - 2, playerRank - 1, playerRank }
+    local maxRankPattern = { playerRank, playerRank + 1, playerRank + 2 }
 
-    local enemyMinRankPattern = self:CreateMinRandomPattern(playerRank, self.enemyMinRankRange)
-    local enemyMaxRankPattern = self:CreateMaxRandomPattern(playerRank, self.enemyMaxRankRange)
+    local minRank = self:GetRandomPattern(minRankPattern)
+    local maxRank = self:GetRandomPattern(maxRankPattern)
 
-    local friendMinRank = self:GetRandomPattern(friendMinRankPattern)
-    local friendMaxRank = self:GetRandomPattern(friendMaxRankPattern)
-
-    local enemyMinRank = self:GetRandomPattern(enemyMinRankPattern)
-    local enemyMaxRank = self:GetRandomPattern(enemyMaxRankPattern)
-
-    local friendRanks = self:GetRandomRanks(friendMinRank, friendMaxRank, self.friendTankNum - 1)
-    local enemyRanks = self:GetRandomRanks(enemyMinRank, enemyMaxRank, self.enemyTankNum - 1)
+    local friendRanks = self:GetRandomRanks(minRank, maxRank, self.friendTankNum - 1)
+    local enemyRanks = self:GetRandomRanks(minRank, maxRank, self.enemyTankNum - 1)
 
     if enemyRanks[playerRank] then
         enemyRanks[playerRank] = enemyRanks[playerRank] + 1
@@ -206,22 +178,6 @@ function M:OnPickMainPlayerVehicle(evtData)
             ModeAPI.ToggleVehicleLockState(false, player.Vehicle)
         end
     end)
-end
-
-function M:CreateMinRandomPattern(playerRank, rankRange)
-    local tb = {}
-    for i = 0, rankRange do
-        table.insert(tb, i - playerRank)
-    end
-    return tb
-end
-
-function M:CreateMaxRandomPattern(playerRank, rankRange)
-    local tb = {}
-    for i = 0, rankRange do
-        table.insert(tb, i + playerRank)
-    end
-    return tb
 end
 
 function M:GetRandomPattern(randomPattern)
