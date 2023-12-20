@@ -28,7 +28,7 @@ function DIYMap:OnStartMode()
     self.cameraController = EntityFactory.AddEntity(CameraController.new())
     
     self.shareCodeListController = ShareCodeListController.new(
-        "https://game.waroftanks.cn/backend/mapUserDefine/Newest/",
+        "https://game.windyverse.net/backend/mapUserDefine/Newest/",
         function(cb)
             self:ImportShareCode(cb)
         end

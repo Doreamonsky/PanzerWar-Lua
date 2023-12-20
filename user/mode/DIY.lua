@@ -34,7 +34,7 @@ function DIY:OnStartMode()
     self.userDefined = DIYUserDefined()
     self.cameraController = EntityFactory.AddEntity(CameraController.new())
     self.shareCodeListController = ShareCodeListController.new(
-        "https://game.waroftanks.cn/backend/userDefine/Newest/",
+        "https://game.windyverse.net/backend/userDefine/Newest/",
         function(cb)
             self:ImportShareCode(cb)
         end
