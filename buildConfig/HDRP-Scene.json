@@ -1,0 +1,17 @@
+{
+    "description": "决定版本场景",
+    "infos": [
+        {
+            "modNames": [
+                "BuildPipline-HD-Maps"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Tools/ContentBuilder/content/Windows/dlc/PanzerWar-DE-HDRP/BuiltInRes/hd-maps"
+                }
+            ],
+            "isCleanDstFolder": true
+        }
+    ]
+}
