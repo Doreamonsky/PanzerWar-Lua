@@ -222,7 +222,8 @@ function M:CreateVehiclesFromRanks(team, playerRank, ranks)
                 ---@type ShanghaiWindy.Core.AbstractBattlePlayer
                 local botPlayer = BattlePlayerAPI.CreateOfflineBotPlayer(self.index, "装纷派蒙", {})
                 botPlayer.BotTeam = team
-
+                botPlayer.IsKeepWreckage = true
+                
                 ModeAPI.AddBattlePlayer(botPlayer)
 
                 SpawnAPI.AsyncSpawn(team, function(trans)
