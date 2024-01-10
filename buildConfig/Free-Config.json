@@ -39,7 +39,7 @@
         },
         {
             "modNames": [
-                "Packages/com.shanghaiwindy.panzerwar/ModManager/RuntimeSupport.asset"
+                "Packages/com.shanghaiwindy.panzerwar/ModManager/BuildPipline-FreeMap.asset"
             ],
             "copyInfo": [
                 {
