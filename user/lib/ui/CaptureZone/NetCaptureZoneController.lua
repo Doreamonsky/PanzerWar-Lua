@@ -1,6 +1,6 @@
----@class CaptureZoneController : BaseController
+---@class NetCaptureZoneController : BaseController
 ---@field view CaptureZoneView
-CaptureZoneController = class("CaptureZoneController", BaseController)
+NetCaptureZoneController = class("NetCaptureZoneController", BaseController)
 
 Lib()
 
@@ -16,17 +16,17 @@ Lib()
 ---------------------------------
 
 
-local M = CaptureZoneController
+local M = NetCaptureZoneController
 
 function M:ctor()
-    ---@type CaptureZone
-    self._mode = nil
-
     ---@type table<number,ZoneUI>
     self._uis = {}
     self._selectPointId = -1
     self._mainPlayerVehicle = nil
     self._isPickBar = false
+    self._coolDownTime = 0
+    ---@type Frontend.Runtime.Battle.Mode.CaptureZoneNetGameMode
+    self._mode = nil
 end
 
 function M:AddListeners()
@@ -39,9 +39,13 @@ function M:AddListeners()
     ModeAPI.RegisterPickVehicleCallBack(self.onPickMainPlayerVehicle)
 
     -- Lua
-    self.view.vPickVehicle.onClick:AddListener(handler(self, self.OnPickVehicleClicked))
-    self.view.vBattle.onClick:AddListener(handler(self, self.OnBattleClicked))
+    self.onPickVehicleClicked = handler(self, self.OnPickVehicleClicked)
+    self.onBattleClicked = handler(self, self.OnBattleClicked)
+
+    self.view.vPickVehicle.onClick:AddListener(self.onPickVehicleClicked)
+    self.view.vBattle.onClick:AddListener(self.onBattleClicked)
     EventSystem.AddListener(EventDefine.OnZonePickBarVisibilityChanged, self.OnPickBarChanged, self)
+    EventSystem.AddListener(EventDefine.OnPickBarCoolDown, self.OnPickBarCoolDown, self)
 end
 
 function M:RemoveListener()
@@ -54,20 +58,21 @@ function M:RemoveListener()
     self.view.vPickVehicle.onClick:RemoveAllListeners()
     self.view.vBattle.onClick:RemoveAllListeners()
     EventSystem.RemoveListener(EventDefine.OnZonePickBarVisibilityChanged, self.OnPickBarChanged, self)
+    EventSystem.RemoveListener(EventDefine.OnPickBarCoolDown, self.OnPickBarCoolDown, self)
 end
 
 function M:Awake()
-    self._mode = ModeAPI.GetModeInstance()
-
+    self._mode = ModeAPI.GetNativeMode()
     self:CreateZoneUI(true)
     self:CreateZoneUI(false)
 
     GameObjectAPI.SetActive(self.view.vPointTemplate, false)
+    GameObjectAPI.SetActive(self.view.vCoolDownMask, false)
+
     self:OnPickBarChanged(true)
-    self:PickMainPlayerVehicle(self._mode.mainPlayerList[0])
+    self:PickMainPlayerVehicle(VehicleAPI.GetAllDriveableVehicleList(false)[0])
     self:RefreshCaptureStatus()
     self:RefreshCaptureScreenUI()
-    self:RefreshBackgroundCamera()
     self:AddListeners()
 end
 
@@ -87,7 +92,6 @@ function M:OnQuarterTick()
     if self._isPickBar then
         self:RefreshPickedCapturePointStatus()
         self:RefreshCaptureScreenUI()
-        self:RefreshBackgroundCamera()
     end
 end
 
@@ -107,6 +111,7 @@ function M:CreateZoneUI(isSceneUI)
         local btn = ComponentAPI.GetNativeComponent(instance, "Button")
         btn.onClick:AddListener(function()
             self._selectPointId = captureZone:GetIndex()
+            self._mode:PickCaptureZone(captureZone.zoneName)
         end)
 
         local text = ComponentAPI.GetNativeComponent(GameObjectAPI.Find(instance, "Text"), "Text")
@@ -133,7 +138,7 @@ function M:CreateZoneUI(isSceneUI)
 end
 
 function M:OnPickVehicleClicked()
-    ModeAPI.ShowPickVehicleUIWithList(false, self._mode.mainPlayerList)
+    ModeAPI.ShowPickVehicleUI(false)
 end
 
 function M:OnPickMainPlayerVehicle(evtData)
@@ -156,8 +161,6 @@ function M:OnPickBarChanged(isActive)
 
     GameObjectAPI.SetActive(self.view.vCapturePickBar, isActive)
     self:RefreshCaptureScreenUI()
-    self:RefreshBackgroundCamera()
-
 
     for k, v in pairs(self._uis) do
         local img = ComponentAPI.GetNativeComponent(v.root, "Image")
@@ -166,30 +169,7 @@ function M:OnPickBarChanged(isActive)
 end
 
 function M:OnBattleClicked()
-    self._mode:SpawnMainPlayer(self._mainPlayerVehicle, self._selectPointId)
-end
-
-function M:CreateBotPlayerList(num, team)
-    local list = {}
-
-    for i = 1, num do
-        local bot = BattlePlayerAPI.CreateOfflineBotPlayer(self.index, "黑暗降临", nil)
-        bot.BotTeam = team
-
-        ModeAPI.AddBattlePlayer(bot)
-
-        table.insert(list, bot)
-        self.index = self.index + 1
-    end
-
-    return list
-end
-
-function M:RefreshBackgroundCamera()
-    local config = self._mode._curConfig
-
-    CameraAPI.SetBackgroundCameraPosition(config.backgroundCameraTransformInfo.pos)
-    CameraAPI.SetBackgroundCameraEulerAngles(config.backgroundCameraTransformInfo.eulerAngle)
+    self._mode:PickVehicle(self._mainPlayerVehicle:GetLoadGUID())
 end
 
 --- Update the screen position of capture point
@@ -247,31 +227,26 @@ function M:RefreshPickedCapturePointStatus()
     end
 end
 
---- Add mask to vehicle when time is cooling
-function M:RefreshCoolDownMask()
-    local isCoolDown = false
-
-    for index, spawnInfo in pairs(self._mode._playerSpawnQueue) do
-        if spawnInfo.player:IsLocalPlayer() then
-            isCoolDown = true
-            local leftTime = math.ceil(self._mode._coolDownTime - (TimeAPI.GetTime() - spawnInfo.killTime))
-
-            if leftTime < 0 then
-                leftTime = 0
-            end
-
-            self.view.vCoolDownTime.text = leftTime
-        end
-    end
-
-    self.view.vBattle.interactable = not isCoolDown
-    GameObjectAPI.SetActive(self.view.vCoolDownMask, isCoolDown)
-end
-
 function M:GetTeamColor(team)
     if team == TeamAPI.GetPlayerTeam() then
         return FRIEND_TEAM_COLOR
     else
         return ENEMY_TEAM_COLOR
     end
+end
+
+function M:OnPickBarCoolDown(coolDownTime)
+    self._coolDownTime = coolDownTime
+end
+
+function M:RefreshCoolDownMask()
+    local isCoolDown = self._coolDownTime > 0
+
+    if isCoolDown then
+        self.view.vCoolDownTime.text = math.ceil(self._coolDownTime)
+        self._coolDownTime = self._coolDownTime - TimeAPI.GetDeltaTime()
+    end
+
+    self.view.vBattle.interactable = not isCoolDown
+    GameObjectAPI.SetActive(self.view.vCoolDownMask, isCoolDown)
 end

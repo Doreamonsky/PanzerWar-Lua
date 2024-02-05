@@ -115,9 +115,17 @@ local VehicleInfo = {}
 ---@return System.String
 function VehicleInfo:GetDisplayName() end
 ---@instance
+---@function [VehicleInfo:GetDescription]
+---@return System.String
+function VehicleInfo:GetDescription() end
+---@instance
 ---@function [VehicleInfo:GetVehicleName]
 ---@return System.String
 function VehicleInfo:GetVehicleName() end
+---@instance
+---@function [VehicleInfo:GetLoadGUID]
+---@return System.String
+function VehicleInfo:GetLoadGUID() end
 ---@instance
 ---@function [VehicleInfo:GetRepairCost]
 ---@return System.Int32
@@ -139,10 +147,6 @@ function VehicleInfo:IsSupportModuleMode() end
 ---@function [VehicleInfo:GetRank]
 ---@return System.Int32
 function VehicleInfo:GetRank() end
----@instance
----@function [VehicleInfo:GetUUID]
----@return System.String
-function VehicleInfo:GetUUID() end
 return VehicleInfo
 
 ---@class ShanghaiWindy.Core.CaptureZoneTask
@@ -163,6 +167,7 @@ return BaseFireSystem
 ---@field basePlayerState ShanghaiWindy.Core.BasePlayerState @基础玩家状态类，用于处理玩家状态的改变，如受到伤害、击中反弹等事件。             Base player state class for handling changes in player states such as taking damage, ricocheting hits, etc.
 ---@field equipmentBuffDataList System.Collections.Generic.List`1[ShanghaiWindy.Core.EquipmentBuffData] @装备 Buff 数据列表             Equipment Buff Data List
 ---@field OnVehicleLoaded UnityEngine.Events.UnityEvent
+---@field OnVehiclePreLoaded UnityEngine.Events.UnityEvent
 ---@field OnVehicleDestroyed UnityEngine.Events.UnityEvent
 ---@field OnGameObjectDestroyed UnityEngine.Events.UnityEvent
 ---@field OnDamagedInternalModule ShanghaiWindy.Core.BaseInitSystem+DamagedInternalModule
@@ -296,7 +301,6 @@ return TeamManager
 ---@field canControl System.Boolean @是否可控制             Can Control
 ---@field useGravity System.Boolean @使用重力             Use Gravity
 ---@field projectile ShanghaiWindy.Core.ProjectileManager @投射物管理器             Projectile Manager
----@field calibratedPoint UnityEngine.Vector3 @校准点             Calibrated Point
 ---@field isPlayVFX System.Boolean @是否播放 VFX             Is Play VFX
 ---@field overrideVelocity UnityEngine.Vector3 @覆盖速度             Override Velocity
 ---@field bulletCountList System.Int32[]
@@ -323,6 +327,7 @@ return TankFire
 ---@field CurMainTurretParam ShanghaiWindy.Core.MouseTurretParameter
 ---@field CurPlayerStateParam ShanghaiWindy.Core.PlayerStateParameter
 ---@field OnVehicleLoaded UnityEngine.Events.UnityEvent
+---@field OnVehiclePreLoaded UnityEngine.Events.UnityEvent
 ---@field OnVehicleDestroyed UnityEngine.Events.UnityEvent
 ---@field OnGameObjectDestroyed UnityEngine.Events.UnityEvent
 ---@field OnDamagedInternalModule ShanghaiWindy.Core.BaseInitSystem+DamagedInternalModule
@@ -391,6 +396,7 @@ return TurretController
 ---@field author System.String
 ---@field description System.String
 ---@field isPreview System.Boolean
+---@field isDefinitiveOnly System.Boolean
 local ILuaBase = {}
 
 return ILuaBase
@@ -858,6 +864,14 @@ function CaptureZoneAPI.AddCaptureZone(zoneName, point, radius) end
 ---@param team ShanghaiWindy.Core.TeamManager+Team
 ---@param delta System.Single
 function CaptureZoneAPI.CapturingZone(id, team, delta) end
+---@static
+---@function [CaptureZoneAPI.SetCapturingZoneStatus]
+---@return System.Void
+---@param id System.Int64
+---@param progress System.Single
+---@param capturingTeam ShanghaiWindy.Core.TeamManager+Team
+---@param stage ShanghaiWindy.Core.ECaptureStage
+function CaptureZoneAPI.SetCapturingZoneStatus(id, progress, capturingTeam, stage) end
 ---获取占领点
 ---Get capture zone
 ---@static
@@ -1444,6 +1458,12 @@ function ModeAPI.EnableCountDown(countDown, countDownTitle, countDownDescription
 ---@function [ModeAPI.GetModeInstance]
 ---@return XLua.LuaTable
 function ModeAPI.GetModeInstance() end
+---获取 c# 游戏模式实例
+---Get the native game mode in c#
+---@static
+---@function [ModeAPI.GetNativeMode]
+---@return ShanghaiWindy.Core.GameMode.BaseGameMode
+function ModeAPI.GetNativeMode() end
 ---@static
 ---@function [ModeAPI.StartRecord]
 ---@return System.Void
@@ -1477,6 +1497,12 @@ function PointAPI.GetTeamBStartPoints() end
 ---@function [PointAPI.GetPatrolPoints]
 ---@return UnityEngine.GameObject[] 包含巡逻点的 GameObject 数组
 function PointAPI.GetPatrolPoints() end
+---设置是否开启地图边界
+---Toggle if map boundary open
+---@static
+---@function [PointAPI.ToggleMapBoundary]
+---@param state System.Boolean
+function PointAPI.ToggleMapBoundary(state) end
 return PointAPI
 
 ---随机 API
@@ -1970,4 +1996,27 @@ function VehicleAPI.GetFilteredBotVehicles(minRank, maxRank, allowArtillery, veh
 ---@param callback ShanghaiWindy.Core.Delegate.OnVehicleThumbnailLoadedDelegate
 function VehicleAPI.LoadVehicleThumbnail(vehicleInfo, callback) end
 return VehicleAPI
+
+---@class Frontend.Runtime.Battle.AbstractNetBattleGameMode
+local AbstractNetBattleGameMode = {}
+
+---@instance
+---@function [AbstractNetBattleGameMode:GetPing]
+---@return System.Single
+function AbstractNetBattleGameMode:GetPing() end
+return AbstractNetBattleGameMode
+
+---@class Frontend.Runtime.Battle.Mode.CaptureZoneNetGameMode
+local CaptureZoneNetGameMode = {}
+
+---@instance
+---@function [CaptureZoneNetGameMode:PickCaptureZone]
+---@return System.Void
+---@param zoneName System.String
+function CaptureZoneNetGameMode:PickCaptureZone(zoneName) end
+---@instance
+---@function [CaptureZoneNetGameMode:GetPing]
+---@return System.Single
+function CaptureZoneNetGameMode:GetPing() end
+return CaptureZoneNetGameMode
 

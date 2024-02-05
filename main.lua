@@ -10,8 +10,9 @@ Config.loadAllConfigs()
 Screen.sleepTimeout = CS.SleepTimeout.NeverSleep
 
 LuaUIManager.createResourceDelegate = function(cb, ...)
-    local id = select(1, ...)
-    local fileName = select(2, ...)
+    local args = { ... }
+    local id = args[1]
+    local fileName = args[2]
 
     AssetAPI.LoadPoolAsset(id, fileName, function(assetPoolRef)
         if assetPoolRef:IsValid() then

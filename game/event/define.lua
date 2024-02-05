@@ -6,5 +6,6 @@ EventDefine.OnGizmoConfigChanged = "OnGizmoConfigChanged"
 
 -- Capture Zone
 EventDefine.OnZonePickBarVisibilityChanged = "OnPickBarVisibilityChanged"
+EventDefine.OnPickBarCoolDown = "OnPickBarCoolDown"
 
 return EventDefine

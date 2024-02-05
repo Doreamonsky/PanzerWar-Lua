@@ -218,7 +218,7 @@ function M:OnBattleSceneLoaded()
         for degree = 0, 360, 15 do
             local x = math.cos(math.rad(degree)) * captureZone.zoneCapturePoint.radius
             local z = math.sin(math.rad(degree)) * captureZone.zoneCapturePoint.radius
-            table.insert(capturePoints, Vector3(x, -10, z) + captureZone.zoneCapturePoint.position)
+            table.insert(capturePoints, Vector3(x, -8, z) + captureZone.zoneCapturePoint.position)
         end
 
         local id = MeshAPI.CreateMesh(capturePoints, 10)

@@ -116,3 +116,5 @@ TransformAPI = CS.ShanghaiWindy.Core.API.TransformAPI
 UIAPI = CS.ShanghaiWindy.Core.API.UIAPI
 --- @class ShanghaiWindy.Core.API.VehicleAPI
 VehicleAPI = CS.ShanghaiWindy.Core.API.VehicleAPI
+AbstractNetBattleGameMode = CS.Frontend.Runtime.Battle.AbstractNetBattleGameMode
+CaptureZoneNetGameMode = CS.Frontend.Runtime.Battle.Mode.CaptureZoneNetGameMode
