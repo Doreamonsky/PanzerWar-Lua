@@ -41,7 +41,7 @@ function M:AddListeners()
     -- Lua
     self.view.vPickVehicle.onClick:AddListener(handler(self, self.OnPickVehicleClicked))
     self.view.vBattle.onClick:AddListener(handler(self, self.OnBattleClicked))
-    EventSystem.AddListener(EventDefine.OnZonePickBarVisibilityChanged, self.OnPickBarChanged, self)
+    EventSystem.AddListener(EventDefine.OnPickBarVisibilityChanged, self.OnPickBarChanged, self)
 end
 
 function M:RemoveListener()
@@ -53,7 +53,7 @@ function M:RemoveListener()
     -- Lua
     self.view.vPickVehicle.onClick:RemoveAllListeners()
     self.view.vBattle.onClick:RemoveAllListeners()
-    EventSystem.RemoveListener(EventDefine.OnZonePickBarVisibilityChanged, self.OnPickBarChanged, self)
+    EventSystem.RemoveListener(EventDefine.OnPickBarVisibilityChanged, self.OnPickBarChanged, self)
 end
 
 function M:Awake()
@@ -144,10 +144,10 @@ end
 function M:PickMainPlayerVehicle(vehicleInfo)
     self._mainPlayerVehicle = vehicleInfo
 
+    self.view.vVehicleName.text = vehicleInfo:GetDisplayName()
+    self.view.vVehicleRank.text = vehicleInfo:GetRank()
     VehicleAPI.LoadVehicleThumbnail(vehicleInfo, function(thumbnail)
         self.view.vVehicleThumbnail.sprite = thumbnail
-        self.view.vVehicleName.text = vehicleInfo:GetDisplayName()
-        self.view.vVehicleRank.text = vehicleInfo:GetRank()
     end)
 end
 

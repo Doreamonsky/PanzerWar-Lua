@@ -2001,6 +2001,11 @@ return VehicleAPI
 local AbstractNetBattleGameMode = {}
 
 ---@instance
+---@function [AbstractNetBattleGameMode:PickVehicle]
+---@return System.Void
+---@param vehicleGuid System.String
+function AbstractNetBattleGameMode:PickVehicle(vehicleGuid) end
+---@instance
 ---@function [AbstractNetBattleGameMode:GetPing]
 ---@return System.Single
 function AbstractNetBattleGameMode:GetPing() end
@@ -2015,8 +2020,36 @@ local CaptureZoneNetGameMode = {}
 ---@param zoneName System.String
 function CaptureZoneNetGameMode:PickCaptureZone(zoneName) end
 ---@instance
+---@function [CaptureZoneNetGameMode:PickVehicle]
+---@return System.Void
+---@param vehicleGuid System.String
+function CaptureZoneNetGameMode:PickVehicle(vehicleGuid) end
+---@instance
 ---@function [CaptureZoneNetGameMode:GetPing]
 ---@return System.Single
 function CaptureZoneNetGameMode:GetPing() end
 return CaptureZoneNetGameMode
+
+---@class Frontend.Runtime.Battle.Mode.StandardWarNetGameMode
+local StandardWarNetGameMode = {}
+
+---@instance
+---@function [StandardWarNetGameMode:GetPlayerVehicleQueue]
+---@return System.Collections.Generic.List`1[[ShanghaiWindy.Core.VehicleInfo, Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
+function StandardWarNetGameMode:GetPlayerVehicleQueue() end
+---@instance
+---@function [StandardWarNetGameMode:GetVehicleUsedNumber]
+---@return System.Int32
+---@param vehicleGuid System.String
+function StandardWarNetGameMode:GetVehicleUsedNumber(vehicleGuid) end
+---@instance
+---@function [StandardWarNetGameMode:PickVehicle]
+---@return System.Void
+---@param vehicleGuid System.String
+function StandardWarNetGameMode:PickVehicle(vehicleGuid) end
+---@instance
+---@function [StandardWarNetGameMode:GetPing]
+---@return System.Single
+function StandardWarNetGameMode:GetPing() end
+return StandardWarNetGameMode
 

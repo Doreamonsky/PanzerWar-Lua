@@ -44,7 +44,7 @@ function M:AddListeners()
 
     self.view.vPickVehicle.onClick:AddListener(self.onPickVehicleClicked)
     self.view.vBattle.onClick:AddListener(self.onBattleClicked)
-    EventSystem.AddListener(EventDefine.OnZonePickBarVisibilityChanged, self.OnPickBarChanged, self)
+    EventSystem.AddListener(EventDefine.OnPickBarVisibilityChanged, self.OnPickBarChanged, self)
     EventSystem.AddListener(EventDefine.OnPickBarCoolDown, self.OnPickBarCoolDown, self)
 end
 
@@ -57,7 +57,7 @@ function M:RemoveListener()
     -- Lua
     self.view.vPickVehicle.onClick:RemoveAllListeners()
     self.view.vBattle.onClick:RemoveAllListeners()
-    EventSystem.RemoveListener(EventDefine.OnZonePickBarVisibilityChanged, self.OnPickBarChanged, self)
+    EventSystem.RemoveListener(EventDefine.OnPickBarVisibilityChanged, self.OnPickBarChanged, self)
     EventSystem.RemoveListener(EventDefine.OnPickBarCoolDown, self.OnPickBarCoolDown, self)
 end
 

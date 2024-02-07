@@ -5,7 +5,8 @@ local EventDefine = {}
 EventDefine.OnGizmoConfigChanged = "OnGizmoConfigChanged"
 
 -- Capture Zone
-EventDefine.OnZonePickBarVisibilityChanged = "OnPickBarVisibilityChanged"
+EventDefine.OnVehicleUseQueueNumberChanged = "OnVehicleUseQueueNumberChanged"
+EventDefine.OnPickBarVisibilityChanged = "OnPickBarVisibilityChanged"
 EventDefine.OnPickBarCoolDown = "OnPickBarCoolDown"
 
 return EventDefine

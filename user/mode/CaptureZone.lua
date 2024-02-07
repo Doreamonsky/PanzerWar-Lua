@@ -74,12 +74,12 @@ function M:AddListeners()
     self.onQuarterTick = handler(self, self.OnQuarterTick)
 
     TimeAPI.RegisterQuarterTick(self.onQuarterTick)
-    EventSystem.AddListener(EventDefine.OnZonePickBarVisibilityChanged, self.OnZonePickBarVisibilityChanged, self)
+    EventSystem.AddListener(EventDefine.OnPickBarVisibilityChanged, self.OnPickBarVisibilityChanged, self)
 end
 
 function M:RemoveListeners()
     TimeAPI.UnRegisterQuarterTick(self.onQuarterTick)
-    EventSystem.RemoveListener(EventDefine.OnZonePickBarVisibilityChanged, self.OnZonePickBarVisibilityChanged, self)
+    EventSystem.RemoveListener(EventDefine.OnPickBarVisibilityChanged, self.OnPickBarVisibilityChanged, self)
 end
 
 function M:RefreshOptions()
@@ -317,7 +317,7 @@ function M:SpawnMainPlayer(vehicleInfo, pointIndex)
     end
 
     if curPointIndex ~= -1 then
-        EventSystem.DispatchEvent(EventDefine.OnZonePickBarVisibilityChanged, false)
+        EventSystem.DispatchEvent(EventDefine.OnPickBarVisibilityChanged, false)
 
         local transformList = self._captureSpawnPointMap[curPointIndex]
         SpawnAPI.AsyncSpawnGivenPoints(transformList, function(trans)
@@ -415,7 +415,7 @@ function M:RandomSpawnBotVehicle(battlePlayer, vehicleList)
 end
 
 function M:OnMainPlayerGameObjectDestroyed(battlePlayer)
-    EventSystem.DispatchEvent(EventDefine.OnZonePickBarVisibilityChanged, true)
+    EventSystem.DispatchEvent(EventDefine.OnPickBarVisibilityChanged, true)
 end
 
 ---@param battlePlayer ShanghaiWindy.Core.AbstractBattlePlayer
@@ -504,7 +504,7 @@ function M:SetConfigStorage()
     StorageAPI.SaveStorage()
 end
 
-function M:OnZonePickBarVisibilityChanged(isActive)
+function M:OnPickBarVisibilityChanged(isActive)
     for k, meshGo in pairs(self._captureZoneMeshMap) do
         GameObjectAPI.SetActive(meshGo, isActive)
     end
