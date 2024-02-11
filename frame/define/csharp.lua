@@ -2009,6 +2009,10 @@ function AbstractNetBattleGameMode:PickVehicle(vehicleGuid) end
 ---@function [AbstractNetBattleGameMode:GetPing]
 ---@return System.Single
 function AbstractNetBattleGameMode:GetPing() end
+---@instance
+---@function [AbstractNetBattleGameMode:IsMainPlayerLoaded]
+---@return System.Boolean
+function AbstractNetBattleGameMode:IsMainPlayerLoaded() end
 return AbstractNetBattleGameMode
 
 ---@class Frontend.Runtime.Battle.Mode.CaptureZoneNetGameMode
@@ -2028,6 +2032,10 @@ function CaptureZoneNetGameMode:PickVehicle(vehicleGuid) end
 ---@function [CaptureZoneNetGameMode:GetPing]
 ---@return System.Single
 function CaptureZoneNetGameMode:GetPing() end
+---@instance
+---@function [CaptureZoneNetGameMode:IsMainPlayerLoaded]
+---@return System.Boolean
+function CaptureZoneNetGameMode:IsMainPlayerLoaded() end
 return CaptureZoneNetGameMode
 
 ---@class Frontend.Runtime.Battle.Mode.StandardWarNetGameMode
@@ -2051,5 +2059,27 @@ function StandardWarNetGameMode:PickVehicle(vehicleGuid) end
 ---@function [StandardWarNetGameMode:GetPing]
 ---@return System.Single
 function StandardWarNetGameMode:GetPing() end
+---@instance
+---@function [StandardWarNetGameMode:IsMainPlayerLoaded]
+---@return System.Boolean
+function StandardWarNetGameMode:IsMainPlayerLoaded() end
 return StandardWarNetGameMode
+
+---@class Frontend.Runtime.Battle.Mode.TotalWarNetGameMode
+local TotalWarNetGameMode = {}
+
+---@instance
+---@function [TotalWarNetGameMode:PickVehicle]
+---@return System.Void
+---@param vehicleGuid System.String
+function TotalWarNetGameMode:PickVehicle(vehicleGuid) end
+---@instance
+---@function [TotalWarNetGameMode:GetPing]
+---@return System.Single
+function TotalWarNetGameMode:GetPing() end
+---@instance
+---@function [TotalWarNetGameMode:IsMainPlayerLoaded]
+---@return System.Boolean
+function TotalWarNetGameMode:IsMainPlayerLoaded() end
+return TotalWarNetGameMode
 

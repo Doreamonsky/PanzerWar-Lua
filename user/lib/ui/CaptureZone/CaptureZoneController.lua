@@ -57,13 +57,14 @@ function M:RemoveListener()
 end
 
 function M:Awake()
+    ---@type Frontend.Runtime.Battle.Mode.CaptureZoneNetGameMode
     self._mode = ModeAPI.GetModeInstance()
 
     self:CreateZoneUI(true)
     self:CreateZoneUI(false)
 
     GameObjectAPI.SetActive(self.view.vPointTemplate, false)
-    self:OnPickBarChanged(true)
+    self:OnPickBarChanged(not self._mode:IsMainPlayerLoaded())
     self:PickMainPlayerVehicle(self._mode.mainPlayerList[0])
     self:RefreshCaptureStatus()
     self:RefreshCaptureScreenUI()
