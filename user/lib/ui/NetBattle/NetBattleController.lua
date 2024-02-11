@@ -14,6 +14,8 @@ end
 function M:Awake()
     self._mode = ModeAPI.GetNativeMode()
     GameObjectAPI.SetActive(self.view.vChatSenderBar, false)
+    GameObjectAPI.SetActive(self.view.vOpenChatSender.gameObject, false)
+    GameObjectAPI.SetActive(self.view.vChatTemplateMessage, false)
     self:ToggleChatSender(false)
     self:AddListeners()
 end

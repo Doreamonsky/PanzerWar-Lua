@@ -13,22 +13,24 @@ M.RefMap = {}
 ---@param controller BaseController
 ---@param view BaseView
 function M.CreateUI(view, controller, ...)
+    local index = M.Index
     M.Index = M.Index + 1
-    M.RefMap[M.Index] = {
+
+    M.RefMap[index] = {
         view = nil,
         controller = nil,
         resourceRef = nil
     }
 
     M.createResourceDelegate(function(instance, resourceRef)
-        if M.RefMap[M.Index] ~= nil then
+        if M.RefMap[index] ~= nil then
             local root = instance.transform
             view:InitUI(root)
             controller.view = view
 
-            M.RefMap[M.Index].view = view
-            M.RefMap[M.Index].controller = controller
-            M.RefMap[M.Index].resourceRef = resourceRef
+            M.RefMap[index].view = view
+            M.RefMap[index].controller = controller
+            M.RefMap[index].resourceRef = resourceRef
 
             controller:Awake()
         else
@@ -36,7 +38,7 @@ function M.CreateUI(view, controller, ...)
         end
     end, ...)
 
-    return M.Index
+    return index
 end
 
 function M.RemoveUI(index)
