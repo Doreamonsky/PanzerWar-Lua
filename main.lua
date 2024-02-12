@@ -6,9 +6,6 @@ require("game.all")   -- 游戏侧脚本
 
 Config.loadAllConfigs()
 
--- 禁止屏熄
-Screen.sleepTimeout = CS.SleepTimeout.NeverSleep
-
 LuaUIManager.createResourceDelegate = function(cb, ...)
     local args = { ... }
     local id = args[1]
