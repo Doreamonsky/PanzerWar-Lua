@@ -15,7 +15,7 @@ function M:InitUI(root)
     --- @type GameObject
     self.vChatMessages = root:Find("#obj_Chat/#obj_ChatMessages").gameObject
     --- @type GameObject
-    self.vChatTemplateMessage = root:Find("#obj_Chat/#obj_ChatMessages/#obj_ChatTemplateMessage").gameObject
+    self.vChatMessageTemplate = root:Find("#obj_Chat/#obj_ChatMessages/#obj_ChatMessageTemplate").gameObject
     --- @type GameObject
     self.vChatSenderBar = root:Find("#obj_Chat/#obj_ChatSenderBar").gameObject
     --- @type Button
@@ -28,4 +28,6 @@ function M:InitUI(root)
     self.vChatTargetType = root:Find("#obj_Chat/#obj_ChatSenderBar/#dropdown_ChatTargetType"):GetComponent("Dropdown")
     --- @type Text
     self.vPing = root:Find("#txt_Ping"):GetComponent("Text")
+    --- @type GameObject
+    self.vTextPopTemplate = root:Find("#obj_TextPopTemplate").gameObject
 end
