@@ -8,5 +8,6 @@ EventDefine.OnGizmoConfigChanged = "OnGizmoConfigChanged"
 EventDefine.OnVehicleUseQueueNumberChanged = "OnVehicleUseQueueNumberChanged"
 EventDefine.OnPickBarVisibilityChanged = "OnPickBarVisibilityChanged"
 EventDefine.OnPickBarCoolDown = "OnPickBarCoolDown"
+EventDefine.OnChat = "OnChat"
 
 return EventDefine

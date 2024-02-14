@@ -23,6 +23,7 @@ TankFire = CS.ShanghaiWindy.Core.TankFire
 TankInitSystem = CS.ShanghaiWindy.Core.TankInitSystem
 TankVehicleComponents = CS.ShanghaiWindy.Core.TankVehicleComponents
 TurretController = CS.ShanghaiWindy.Core.TurretController
+UIPoolComponent = CS.ShanghaiWindy.Core.UIPoolComponent
 ILuaBase = CS.ShanghaiWindy.Core.Lua.ILuaBase
 ILuaBehavior = CS.ShanghaiWindy.Core.Lua.ILuaBehavior
 ILuaBuffCaster = CS.ShanghaiWindy.Core.Lua.ILuaBuffCaster

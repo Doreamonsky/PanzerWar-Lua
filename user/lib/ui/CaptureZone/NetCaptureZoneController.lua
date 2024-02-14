@@ -69,7 +69,7 @@ function M:Awake()
     GameObjectAPI.SetActive(self.view.vPointTemplate, false)
     GameObjectAPI.SetActive(self.view.vCoolDownMask, false)
 
-    self:OnPickBarChanged(true)
+    self:OnPickBarChanged(not self._mode:IsMainPlayerLoaded())
     self:PickMainPlayerVehicle(VehicleAPI.GetAllDriveableVehicleList(false)[0])
     self:RefreshCaptureStatus()
     self:RefreshCaptureScreenUI()

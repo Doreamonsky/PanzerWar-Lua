@@ -389,6 +389,34 @@ local TurretController = {}
 
 return TurretController
 
+---@class ShanghaiWindy.Core.UIPoolComponent
+local UIPoolComponent = {}
+
+---从对象池取物体
+---Get object from the pool
+---@instance
+---@function [UIPoolComponent:Get]
+---@return UnityEngine.GameObject
+---@param stayWorldPos System.Boolean
+function UIPoolComponent:Get(stayWorldPos) end
+---回收对象池物体
+---Return object back to the pool
+---@instance
+---@function [UIPoolComponent:Release]
+---@param instance UnityEngine.GameObject
+function UIPoolComponent:Release(instance) end
+---回收所以对象池物体
+---Return all the objects back to the pool
+---@instance
+---@function [UIPoolComponent:Clear]
+function UIPoolComponent:Clear() end
+---释放对象池
+---Dispose the pool
+---@instance
+---@function [UIPoolComponent:Dispose]
+function UIPoolComponent:Dispose() end
+return UIPoolComponent
+
 ---Lua 模组接口，用于定义模组的基本信息。
 ---Lua mod interface, providing basic information about the mod.
 ---@class ShanghaiWindy.Core.Lua.ILuaBase
@@ -1832,6 +1860,13 @@ function UIAPI.ShowUI(index) end
 ---@function [UIAPI.RemoveUI]
 ---@param index ShanghaiWindy.Core.UIEnum
 function UIAPI.RemoveUI(index) end
+---UI 对象池
+---UI Pool
+---@static
+---@function [UIAPI.GetUIPool]
+---@return ShanghaiWindy.Core.UIPoolComponent
+---@param prototype UnityEngine.GameObject
+function UIAPI.GetUIPool(prototype) end
 return UIAPI
 
 ---载具通用 API
@@ -2001,6 +2036,16 @@ return VehicleAPI
 local AbstractNetBattleGameMode = {}
 
 ---@instance
+---@function [AbstractNetBattleGameMode:SendAllTextMessage]
+---@return System.Void
+---@param text System.String
+function AbstractNetBattleGameMode:SendAllTextMessage(text) end
+---@instance
+---@function [AbstractNetBattleGameMode:SendTeammateTextMessage]
+---@return System.Void
+---@param text System.String
+function AbstractNetBattleGameMode:SendTeammateTextMessage(text) end
+---@instance
 ---@function [AbstractNetBattleGameMode:PickVehicle]
 ---@return System.Void
 ---@param vehicleGuid System.String
@@ -2023,6 +2068,16 @@ local CaptureZoneNetGameMode = {}
 ---@return System.Void
 ---@param zoneName System.String
 function CaptureZoneNetGameMode:PickCaptureZone(zoneName) end
+---@instance
+---@function [CaptureZoneNetGameMode:SendAllTextMessage]
+---@return System.Void
+---@param text System.String
+function CaptureZoneNetGameMode:SendAllTextMessage(text) end
+---@instance
+---@function [CaptureZoneNetGameMode:SendTeammateTextMessage]
+---@return System.Void
+---@param text System.String
+function CaptureZoneNetGameMode:SendTeammateTextMessage(text) end
 ---@instance
 ---@function [CaptureZoneNetGameMode:PickVehicle]
 ---@return System.Void
@@ -2051,6 +2106,16 @@ function StandardWarNetGameMode:GetPlayerVehicleQueue() end
 ---@param vehicleGuid System.String
 function StandardWarNetGameMode:GetVehicleUsedNumber(vehicleGuid) end
 ---@instance
+---@function [StandardWarNetGameMode:SendAllTextMessage]
+---@return System.Void
+---@param text System.String
+function StandardWarNetGameMode:SendAllTextMessage(text) end
+---@instance
+---@function [StandardWarNetGameMode:SendTeammateTextMessage]
+---@return System.Void
+---@param text System.String
+function StandardWarNetGameMode:SendTeammateTextMessage(text) end
+---@instance
 ---@function [StandardWarNetGameMode:PickVehicle]
 ---@return System.Void
 ---@param vehicleGuid System.String
@@ -2068,6 +2133,16 @@ return StandardWarNetGameMode
 ---@class Frontend.Runtime.Battle.Mode.TotalWarNetGameMode
 local TotalWarNetGameMode = {}
 
+---@instance
+---@function [TotalWarNetGameMode:SendAllTextMessage]
+---@return System.Void
+---@param text System.String
+function TotalWarNetGameMode:SendAllTextMessage(text) end
+---@instance
+---@function [TotalWarNetGameMode:SendTeammateTextMessage]
+---@return System.Void
+---@param text System.String
+function TotalWarNetGameMode:SendTeammateTextMessage(text) end
 ---@instance
 ---@function [TotalWarNetGameMode:PickVehicle]
 ---@return System.Void
