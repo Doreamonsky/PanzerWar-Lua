@@ -119,5 +119,6 @@ UIAPI = CS.ShanghaiWindy.Core.API.UIAPI
 VehicleAPI = CS.ShanghaiWindy.Core.API.VehicleAPI
 AbstractNetBattleGameMode = CS.Frontend.Runtime.Battle.AbstractNetBattleGameMode
 CaptureZoneNetGameMode = CS.Frontend.Runtime.Battle.Mode.CaptureZoneNetGameMode
+ReplayNetGameMode = CS.Frontend.Runtime.Battle.Mode.ReplayNetGameMode
 StandardWarNetGameMode = CS.Frontend.Runtime.Battle.Mode.StandardWarNetGameMode
 TotalWarNetGameMode = CS.Frontend.Runtime.Battle.Mode.TotalWarNetGameMode

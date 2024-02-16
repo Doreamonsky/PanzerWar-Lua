@@ -1867,6 +1867,20 @@ function UIAPI.RemoveUI(index) end
 ---@return ShanghaiWindy.Core.UIPoolComponent
 ---@param prototype UnityEngine.GameObject
 function UIAPI.GetUIPool(prototype) end
+---@static
+---@function [UIAPI.ShowPopup]
+---@return System.Void
+---@param message System.String
+---@param hasCancel System.Boolean
+---@param callback ShanghaiWindy.Core.Delegate.UIAPIDelegate+OnPopupClick
+function UIAPI.ShowPopup(message, hasCancel, callback) end
+---获取本地化文字
+---Get localized content
+---@static
+---@function [UIAPI.GetLocalizedContent]
+---@return System.String
+---@param text System.String
+function UIAPI.GetLocalizedContent(text) end
 return UIAPI
 
 ---载具通用 API
@@ -2052,12 +2066,16 @@ function AbstractNetBattleGameMode:SendTeammateTextMessage(text) end
 function AbstractNetBattleGameMode:PickVehicle(vehicleGuid) end
 ---@instance
 ---@function [AbstractNetBattleGameMode:GetPing]
----@return System.Single
+---@return System.Int32
 function AbstractNetBattleGameMode:GetPing() end
 ---@instance
 ---@function [AbstractNetBattleGameMode:IsMainPlayerLoaded]
 ---@return System.Boolean
 function AbstractNetBattleGameMode:IsMainPlayerLoaded() end
+---@instance
+---@function [AbstractNetBattleGameMode:GetPlayerPosition]
+---@return UnityEngine.Vector3
+function AbstractNetBattleGameMode:GetPlayerPosition() end
 return AbstractNetBattleGameMode
 
 ---@class Frontend.Runtime.Battle.Mode.CaptureZoneNetGameMode
@@ -2085,13 +2103,69 @@ function CaptureZoneNetGameMode:SendTeammateTextMessage(text) end
 function CaptureZoneNetGameMode:PickVehicle(vehicleGuid) end
 ---@instance
 ---@function [CaptureZoneNetGameMode:GetPing]
----@return System.Single
+---@return System.Int32
 function CaptureZoneNetGameMode:GetPing() end
 ---@instance
 ---@function [CaptureZoneNetGameMode:IsMainPlayerLoaded]
 ---@return System.Boolean
 function CaptureZoneNetGameMode:IsMainPlayerLoaded() end
+---@instance
+---@function [CaptureZoneNetGameMode:GetPlayerPosition]
+---@return UnityEngine.Vector3
+function CaptureZoneNetGameMode:GetPlayerPosition() end
 return CaptureZoneNetGameMode
+
+---@class Frontend.Runtime.Battle.Mode.ReplayNetGameMode
+local ReplayNetGameMode = {}
+
+---@instance
+---@function [ReplayNetGameMode:GetReportedPlayerNickName]
+---@return System.String
+function ReplayNetGameMode:GetReportedPlayerNickName() end
+---@instance
+---@function [ReplayNetGameMode:AgreeBan]
+---@return System.Void
+function ReplayNetGameMode:AgreeBan() end
+---@instance
+---@function [ReplayNetGameMode:DisagreeBan]
+---@return System.Void
+function ReplayNetGameMode:DisagreeBan() end
+---@instance
+---@function [ReplayNetGameMode:Ban]
+---@return System.Void
+function ReplayNetGameMode:Ban() end
+---@instance
+---@function [ReplayNetGameMode:IsShowBan]
+---@return System.Boolean
+function ReplayNetGameMode:IsShowBan() end
+---@instance
+---@function [ReplayNetGameMode:SendAllTextMessage]
+---@return System.Void
+---@param text System.String
+function ReplayNetGameMode:SendAllTextMessage(text) end
+---@instance
+---@function [ReplayNetGameMode:SendTeammateTextMessage]
+---@return System.Void
+---@param text System.String
+function ReplayNetGameMode:SendTeammateTextMessage(text) end
+---@instance
+---@function [ReplayNetGameMode:PickVehicle]
+---@return System.Void
+---@param vehicleGuid System.String
+function ReplayNetGameMode:PickVehicle(vehicleGuid) end
+---@instance
+---@function [ReplayNetGameMode:GetPing]
+---@return System.Int32
+function ReplayNetGameMode:GetPing() end
+---@instance
+---@function [ReplayNetGameMode:IsMainPlayerLoaded]
+---@return System.Boolean
+function ReplayNetGameMode:IsMainPlayerLoaded() end
+---@instance
+---@function [ReplayNetGameMode:GetPlayerPosition]
+---@return UnityEngine.Vector3
+function ReplayNetGameMode:GetPlayerPosition() end
+return ReplayNetGameMode
 
 ---@class Frontend.Runtime.Battle.Mode.StandardWarNetGameMode
 local StandardWarNetGameMode = {}
@@ -2122,12 +2196,16 @@ function StandardWarNetGameMode:SendTeammateTextMessage(text) end
 function StandardWarNetGameMode:PickVehicle(vehicleGuid) end
 ---@instance
 ---@function [StandardWarNetGameMode:GetPing]
----@return System.Single
+---@return System.Int32
 function StandardWarNetGameMode:GetPing() end
 ---@instance
 ---@function [StandardWarNetGameMode:IsMainPlayerLoaded]
 ---@return System.Boolean
 function StandardWarNetGameMode:IsMainPlayerLoaded() end
+---@instance
+---@function [StandardWarNetGameMode:GetPlayerPosition]
+---@return UnityEngine.Vector3
+function StandardWarNetGameMode:GetPlayerPosition() end
 return StandardWarNetGameMode
 
 ---@class Frontend.Runtime.Battle.Mode.TotalWarNetGameMode
@@ -2150,11 +2228,15 @@ function TotalWarNetGameMode:SendTeammateTextMessage(text) end
 function TotalWarNetGameMode:PickVehicle(vehicleGuid) end
 ---@instance
 ---@function [TotalWarNetGameMode:GetPing]
----@return System.Single
+---@return System.Int32
 function TotalWarNetGameMode:GetPing() end
 ---@instance
 ---@function [TotalWarNetGameMode:IsMainPlayerLoaded]
 ---@return System.Boolean
 function TotalWarNetGameMode:IsMainPlayerLoaded() end
+---@instance
+---@function [TotalWarNetGameMode:GetPlayerPosition]
+---@return UnityEngine.Vector3
+function TotalWarNetGameMode:GetPlayerPosition() end
 return TotalWarNetGameMode
 

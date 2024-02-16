@@ -5,6 +5,10 @@ NetBattleController = class("NetBattleController", BaseController)
 Lib()
 
 local M = NetBattleController
+local POP_TEXT_MIN_SCALE = 0.5
+local POP_TEXT_MAX_SCALE = 1.0
+local POP_TEXT_MIN_DIS = 5
+local POP_TEXT_MAX_DIS = 50
 
 function M:ctor()
     ---@type Frontend.Runtime.Battle.AbstractNetBattleGameMode
@@ -94,10 +98,25 @@ function M:OnLateTick(deltaTime)
             table.remove(self._chatPopTextList, i)
         else
             local screenPos = CameraAPI.WorldToScreenPoint(CameraAPI.GetGameCamera(), popInfo.worldPos)
+            local dis = Vector3.Distance(popInfo.worldPos, self._mode:GetPlayerPosition())
+
+            local scaleFactor
+
+            if dis <= POP_TEXT_MIN_DIS then
+                scaleFactor = POP_TEXT_MAX_SCALE
+            elseif dis >= POP_TEXT_MAX_DIS then
+                scaleFactor = POP_TEXT_MIN_SCALE
+            else
+                scaleFactor = POP_TEXT_MIN_SCALE +
+                    (POP_TEXT_MAX_SCALE - POP_TEXT_MIN_SCALE) *
+                    ((POP_TEXT_MAX_DIS - dis) / (POP_TEXT_MAX_DIS - POP_TEXT_MIN_DIS))
+            end
+
             if screenPos.z < 0 then
                 popInfo.go.transform.position = Vector3(0, 9999, 0)
             else
-                popInfo.go.transform.position = screenPos
+                popInfo.go.transform.position = Vector3(screenPos.x, screenPos.y, 0)
+                popInfo.go.transform.localScale = Vector3(scaleFactor, scaleFactor, scaleFactor)
             end
         end
     end
@@ -134,6 +153,10 @@ function M:OnPopText(message, position)
         time = TimeAPI.GetTime(),
         worldPos = position
     })
+
+    if Vector3.Distance(position, self._mode:GetPlayerPosition()) < 20 then
+        self:OnChat(message)
+    end
 end
 
 function M:ToggleChatSender(state)
