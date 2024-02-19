@@ -96,11 +96,11 @@ function M:RefreshOptions()
     end)
 
     CustomOptionUIAPI.AddTitle("Number")
-    CustomOptionUIAPI.AddSlider("FriendTankNum", self.friendTankNum, 0, 20, true, function(res)
+    CustomOptionUIAPI.AddSlider("FriendTankNum", self.friendTankNum, 1, 20, true, function(res)
         self.friendTankNum = res
     end)
 
-    CustomOptionUIAPI.AddSlider("EnemyTankNum", self.enemyTankNum, 0, 20, true, function(res)
+    CustomOptionUIAPI.AddSlider("EnemyTankNum", self.enemyTankNum, 1, 20, true, function(res)
         self.enemyTankNum = res
     end)
 
@@ -223,7 +223,7 @@ function M:CreateVehiclesFromRanks(team, playerRank, ranks)
                 local botPlayer = BattlePlayerAPI.CreateOfflineBotPlayer(self.index, "装纷派蒙", {})
                 botPlayer.BotTeam = team
                 botPlayer.IsKeepWreckage = true
-                
+
                 ModeAPI.AddBattlePlayer(botPlayer)
 
                 SpawnAPI.AsyncSpawn(team, function(trans)
