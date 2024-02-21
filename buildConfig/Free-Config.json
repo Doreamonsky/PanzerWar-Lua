@@ -48,7 +48,7 @@
                 },
                 {
                     "platform": "StandaloneWindows64",
-                    "dstDir": "D:/Tools/ContentBuilder/content/Windows/dlc/PanzerWar/BuiltInRes/free-map"
+                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/free-map"
                 },
                 {
                     "platform": "iOS",
