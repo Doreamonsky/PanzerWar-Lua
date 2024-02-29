@@ -11,7 +11,7 @@ local POP_TEXT_MIN_DIS = 5
 local POP_TEXT_MAX_DIS = 50
 
 function M:ctor()
-    ---@type Frontend.Runtime.Battle.AbstractNetBattleGameMode
+    ---@type Frontend.Runtime.Impl.GameImpl.Battle.AbstractNetBattleGameMode
     self._mode = nil
     self._chatMessageList = {}
     self._chatPopTextList = {}

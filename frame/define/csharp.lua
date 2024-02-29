@@ -2046,7 +2046,7 @@ function VehicleAPI.GetFilteredBotVehicles(minRank, maxRank, allowArtillery, veh
 function VehicleAPI.LoadVehicleThumbnail(vehicleInfo, callback) end
 return VehicleAPI
 
----@class Frontend.Runtime.Battle.AbstractNetBattleGameMode
+---@class Frontend.Runtime.Impl.GameImpl.Battle.AbstractNetBattleGameMode
 local AbstractNetBattleGameMode = {}
 
 ---@instance
@@ -2078,7 +2078,7 @@ function AbstractNetBattleGameMode:IsMainPlayerLoaded() end
 function AbstractNetBattleGameMode:GetPlayerPosition() end
 return AbstractNetBattleGameMode
 
----@class Frontend.Runtime.Battle.Mode.CaptureZoneNetGameMode
+---@class Frontend.Runtime.Impl.GameImpl.Battle.Mode.CaptureZoneNetGameMode
 local CaptureZoneNetGameMode = {}
 
 ---@instance
@@ -2115,7 +2115,7 @@ function CaptureZoneNetGameMode:IsMainPlayerLoaded() end
 function CaptureZoneNetGameMode:GetPlayerPosition() end
 return CaptureZoneNetGameMode
 
----@class Frontend.Runtime.Battle.Mode.ReplayNetGameMode
+---@class Frontend.Runtime.Impl.GameImpl.Battle.Mode.ReplayNetGameMode
 local ReplayNetGameMode = {}
 
 ---@instance
@@ -2167,7 +2167,7 @@ function ReplayNetGameMode:IsMainPlayerLoaded() end
 function ReplayNetGameMode:GetPlayerPosition() end
 return ReplayNetGameMode
 
----@class Frontend.Runtime.Battle.Mode.StandardWarNetGameMode
+---@class Frontend.Runtime.Impl.GameImpl.Battle.Mode.StandardWarNetGameMode
 local StandardWarNetGameMode = {}
 
 ---@instance
@@ -2208,7 +2208,7 @@ function StandardWarNetGameMode:IsMainPlayerLoaded() end
 function StandardWarNetGameMode:GetPlayerPosition() end
 return StandardWarNetGameMode
 
----@class Frontend.Runtime.Battle.Mode.TotalWarNetGameMode
+---@class Frontend.Runtime.Impl.GameImpl.Battle.Mode.TotalWarNetGameMode
 local TotalWarNetGameMode = {}
 
 ---@instance

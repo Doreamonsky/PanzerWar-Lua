@@ -11,7 +11,7 @@ function M:ctor()
 end
 
 function M:Awake()
-    ---@type Frontend.Runtime.Battle.Mode.ReplayNetGameMode
+    ---@type Frontend.Runtime.Impl.GameImpl.Battle.Mode.ReplayNetGameMode
     self._mode = ModeAPI.GetNativeMode()
     self.view.vNickName.text = self._mode:GetReportedPlayerNickName()
     GameObjectAPI.SetActive(self.view.vBan.gameObject, self._mode:IsShowBan())

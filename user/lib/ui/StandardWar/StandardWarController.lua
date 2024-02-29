@@ -32,7 +32,7 @@ function M:RemoveListener()
 end
 
 function M:Awake()
-    ---@type Frontend.Runtime.Battle.Mode.StandardWarNetGameMode
+    ---@type Frontend.Runtime.Impl.GameImpl.Battle.Mode.StandardWarNetGameMode
     self._mode = ModeAPI.GetNativeMode()
     self:OnPickBarChanged(not self._mode:IsMainPlayerLoaded())
     self:PickMainPlayerVehicle(self._mode:GetPlayerVehicleQueue()[0])
