@@ -1,4 +1,9 @@
 UIEnum = CS.ShanghaiWindy.Core.UIEnum
+AbstractNetBattleGameMode = CS.Frontend.Runtime.Impl.GameImpl.Battle.AbstractNetBattleGameMode
+CaptureZoneNetGameMode = CS.Frontend.Runtime.Impl.GameImpl.Battle.Mode.CaptureZoneNetGameMode
+ReplayNetGameMode = CS.Frontend.Runtime.Impl.GameImpl.Battle.Mode.ReplayNetGameMode
+StandardWarNetGameMode = CS.Frontend.Runtime.Impl.GameImpl.Battle.Mode.StandardWarNetGameMode
+TotalWarNetGameMode = CS.Frontend.Runtime.Impl.GameImpl.Battle.Mode.TotalWarNetGameMode
 ZoneChain = CS.ShanghaiWindy.Data.ZoneChain
 ZoneCapturePoint = CS.ShanghaiWindy.Data.ZoneCapturePoint
 CaptureZone = CS.ShanghaiWindy.Data.CaptureZone
@@ -32,7 +37,7 @@ ILuaControllableVehicle = CS.ShanghaiWindy.Core.Lua.ILuaControllableVehicle
 ILuaGameMode = CS.ShanghaiWindy.Core.Lua.ILuaGameMode
 LuaBehaviorMono = CS.ShanghaiWindy.Core.Lua.LuaBehaviorMono
 BulletFiredInfo = CS.ShanghaiWindy.Core.Data.BulletFiredInfo
-AssetLoadedDelegate = CS.ShanghaiWindy.Core.Delegate.AssetLoadedDelegate
+InstantiateNonPoolObjectDelegate = CS.ShanghaiWindy.Core.Delegate.InstantiateNonPoolObjectDelegate
 LoadPoolAssetDelegate = CS.ShanghaiWindy.Core.Delegate.LoadPoolAssetDelegate
 OnGameVehicleLoadedDelegate = CS.ShanghaiWindy.Core.Delegate.OnGameVehicleLoadedDelegate
 OnGameVehicleDestroyedDelegate = CS.ShanghaiWindy.Core.Delegate.OnGameVehicleDestroyedDelegate
@@ -117,8 +122,3 @@ TransformAPI = CS.ShanghaiWindy.Core.API.TransformAPI
 UIAPI = CS.ShanghaiWindy.Core.API.UIAPI
 --- @class ShanghaiWindy.Core.API.VehicleAPI
 VehicleAPI = CS.ShanghaiWindy.Core.API.VehicleAPI
-AbstractNetBattleGameMode = CS.Frontend.Runtime.Impl.GameImpl.Battle.AbstractNetBattleGameMode
-CaptureZoneNetGameMode = CS.Frontend.Runtime.Impl.GameImpl.Battle.Mode.CaptureZoneNetGameMode
-ReplayNetGameMode = CS.Frontend.Runtime.Impl.GameImpl.Battle.Mode.ReplayNetGameMode
-StandardWarNetGameMode = CS.Frontend.Runtime.Impl.GameImpl.Battle.Mode.StandardWarNetGameMode
-TotalWarNetGameMode = CS.Frontend.Runtime.Impl.GameImpl.Battle.Mode.TotalWarNetGameMode

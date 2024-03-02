@@ -54,15 +54,10 @@ function DIY:OnStartMode()
     CSharpAPI.RequestScene(
         "Physic-Play",
         function()
-            CSharpAPI.LoadAssetBundle(
-                "diycreatevehicleutil",
-                "mod",
-                function(asset)
-                    if asset ~= nil then
-                        self:OnUtilCreated(GameObject.Instantiate(asset))
-                    end
-                end
-            )
+            AssetAPI.InstantiateNonPoolObject("f5ec298e-6852-487a-95a8-00191a792ad4", "DIYCreateVehicleUtil.prefab",
+                function(res)
+                    self:OnUtilCreated(res)
+                end)
         end
     )
 
@@ -230,7 +225,7 @@ function DIY:OnUtilCreated(root)
             end
 
             PopMessageManager.Instance:PushPopup(
-                "是否退出坦克工坊? Exit tank workshop?",
+                UIAPI.GetLocalizedContent("ConfirmExitWorkshop"),
                 function(state)
                     if state then
                         if MODE_API then
@@ -480,7 +475,7 @@ function DIY:OnUtilCreated(root)
     self.fileMgr.OnDeleteFile:AddListener(function(definedName)
         -- 删除当前的 UserDefine
         PopMessageManager.Instance:PushPopup(
-            "是否确定删除当前的存档? Delete current saving?",
+            UIAPI.GetLocalizedContent("ConfirmDeleteSave"),
             function(state)
                 if state then
                     self:deleteUserDefine(definedName)
@@ -841,7 +836,7 @@ end
 function DIY:unequipSlot(itemGuid)
     -- 进行删除操作，都要进行询问
     PopMessageManager.Instance:PushPopup(
-        "是否删除当前配件? Delete Current Equipment?",
+        UIAPI.GetLocalizedContent("ConfirmDeleteItem"),
         function(state)
             if state then
                 self:deleteRule(itemGuid)
@@ -1283,24 +1278,23 @@ function DIY:ExportShareCode(userDefine)
         function(serverCode)
             if serverCode == "" then
                 PopMessageManager.Instance:PushPopup(
-                    "分享异常。Share failed.",
+                    UIAPI.GetLocalizedContent("ShareFailed"),
                     function(state)
                     end,
                     false
                 )
             else
                 PopMessageManager.Instance:PushPopup(
-                    "游戏将访问剪贴版，并将分享码: " .. serverCode .. " 复制进剪贴板",
+                    UIAPI.FormatString(UIAPI.GetLocalizedContent("ShareCodeClipboard"), serverCode),
                     function(state)
                         if state then
                             GUIUtility.systemCopyBuffer = serverCode
 
                             if CS.UnityEngine.Application.isMobilePlatform then
-                                PopMessageManager.Instance:PushNotice("复制成功。聊天软件长按输入框，点击粘贴即可分享给好友。"
-                                , 4)
+                                PopMessageManager.Instance:PushNotice(UIAPI.GetLocalizedContent("CopyShareCodeMobile"), 4)
                             else
-                                PopMessageManager.Instance:PushNotice("复制成功。点击 Ctrl + V 即可分享给好友。"
-                                , 4)
+                                PopMessageManager.Instance:PushNotice(UIAPI.GetLocalizedContent("CopyShareCodeDesktop"),
+                                    4)
                             end
                         end
                     end

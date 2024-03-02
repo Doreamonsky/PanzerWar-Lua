@@ -3,6 +3,200 @@ local UIEnum = {}
 
 return UIEnum
 
+---@class Frontend.Runtime.Impl.GameImpl.Battle.AbstractNetBattleGameMode
+local AbstractNetBattleGameMode = {}
+
+---@instance
+---@function [AbstractNetBattleGameMode:SendAllTextMessage]
+---@return System.Void
+---@param text System.String
+function AbstractNetBattleGameMode:SendAllTextMessage(text) end
+---@instance
+---@function [AbstractNetBattleGameMode:SendTeammateTextMessage]
+---@return System.Void
+---@param text System.String
+function AbstractNetBattleGameMode:SendTeammateTextMessage(text) end
+---@instance
+---@function [AbstractNetBattleGameMode:PickVehicle]
+---@return System.Void
+---@param vehicleGuid System.String
+function AbstractNetBattleGameMode:PickVehicle(vehicleGuid) end
+---@instance
+---@function [AbstractNetBattleGameMode:GetPing]
+---@return System.Int32
+function AbstractNetBattleGameMode:GetPing() end
+---@instance
+---@function [AbstractNetBattleGameMode:IsMainPlayerLoaded]
+---@return System.Boolean
+function AbstractNetBattleGameMode:IsMainPlayerLoaded() end
+---@instance
+---@function [AbstractNetBattleGameMode:GetPlayerPosition]
+---@return UnityEngine.Vector3
+function AbstractNetBattleGameMode:GetPlayerPosition() end
+return AbstractNetBattleGameMode
+
+---@class Frontend.Runtime.Impl.GameImpl.Battle.Mode.CaptureZoneNetGameMode
+local CaptureZoneNetGameMode = {}
+
+---@instance
+---@function [CaptureZoneNetGameMode:PickCaptureZone]
+---@return System.Void
+---@param zoneName System.String
+function CaptureZoneNetGameMode:PickCaptureZone(zoneName) end
+---@instance
+---@function [CaptureZoneNetGameMode:SendAllTextMessage]
+---@return System.Void
+---@param text System.String
+function CaptureZoneNetGameMode:SendAllTextMessage(text) end
+---@instance
+---@function [CaptureZoneNetGameMode:SendTeammateTextMessage]
+---@return System.Void
+---@param text System.String
+function CaptureZoneNetGameMode:SendTeammateTextMessage(text) end
+---@instance
+---@function [CaptureZoneNetGameMode:PickVehicle]
+---@return System.Void
+---@param vehicleGuid System.String
+function CaptureZoneNetGameMode:PickVehicle(vehicleGuid) end
+---@instance
+---@function [CaptureZoneNetGameMode:GetPing]
+---@return System.Int32
+function CaptureZoneNetGameMode:GetPing() end
+---@instance
+---@function [CaptureZoneNetGameMode:IsMainPlayerLoaded]
+---@return System.Boolean
+function CaptureZoneNetGameMode:IsMainPlayerLoaded() end
+---@instance
+---@function [CaptureZoneNetGameMode:GetPlayerPosition]
+---@return UnityEngine.Vector3
+function CaptureZoneNetGameMode:GetPlayerPosition() end
+return CaptureZoneNetGameMode
+
+---@class Frontend.Runtime.Impl.GameImpl.Battle.Mode.ReplayNetGameMode
+local ReplayNetGameMode = {}
+
+---@instance
+---@function [ReplayNetGameMode:GetReportedPlayerNickName]
+---@return System.String
+function ReplayNetGameMode:GetReportedPlayerNickName() end
+---@instance
+---@function [ReplayNetGameMode:AgreeBan]
+---@return System.Void
+function ReplayNetGameMode:AgreeBan() end
+---@instance
+---@function [ReplayNetGameMode:DisagreeBan]
+---@return System.Void
+function ReplayNetGameMode:DisagreeBan() end
+---@instance
+---@function [ReplayNetGameMode:Ban]
+---@return System.Void
+function ReplayNetGameMode:Ban() end
+---@instance
+---@function [ReplayNetGameMode:IsShowBan]
+---@return System.Boolean
+function ReplayNetGameMode:IsShowBan() end
+---@instance
+---@function [ReplayNetGameMode:SendAllTextMessage]
+---@return System.Void
+---@param text System.String
+function ReplayNetGameMode:SendAllTextMessage(text) end
+---@instance
+---@function [ReplayNetGameMode:SendTeammateTextMessage]
+---@return System.Void
+---@param text System.String
+function ReplayNetGameMode:SendTeammateTextMessage(text) end
+---@instance
+---@function [ReplayNetGameMode:PickVehicle]
+---@return System.Void
+---@param vehicleGuid System.String
+function ReplayNetGameMode:PickVehicle(vehicleGuid) end
+---@instance
+---@function [ReplayNetGameMode:GetPing]
+---@return System.Int32
+function ReplayNetGameMode:GetPing() end
+---@instance
+---@function [ReplayNetGameMode:IsMainPlayerLoaded]
+---@return System.Boolean
+function ReplayNetGameMode:IsMainPlayerLoaded() end
+---@instance
+---@function [ReplayNetGameMode:GetPlayerPosition]
+---@return UnityEngine.Vector3
+function ReplayNetGameMode:GetPlayerPosition() end
+return ReplayNetGameMode
+
+---@class Frontend.Runtime.Impl.GameImpl.Battle.Mode.StandardWarNetGameMode
+local StandardWarNetGameMode = {}
+
+---@instance
+---@function [StandardWarNetGameMode:GetPlayerVehicleQueue]
+---@return System.Collections.Generic.List`1[[ShanghaiWindy.Core.VehicleInfo, Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
+function StandardWarNetGameMode:GetPlayerVehicleQueue() end
+---@instance
+---@function [StandardWarNetGameMode:GetVehicleUsedNumber]
+---@return System.Int32
+---@param vehicleGuid System.String
+function StandardWarNetGameMode:GetVehicleUsedNumber(vehicleGuid) end
+---@instance
+---@function [StandardWarNetGameMode:SendAllTextMessage]
+---@return System.Void
+---@param text System.String
+function StandardWarNetGameMode:SendAllTextMessage(text) end
+---@instance
+---@function [StandardWarNetGameMode:SendTeammateTextMessage]
+---@return System.Void
+---@param text System.String
+function StandardWarNetGameMode:SendTeammateTextMessage(text) end
+---@instance
+---@function [StandardWarNetGameMode:PickVehicle]
+---@return System.Void
+---@param vehicleGuid System.String
+function StandardWarNetGameMode:PickVehicle(vehicleGuid) end
+---@instance
+---@function [StandardWarNetGameMode:GetPing]
+---@return System.Int32
+function StandardWarNetGameMode:GetPing() end
+---@instance
+---@function [StandardWarNetGameMode:IsMainPlayerLoaded]
+---@return System.Boolean
+function StandardWarNetGameMode:IsMainPlayerLoaded() end
+---@instance
+---@function [StandardWarNetGameMode:GetPlayerPosition]
+---@return UnityEngine.Vector3
+function StandardWarNetGameMode:GetPlayerPosition() end
+return StandardWarNetGameMode
+
+---@class Frontend.Runtime.Impl.GameImpl.Battle.Mode.TotalWarNetGameMode
+local TotalWarNetGameMode = {}
+
+---@instance
+---@function [TotalWarNetGameMode:SendAllTextMessage]
+---@return System.Void
+---@param text System.String
+function TotalWarNetGameMode:SendAllTextMessage(text) end
+---@instance
+---@function [TotalWarNetGameMode:SendTeammateTextMessage]
+---@return System.Void
+---@param text System.String
+function TotalWarNetGameMode:SendTeammateTextMessage(text) end
+---@instance
+---@function [TotalWarNetGameMode:PickVehicle]
+---@return System.Void
+---@param vehicleGuid System.String
+function TotalWarNetGameMode:PickVehicle(vehicleGuid) end
+---@instance
+---@function [TotalWarNetGameMode:GetPing]
+---@return System.Int32
+function TotalWarNetGameMode:GetPing() end
+---@instance
+---@function [TotalWarNetGameMode:IsMainPlayerLoaded]
+---@return System.Boolean
+function TotalWarNetGameMode:IsMainPlayerLoaded() end
+---@instance
+---@function [TotalWarNetGameMode:GetPlayerPosition]
+---@return UnityEngine.Vector3
+function TotalWarNetGameMode:GetPlayerPosition() end
+return TotalWarNetGameMode
+
 ---@class ShanghaiWindy.Data.ZoneChain
 ---@field fromZone System.String
 ---@field toZone System.String
@@ -566,10 +760,10 @@ return BulletFiredInfo
 
 ---资源加载完成时的委托
 ---Asset Loaded Delegate
----@class ShanghaiWindy.Core.Delegate.AssetLoadedDelegate
-local AssetLoadedDelegate = {}
+---@class ShanghaiWindy.Core.Delegate.InstantiateNonPoolObjectDelegate
+local InstantiateNonPoolObjectDelegate = {}
 
-return AssetLoadedDelegate
+return InstantiateNonPoolObjectDelegate
 
 ---@class ShanghaiWindy.Core.Delegate.LoadPoolAssetDelegate
 local LoadPoolAssetDelegate = {}
@@ -701,14 +895,14 @@ return ArmyAPI
 ---@class ShanghaiWindy.Core.API.AssetAPI
 local AssetAPI = {}
 
----（弃用）加载资源包
----（Deprecated）Load Asset Bundle
+---实例化非对象池物体
+---Load non-pool asset
 ---@static
----@function [AssetAPI.LoadAssetBundle]
----@param abName System.String
----@param format System.String
----@param callBack ShanghaiWindy.Core.Delegate.AssetLoadedDelegate
-function AssetAPI.LoadAssetBundle(abName, format, callBack) end
+---@function [AssetAPI.InstantiateNonPoolObject]
+---@param id System.String
+---@param fileName System.String
+---@param callBack ShanghaiWindy.Core.Delegate.InstantiateNonPoolObjectDelegate
+function AssetAPI.InstantiateNonPoolObject(id, fileName, callBack) end
 ---从对象池加载资源
 ---Load asset from object pool
 ---@static
@@ -1881,6 +2075,14 @@ function UIAPI.ShowPopup(message, hasCancel, callback) end
 ---@return System.String
 ---@param text System.String
 function UIAPI.GetLocalizedContent(text) end
+---格式化文本
+---Format string
+---@static
+---@function [UIAPI.FormatString]
+---@return System.String
+---@param format System.String
+---@param objects System.Object[]
+function UIAPI.FormatString(format, objects) end
 return UIAPI
 
 ---载具通用 API
@@ -2045,198 +2247,4 @@ function VehicleAPI.GetFilteredBotVehicles(minRank, maxRank, allowArtillery, veh
 ---@param callback ShanghaiWindy.Core.Delegate.OnVehicleThumbnailLoadedDelegate
 function VehicleAPI.LoadVehicleThumbnail(vehicleInfo, callback) end
 return VehicleAPI
-
----@class Frontend.Runtime.Impl.GameImpl.Battle.AbstractNetBattleGameMode
-local AbstractNetBattleGameMode = {}
-
----@instance
----@function [AbstractNetBattleGameMode:SendAllTextMessage]
----@return System.Void
----@param text System.String
-function AbstractNetBattleGameMode:SendAllTextMessage(text) end
----@instance
----@function [AbstractNetBattleGameMode:SendTeammateTextMessage]
----@return System.Void
----@param text System.String
-function AbstractNetBattleGameMode:SendTeammateTextMessage(text) end
----@instance
----@function [AbstractNetBattleGameMode:PickVehicle]
----@return System.Void
----@param vehicleGuid System.String
-function AbstractNetBattleGameMode:PickVehicle(vehicleGuid) end
----@instance
----@function [AbstractNetBattleGameMode:GetPing]
----@return System.Int32
-function AbstractNetBattleGameMode:GetPing() end
----@instance
----@function [AbstractNetBattleGameMode:IsMainPlayerLoaded]
----@return System.Boolean
-function AbstractNetBattleGameMode:IsMainPlayerLoaded() end
----@instance
----@function [AbstractNetBattleGameMode:GetPlayerPosition]
----@return UnityEngine.Vector3
-function AbstractNetBattleGameMode:GetPlayerPosition() end
-return AbstractNetBattleGameMode
-
----@class Frontend.Runtime.Impl.GameImpl.Battle.Mode.CaptureZoneNetGameMode
-local CaptureZoneNetGameMode = {}
-
----@instance
----@function [CaptureZoneNetGameMode:PickCaptureZone]
----@return System.Void
----@param zoneName System.String
-function CaptureZoneNetGameMode:PickCaptureZone(zoneName) end
----@instance
----@function [CaptureZoneNetGameMode:SendAllTextMessage]
----@return System.Void
----@param text System.String
-function CaptureZoneNetGameMode:SendAllTextMessage(text) end
----@instance
----@function [CaptureZoneNetGameMode:SendTeammateTextMessage]
----@return System.Void
----@param text System.String
-function CaptureZoneNetGameMode:SendTeammateTextMessage(text) end
----@instance
----@function [CaptureZoneNetGameMode:PickVehicle]
----@return System.Void
----@param vehicleGuid System.String
-function CaptureZoneNetGameMode:PickVehicle(vehicleGuid) end
----@instance
----@function [CaptureZoneNetGameMode:GetPing]
----@return System.Int32
-function CaptureZoneNetGameMode:GetPing() end
----@instance
----@function [CaptureZoneNetGameMode:IsMainPlayerLoaded]
----@return System.Boolean
-function CaptureZoneNetGameMode:IsMainPlayerLoaded() end
----@instance
----@function [CaptureZoneNetGameMode:GetPlayerPosition]
----@return UnityEngine.Vector3
-function CaptureZoneNetGameMode:GetPlayerPosition() end
-return CaptureZoneNetGameMode
-
----@class Frontend.Runtime.Impl.GameImpl.Battle.Mode.ReplayNetGameMode
-local ReplayNetGameMode = {}
-
----@instance
----@function [ReplayNetGameMode:GetReportedPlayerNickName]
----@return System.String
-function ReplayNetGameMode:GetReportedPlayerNickName() end
----@instance
----@function [ReplayNetGameMode:AgreeBan]
----@return System.Void
-function ReplayNetGameMode:AgreeBan() end
----@instance
----@function [ReplayNetGameMode:DisagreeBan]
----@return System.Void
-function ReplayNetGameMode:DisagreeBan() end
----@instance
----@function [ReplayNetGameMode:Ban]
----@return System.Void
-function ReplayNetGameMode:Ban() end
----@instance
----@function [ReplayNetGameMode:IsShowBan]
----@return System.Boolean
-function ReplayNetGameMode:IsShowBan() end
----@instance
----@function [ReplayNetGameMode:SendAllTextMessage]
----@return System.Void
----@param text System.String
-function ReplayNetGameMode:SendAllTextMessage(text) end
----@instance
----@function [ReplayNetGameMode:SendTeammateTextMessage]
----@return System.Void
----@param text System.String
-function ReplayNetGameMode:SendTeammateTextMessage(text) end
----@instance
----@function [ReplayNetGameMode:PickVehicle]
----@return System.Void
----@param vehicleGuid System.String
-function ReplayNetGameMode:PickVehicle(vehicleGuid) end
----@instance
----@function [ReplayNetGameMode:GetPing]
----@return System.Int32
-function ReplayNetGameMode:GetPing() end
----@instance
----@function [ReplayNetGameMode:IsMainPlayerLoaded]
----@return System.Boolean
-function ReplayNetGameMode:IsMainPlayerLoaded() end
----@instance
----@function [ReplayNetGameMode:GetPlayerPosition]
----@return UnityEngine.Vector3
-function ReplayNetGameMode:GetPlayerPosition() end
-return ReplayNetGameMode
-
----@class Frontend.Runtime.Impl.GameImpl.Battle.Mode.StandardWarNetGameMode
-local StandardWarNetGameMode = {}
-
----@instance
----@function [StandardWarNetGameMode:GetPlayerVehicleQueue]
----@return System.Collections.Generic.List`1[[ShanghaiWindy.Core.VehicleInfo, Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
-function StandardWarNetGameMode:GetPlayerVehicleQueue() end
----@instance
----@function [StandardWarNetGameMode:GetVehicleUsedNumber]
----@return System.Int32
----@param vehicleGuid System.String
-function StandardWarNetGameMode:GetVehicleUsedNumber(vehicleGuid) end
----@instance
----@function [StandardWarNetGameMode:SendAllTextMessage]
----@return System.Void
----@param text System.String
-function StandardWarNetGameMode:SendAllTextMessage(text) end
----@instance
----@function [StandardWarNetGameMode:SendTeammateTextMessage]
----@return System.Void
----@param text System.String
-function StandardWarNetGameMode:SendTeammateTextMessage(text) end
----@instance
----@function [StandardWarNetGameMode:PickVehicle]
----@return System.Void
----@param vehicleGuid System.String
-function StandardWarNetGameMode:PickVehicle(vehicleGuid) end
----@instance
----@function [StandardWarNetGameMode:GetPing]
----@return System.Int32
-function StandardWarNetGameMode:GetPing() end
----@instance
----@function [StandardWarNetGameMode:IsMainPlayerLoaded]
----@return System.Boolean
-function StandardWarNetGameMode:IsMainPlayerLoaded() end
----@instance
----@function [StandardWarNetGameMode:GetPlayerPosition]
----@return UnityEngine.Vector3
-function StandardWarNetGameMode:GetPlayerPosition() end
-return StandardWarNetGameMode
-
----@class Frontend.Runtime.Impl.GameImpl.Battle.Mode.TotalWarNetGameMode
-local TotalWarNetGameMode = {}
-
----@instance
----@function [TotalWarNetGameMode:SendAllTextMessage]
----@return System.Void
----@param text System.String
-function TotalWarNetGameMode:SendAllTextMessage(text) end
----@instance
----@function [TotalWarNetGameMode:SendTeammateTextMessage]
----@return System.Void
----@param text System.String
-function TotalWarNetGameMode:SendTeammateTextMessage(text) end
----@instance
----@function [TotalWarNetGameMode:PickVehicle]
----@return System.Void
----@param vehicleGuid System.String
-function TotalWarNetGameMode:PickVehicle(vehicleGuid) end
----@instance
----@function [TotalWarNetGameMode:GetPing]
----@return System.Int32
-function TotalWarNetGameMode:GetPing() end
----@instance
----@function [TotalWarNetGameMode:IsMainPlayerLoaded]
----@return System.Boolean
-function TotalWarNetGameMode:IsMainPlayerLoaded() end
----@instance
----@function [TotalWarNetGameMode:GetPlayerPosition]
----@return UnityEngine.Vector3
-function TotalWarNetGameMode:GetPlayerPosition() end
-return TotalWarNetGameMode
 

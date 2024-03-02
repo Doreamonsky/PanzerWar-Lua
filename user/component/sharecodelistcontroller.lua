@@ -63,7 +63,8 @@ function ShareCodeListController:getList(url)
                     local downloadCount = v.DownloadCount
                     local shareCode = v.ShareCode
 
-                    local instance = GameObject.Instantiate(self.templateGo, self.templateGo.transform.parent, true).transform
+                    local instance = GameObject.Instantiate(self.templateGo, self.templateGo.transform.parent, true)
+                        .transform
                     instance:Find("DefineName"):GetComponent("Text").text = defineName
                     instance:Find("DownloadCount"):GetComponent("Text").text = downloadCount
                     instance:Find("ShareCode"):GetComponent("Text").text = shareCode
@@ -77,7 +78,7 @@ function ShareCodeListController:getList(url)
                             GUIUtility.systemCopyBuffer = v.ShareCode
 
                             PopMessageManager.Instance:PushPopup(
-                                "游戏将访问剪贴版，并将分享码: " .. v.ShareCode .. " 复制进剪贴板",
+                                UIAPI.FormatString(UIAPI.GetLocalizedContent("ShareCodeClipboard"), v.ShareCode),
                                 function(state)
                                 end
                             )
