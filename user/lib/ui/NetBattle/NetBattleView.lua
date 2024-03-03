@@ -30,4 +30,6 @@ function M:InitUI(root)
     self.vPing = root:Find("#txt_Ping"):GetComponent("Text")
     --- @type GameObject
     self.vTextPopTemplate = root:Find("#obj_TextPopTemplate").gameObject
+    --- @type Text
+    self.vBattleMeta = root:Find("#txt_BattleMeta"):GetComponent("Text")
 end
