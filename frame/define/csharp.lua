@@ -33,6 +33,10 @@ function AbstractNetBattleGameMode:IsMainPlayerLoaded() end
 ---@function [AbstractNetBattleGameMode:GetPlayerPosition]
 ---@return UnityEngine.Vector3
 function AbstractNetBattleGameMode:GetPlayerPosition() end
+---@instance
+---@function [AbstractNetBattleGameMode:GetBattleMeta]
+---@return System.String
+function AbstractNetBattleGameMode:GetBattleMeta() end
 return AbstractNetBattleGameMode
 
 ---@class Frontend.Runtime.Impl.GameImpl.Battle.Mode.CaptureZoneNetGameMode
@@ -70,6 +74,10 @@ function CaptureZoneNetGameMode:IsMainPlayerLoaded() end
 ---@function [CaptureZoneNetGameMode:GetPlayerPosition]
 ---@return UnityEngine.Vector3
 function CaptureZoneNetGameMode:GetPlayerPosition() end
+---@instance
+---@function [CaptureZoneNetGameMode:GetBattleMeta]
+---@return System.String
+function CaptureZoneNetGameMode:GetBattleMeta() end
 return CaptureZoneNetGameMode
 
 ---@class Frontend.Runtime.Impl.GameImpl.Battle.Mode.ReplayNetGameMode
@@ -122,6 +130,10 @@ function ReplayNetGameMode:IsMainPlayerLoaded() end
 ---@function [ReplayNetGameMode:GetPlayerPosition]
 ---@return UnityEngine.Vector3
 function ReplayNetGameMode:GetPlayerPosition() end
+---@instance
+---@function [ReplayNetGameMode:GetBattleMeta]
+---@return System.String
+function ReplayNetGameMode:GetBattleMeta() end
 return ReplayNetGameMode
 
 ---@class Frontend.Runtime.Impl.GameImpl.Battle.Mode.StandardWarNetGameMode
@@ -163,6 +175,10 @@ function StandardWarNetGameMode:IsMainPlayerLoaded() end
 ---@function [StandardWarNetGameMode:GetPlayerPosition]
 ---@return UnityEngine.Vector3
 function StandardWarNetGameMode:GetPlayerPosition() end
+---@instance
+---@function [StandardWarNetGameMode:GetBattleMeta]
+---@return System.String
+function StandardWarNetGameMode:GetBattleMeta() end
 return StandardWarNetGameMode
 
 ---@class Frontend.Runtime.Impl.GameImpl.Battle.Mode.TotalWarNetGameMode
@@ -195,6 +211,10 @@ function TotalWarNetGameMode:IsMainPlayerLoaded() end
 ---@function [TotalWarNetGameMode:GetPlayerPosition]
 ---@return UnityEngine.Vector3
 function TotalWarNetGameMode:GetPlayerPosition() end
+---@instance
+---@function [TotalWarNetGameMode:GetBattleMeta]
+---@return System.String
+function TotalWarNetGameMode:GetBattleMeta() end
 return TotalWarNetGameMode
 
 ---@class ShanghaiWindy.Data.ZoneChain

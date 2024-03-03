@@ -24,6 +24,7 @@ function M:Awake()
 
     GameObjectAPI.SetActive(self.view.vChatSenderBar, false)
     GameObjectAPI.SetActive(self.view.vChatMessageTemplate, false)
+
     self:ToggleChatSender(false)
     self:AddListeners()
 end
@@ -76,6 +77,7 @@ end
 
 function M:OnQuarterTick(deltaTime)
     self.view.vPing.text = self._mode:GetPing()
+    self.view.vBattleMeta.text = self._mode:GetBattleMeta()
 
     local currentTime = TimeAPI.GetTime()
     for i = #self._chatMessageList, 1, -1 do
