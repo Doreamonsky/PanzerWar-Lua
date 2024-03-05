@@ -23,10 +23,10 @@ function DIY:ctor()
 end
 
 function DIY:GetGameModeName(userLang)
-    if userLang == "EN" then
-        return "Tank Workshop"
-    else
+    if userLang == "CN" then
         return "坦克工坊"
+    else
+        return "Tank Workshop"
     end
 end
 

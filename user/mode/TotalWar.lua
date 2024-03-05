@@ -19,10 +19,10 @@ function M:InitModeMeta()
 end
 
 function M:GetGameModeName(userLang)
-    if userLang == "EN" then
-        return "Total War Mode"
-    else
+    if userLang == "CN" then
         return "全面冲突模式"
+    else
+        return "Total War Mode"
     end
 end
 
@@ -257,7 +257,7 @@ function M:CreateBotPlayerList(num, team)
     local list = {}
 
     for i = 1, num do
-        local bot = BattlePlayerAPI.CreateOfflineBotPlayer(self.index, "黑暗降临", nil)
+        local bot = BattlePlayerAPI.CreateOfflineBotPlayer(self.index, "DarkPaiMen", nil)
         bot.BotTeam = team
 
         ModeAPI.AddBattlePlayer(bot)

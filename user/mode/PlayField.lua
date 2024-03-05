@@ -14,10 +14,10 @@ function M:ctor()
 end
 
 function M:GetGameModeName(lang)
-    if lang == "EN" then
-        return "Play Field"
-    else
+    if lang == "CN" then
         return "试车场"
+    else
+        return "Play Field"
     end
 end
 

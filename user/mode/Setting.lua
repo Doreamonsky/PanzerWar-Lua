@@ -9,10 +9,10 @@ function LuaModeSetting:ctor()
 end
 
 function LuaModeSetting:GetGameModeName(userLang)
-    if userLang == "EN" then
-        return "Lua Mode Setting"
-    else
+    if userLang == "CN" then
         return "Lua 模式设置"
+    else
+        return "Lua Mode Setting"
     end
 end
 

@@ -15,10 +15,10 @@ function DIYMap:ctor()
 end
 
 function DIYMap:GetGameModeName(userLang)
-    if userLang == "EN" then
-        return "Map Workshop"
-    else
+    if userLang == "CN" then
         return "地图工坊"
+    else
+        return "Map Workshop"
     end
 end
 
@@ -455,7 +455,9 @@ function DIYMap:OnMapInstallClicked(baseData)
     --- @type Ray
     local ray = self.mainCamera:ScreenPointToRay(self.dragInfo.position)
     DIYMapCreateUtil.AutoPlaceItem(baseData.itemGUID, ray.origin, ray.direction)
-    PopMessageManager.Instance:PushNotice(string.format("放置 %s 成功", baseData.displayName:GetDisplayName()), 1)
+
+    local content = UIAPI.FormatString(UIAPI.GetLocalizedContent("PlaceItem", baseData.displayName:GetDisplayName()))
+    PopMessageManager.Instance:PushNotice(content, 1)
 end
 
 --- @param itemCompoent DIYMapItemComponent

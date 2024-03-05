@@ -9,10 +9,10 @@ function Mask:ctor()
 end
 
 function Mask:GetGameModeName(userLang)
-    if userLang == "EN" then
-        return "Mask Texture Manager"
-    else
+    if userLang == "CN" then
         return "反光贴图管理"
+    else
+        return "Mask Texture Manager"
     end
 end
 

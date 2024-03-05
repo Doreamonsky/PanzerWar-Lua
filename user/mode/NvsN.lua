@@ -16,10 +16,10 @@ function M:ctor()
 end
 
 function M:GetGameModeName(lang)
-    if lang == "EN" then
-        return "N vs N Blitzkrieg"
-    else
+    if lang == "CN" then
         return "N 对 N 闪电战"
+    else
+        return "N vs N Blitzkrieg"
     end
 end
 
@@ -220,7 +220,7 @@ function M:CreateVehiclesFromRanks(team, playerRank, ranks)
         for i = 1, number do
             if rankVehicleMap[rank].Count ~= 0 then
                 ---@type ShanghaiWindy.Core.AbstractBattlePlayer
-                local botPlayer = BattlePlayerAPI.CreateOfflineBotPlayer(self.index, "装纷派蒙", {})
+                local botPlayer = BattlePlayerAPI.CreateOfflineBotPlayer(self.index, "DarkPaiMen", {})
                 botPlayer.BotTeam = team
                 botPlayer.IsKeepWreckage = true
 

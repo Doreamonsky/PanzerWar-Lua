@@ -22,10 +22,10 @@ function M:ctor()
 end
 
 function M:GetGameModeName(lang)
-    if lang == "EN" then
-        return "Capture Zone"
-    else
+    if lang == "CN" then
         return "占区模式"
+    else
+        return "Capture Zone"
     end
 end
 
@@ -348,7 +348,7 @@ function M:CreateBotPlayerList(num, team)
     local list = {}
 
     for i = 1, num do
-        local bot = BattlePlayerAPI.CreateOfflineBotPlayer(self._index, "黑暗降临", nil)
+        local bot = BattlePlayerAPI.CreateOfflineBotPlayer(self._index, "DarkPaiMen", nil)
         bot.BotTeam = team
 
         ModeAPI.AddBattlePlayer(bot)

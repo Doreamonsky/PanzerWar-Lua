@@ -15,10 +15,10 @@ function M:ctor()
 end
 
 function M:GetGameModeName(lang)
-    if lang == "EN" then
-        return "Defence"
-    else
+    if lang == "CN" then
         return "防守战"
+    else
+        return "Defence"
     end
 end
 
@@ -147,7 +147,7 @@ function M:GenerateAttackInfo(attackInfos, botTeam)
             self.uid = self.uid + 1
 
             ---@type ShanghaiWindy.Core.AbstractBattlePlayer
-            local botPlayer = BattlePlayerAPI.CreateOfflineBotPlayer(self.uid, "装纷派蒙", {})
+            local botPlayer = BattlePlayerAPI.CreateOfflineBotPlayer(self.uid, "DarkPaiMen", {})
             botPlayer.BotTeam = botTeam
 
             ModeAPI.AddBattlePlayer(botPlayer)

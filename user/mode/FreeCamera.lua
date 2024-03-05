@@ -9,10 +9,10 @@ function FreeCameraMode:ctor()
 end
 
 function FreeCameraMode:GetGameModeName(userLang)
-    if userLang == "EN" then
-        return "Free camera"
-    else
+    if userLang == "CN" then
         return "自由摄像机"
+    else
+        return "Free camera"
     end
 end
 
