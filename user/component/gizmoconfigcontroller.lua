@@ -7,22 +7,22 @@ local GizmoConfigController = class("GizmoConfigController")
 function GizmoConfigController:init(gizmoUITransform, rtPluginTransform, entryButton)
     -------- Bind UI Start --------
     self.slotScaleInputField = gizmoUITransform.transform:Find("Bar/Content/SlotScale/InputField"):GetComponent(
-        "InputField"
+        typeof(InputField)
     )
     self.axisScaleInputField = gizmoUITransform.transform:Find("Bar/Content/AxisScale/InputField"):GetComponent(
-        "InputField"
+        typeof(InputField)
     )
     self.cameraMoveScaleInputField = gizmoUITransform.transform:Find("Bar/Content/CameraMoveScale/InputField"):GetComponent(
-        "InputField"
+        typeof(InputField)
     )
     self.enableJoysitckToggle = gizmoUITransform.transform:Find("Bar/Content/EnableJoysitckToggle/Toggle"):GetComponent(
-        "Toggle"
+        typeof(Toggle)
     )
     
-    self.enableGridToggle = gizmoUITransform.transform:Find("Bar/Content/EnableGrid/Toggle"):GetComponent("Toggle")
-    self.enablePressSelectToggle = gizmoUITransform.transform:Find("Bar/Content/EnablePressSelect/Toggle"):GetComponent("Toggle")
+    self.enableGridToggle = gizmoUITransform.transform:Find("Bar/Content/EnableGrid/Toggle"):GetComponent(typeof(Toggle))
+    self.enablePressSelectToggle = gizmoUITransform.transform:Find("Bar/Content/EnablePressSelect/Toggle"):GetComponent(typeof(Toggle))
 
-    self.confirmBtn = gizmoUITransform.transform:Find("Bar/Title/ConfirmBtn"):GetComponent("Button")
+    self.confirmBtn = gizmoUITransform.transform:Find("Bar/Title/ConfirmBtn"):GetComponent(typeof(Button))
 
     self.settingBtn = entryButton
     self.settingGo = gizmoUITransform.gameObject

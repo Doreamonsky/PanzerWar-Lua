@@ -31,9 +31,9 @@ function Mask:OnStartMode()
                 for i = 0, maskTexs.Count - 1 do
                     local maskTex = maskTexs[i]
                     local instance = GameObject.Instantiate(template, template.transform.parent, true)
-                    instance.transform:Find("Text"):GetComponent("Text").text = maskTex.maskDisplayName:GetDisplayName()
-                    instance.transform:Find("Thumbnail"):GetComponent("RawImage").texture = maskTex.maskTexture
-                    instance:GetComponent("Button").onClick:AddListener(
+                    instance.transform:Find("Text"):GetComponent(typeof(Text)).text = maskTex.maskDisplayName:GetDisplayName()
+                    instance.transform:Find("Thumbnail"):GetComponent(typeof(RawImage)).texture = maskTex.maskTexture
+                    instance:GetComponent(typeof(Button)).onClick:AddListener(
                         function()
                             local vehicleInfos = VehicleInfoManager.Instance:GetAllDriveableVehicleList(true)
 
@@ -54,7 +54,7 @@ function Mask:OnStartMode()
                     instance.gameObject:SetActive(true)
                 end
 
-                uiObject.transform:Find("Panel/Close"):GetComponent("Button").onClick:AddListener(
+                uiObject.transform:Find("Panel/Close"):GetComponent(typeof(Button)).onClick:AddListener(
                     function()
                         CSharpAPI.OnLuaExitModeReq:Invoke()
                         GameObject.Destroy(uiObject)

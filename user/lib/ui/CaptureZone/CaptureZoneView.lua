@@ -13,27 +13,27 @@ function M:InitUI(root)
     --- @type GameObject
     self.vCapturePickBar = root:Find("#obj_CapturePickBar").gameObject
     --- @type Image
-    self.vVehicleThumbnail = root:Find("#obj_CapturePickBar/VehickeBackground'/#img_VehicleThumbnail"):GetComponent("Image")
+    self.vVehicleThumbnail = root:Find("#obj_CapturePickBar/VehickeBackground'/#img_VehicleThumbnail"):GetComponent(typeof(Image))
     --- @type Text
-    self.vVehicleName = root:Find("#obj_CapturePickBar/VehickeBackground'/#img_VehicleThumbnail/#txt_VehicleName"):GetComponent("Text")
+    self.vVehicleName = root:Find("#obj_CapturePickBar/VehickeBackground'/#img_VehicleThumbnail/#txt_VehicleName"):GetComponent(typeof(Text))
     --- @type Text
-    self.vVehicleRank = root:Find("#obj_CapturePickBar/VehickeBackground'/#img_VehicleThumbnail/#txt_VehicleRank"):GetComponent("Text")
+    self.vVehicleRank = root:Find("#obj_CapturePickBar/VehickeBackground'/#img_VehicleThumbnail/#txt_VehicleRank"):GetComponent(typeof(Text))
     --- @type GameObject
     self.vPickPoint = root:Find("#obj_CapturePickBar/#obj_PickPoint").gameObject
     --- @type GameObject
     self.vSpawnWarning = root:Find("#obj_CapturePickBar/#obj_PickPoint/#obj_SpawnWarning").gameObject
     --- @type Text
-    self.vPickPointName = root:Find("#obj_CapturePickBar/#obj_PickPoint/#txt_PickPointName"):GetComponent("Text")
+    self.vPickPointName = root:Find("#obj_CapturePickBar/#obj_PickPoint/#txt_PickPointName"):GetComponent(typeof(Text))
     --- @type Image
-    self.vPickPointFill = root:Find("#obj_CapturePickBar/#obj_PickPoint/#img_PickPointFill"):GetComponent("Image")
+    self.vPickPointFill = root:Find("#obj_CapturePickBar/#obj_PickPoint/#img_PickPointFill"):GetComponent(typeof(Image))
     --- @type Button
-    self.vPickVehicle = root:Find("#obj_CapturePickBar/#btn_PickVehicle"):GetComponent("Button")
+    self.vPickVehicle = root:Find("#obj_CapturePickBar/#btn_PickVehicle"):GetComponent(typeof(Button))
     --- @type Button
-    self.vBattle = root:Find("#obj_CapturePickBar/#btn_Battle"):GetComponent("Button")
+    self.vBattle = root:Find("#obj_CapturePickBar/#btn_Battle"):GetComponent(typeof(Button))
     --- @type GameObject
     self.vCoolDownMask = root:Find("#obj_CapturePickBar/#btn_Battle/#obj_CoolDownMask").gameObject
     --- @type Text
-    self.vCoolDownTime = root:Find("#obj_CapturePickBar/#btn_Battle/#obj_CoolDownMask/#txt_CoolDownTime"):GetComponent("Text")
+    self.vCoolDownTime = root:Find("#obj_CapturePickBar/#btn_Battle/#obj_CoolDownMask/#txt_CoolDownTime"):GetComponent(typeof(Text))
     --- @type GameObject
     self.vPointTemplate = root:Find("#obj_PointTemplate").gameObject
 end

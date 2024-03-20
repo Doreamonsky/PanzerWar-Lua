@@ -21,12 +21,12 @@ function CameraController:Init(uiTransform, cameraTransform, cameraTargetTransfo
     self.keypadGo = uiTransform:Find("Keypad").gameObject
     self.joystickGo = uiTransform:Find("Joystick").gameObject
 
-    self.upBtn = uiTransform:Find("UpBtn"):GetComponent("PressButton")
-    self.downBtn = uiTransform:Find("DownBtn"):GetComponent("PressButton")
-    self.forwardBtn = uiTransform:Find("Keypad/ForwardBtn"):GetComponent("PressButton")
-    self.backwardBtn = uiTransform:Find("Keypad/BackwardBtn"):GetComponent("PressButton")
-    self.leftBtn = uiTransform:Find("Keypad/LeftBtn"):GetComponent("PressButton")
-    self.rightBtn = uiTransform:Find("Keypad/RightBtn"):GetComponent("PressButton")
+    self.upBtn = uiTransform:Find("UpBtn"):GetComponent(typeof(PressButton))
+    self.downBtn = uiTransform:Find("DownBtn"):GetComponent(typeof(PressButton))
+    self.forwardBtn = uiTransform:Find("Keypad/ForwardBtn"):GetComponent(typeof(PressButton))
+    self.backwardBtn = uiTransform:Find("Keypad/BackwardBtn"):GetComponent(typeof(PressButton))
+    self.leftBtn = uiTransform:Find("Keypad/LeftBtn"):GetComponent(typeof(PressButton))
+    self.rightBtn = uiTransform:Find("Keypad/RightBtn"):GetComponent(typeof(PressButton))
     self.moveJoystick = uiTransform:Find("Joystick"):GetComponent(typeof(Joystick))
 
     -- 添加摄像机控制按钮的监听器 (Add listeners for camera control buttons)

@@ -231,3 +231,14 @@ EventTriggerType = CS.UnityEngine.EventSystems.EventTriggerType
 
 GUIUtility = CS.UnityEngine.GUIUtility
 Screen = CS.UnityEngine.Screen
+
+Text = CS.UnityEngine.UI.Text
+Button = CS.UnityEngine.UI.Button
+Image = CS.UnityEngine.UI.Image
+Slider = CS.UnityEngine.UI.Slider
+InputField = CS.UnityEngine.UI.InputField
+Toggle = CS.UnityEngine.UI.Toggle
+ScrollRect = CS.UnityEngine.UI.ScrollRect
+Dropdown = CS.UnityEngine.UI.Dropdown
+RawImage = CS.UnityEngine.UI.RawImage
+PressButton = CS.ShanghaiWindy.Core.PressButton

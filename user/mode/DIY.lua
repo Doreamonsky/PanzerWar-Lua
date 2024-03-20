@@ -91,7 +91,7 @@ function DIY:MarkDirty()
 end
 
 function DIY:OnUtilCreated(root)
-    local settingBtn = root.transform:Find("DIYCreateVehicleCanvas/ToolAction/SettingBtn"):GetComponent("Button")
+    local settingBtn = root.transform:Find("DIYCreateVehicleCanvas/ToolAction/SettingBtn"):GetComponent(typeof(Button))
     local configTransform = root.transform:Find("DIYCreateVehicleCanvas/GizmoConfig")
     local rtPluginTransform = root.transform:Find("RT-Plugin")
 
@@ -106,40 +106,40 @@ function DIY:OnUtilCreated(root)
     self.slotDisableMask = root.transform:Find("DIYCreateVehicleCanvas/SlotDisableMask")
     self.slotDisableMask.gameObject:SetActive(false)
 
-    self.exitActionBtn = root.transform:Find("DIYCreateVehicleCanvas/FileAction/ExitBtn"):GetComponent("Button")
-    self.saveActionBtn = root.transform:Find("DIYCreateVehicleCanvas/FileAction/SaveBtn"):GetComponent("Button")
-    self.loadActionBtn = root.transform:Find("DIYCreateVehicleCanvas/FileAction/LoadBtn"):GetComponent("Button")
+    self.exitActionBtn = root.transform:Find("DIYCreateVehicleCanvas/FileAction/ExitBtn"):GetComponent(typeof(Button))
+    self.saveActionBtn = root.transform:Find("DIYCreateVehicleCanvas/FileAction/SaveBtn"):GetComponent(typeof(Button))
+    self.loadActionBtn = root.transform:Find("DIYCreateVehicleCanvas/FileAction/LoadBtn"):GetComponent(typeof(Button))
 
     self.fileSavePop = root.transform:Find("DIYCreateVehicleCanvas/FileSavePop")
-    self.fileNameInput = self.fileSavePop.transform:Find("FileNameInput"):GetComponent("InputField")
-    self.saveBtn = self.fileSavePop.transform:Find("SaveBtn"):GetComponent("Button")
+    self.fileNameInput = self.fileSavePop.transform:Find("FileNameInput"):GetComponent(typeof(InputField))
+    self.saveBtn = self.fileSavePop.transform:Find("SaveBtn"):GetComponent(typeof(Button))
 
     self.fileLoadPop = root.transform:Find("DIYCreateVehicleCanvas/FileLoadPop")
     --- @type DIYFileRecycleMgr
     self.fileMgr = self.fileLoadPop:GetComponent(typeof(DIYFileRecycleMgr))
-    self.fileLoadCloseBtn = self.fileLoadPop:Find("Title/CloseBtn"):GetComponent("Button")
-    self.loadShareBtn = self.fileLoadPop:Find("Title/LoadShareBtn"):GetComponent("Button")
+    self.fileLoadCloseBtn = self.fileLoadPop:Find("Title/CloseBtn"):GetComponent(typeof(Button))
+    self.loadShareBtn = self.fileLoadPop:Find("Title/LoadShareBtn"):GetComponent(typeof(Button))
 
     self.setMainBtn = root.transform:Find(
             "DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Main/SetMainBtn")
         :GetComponent(
-            "Button"
+            typeof(Button)
         )
 
     self.configProp = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp")
     self.configProp.gameObject:SetActive(false)
 
     self.configRoot = self.configProp:Find("Scroll View/Viewport/Content")
-    self.configPropEquipText = self.configRoot:Find("BaseInfo/EquipName"):GetComponent("Text")
-    self.configPropEquipDescriptionText = self.configRoot:Find("BaseInfo/EquipDescription"):GetComponent("Text")
-    self.configPropEquipImg = self.configRoot:Find("BaseInfo/Icon"):GetComponent("Image")
-    self.configPropEquipType = self.configRoot:Find("BaseInfo/EquipType"):GetComponent("Text")
+    self.configPropEquipText = self.configRoot:Find("BaseInfo/EquipName"):GetComponent(typeof(Text))
+    self.configPropEquipDescriptionText = self.configRoot:Find("BaseInfo/EquipDescription"):GetComponent(typeof(Text))
+    self.configPropEquipImg = self.configRoot:Find("BaseInfo/Icon"):GetComponent(typeof(Image))
+    self.configPropEquipType = self.configRoot:Find("BaseInfo/EquipType"):GetComponent(typeof(Text))
 
     self.configPropTransformInfo = self.configRoot:Find("TransformInfo")
     self.configPropPositionRect = self.configRoot:Find("TransformInfo/Position")
     self.configPropEulerAngleRect = self.configRoot:Find("TransformInfo/EulerAngle")
     self.configScaleRect = self.configRoot:Find("TransformInfo/Scale")
-    self.configComfirmBtn = self.configProp:Find("Title/ConfirmBtn"):GetComponent("Button")
+    self.configComfirmBtn = self.configProp:Find("Title/ConfirmBtn"):GetComponent(typeof(Button))
     self.configCustomPropertyTemplate = root.transform:Find(
         "DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/FloatToggleablePropertyTemplate"
     )
@@ -147,73 +147,72 @@ function DIY:OnUtilCreated(root)
 
 
     self.shareImportPop = root.transform:Find("DIYCreateVehicleCanvas/ShareImportPop")
-    self.shareImportCancelBtn = self.shareImportPop:GetComponent("Button")
-    self.shareCodeInput = root.transform:Find("DIYCreateVehicleCanvas/ShareImportPop/ShareCodeInput"):GetComponent(
-        "InputField")
-    self.shareImportBtn = root.transform:Find("DIYCreateVehicleCanvas/ShareImportPop/ImportBtn"):GetComponent("Button")
+    self.shareImportCancelBtn = self.shareImportPop:GetComponent(typeof(Button))
+    self.shareCodeInput = root.transform:Find("DIYCreateVehicleCanvas/ShareImportPop/ShareCodeInput"):GetComponent(typeof(InputField))
+    self.shareImportBtn = root.transform:Find("DIYCreateVehicleCanvas/ShareImportPop/ImportBtn"):GetComponent(typeof(Button))
 
     self.slotMultiObjectsToggle = root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/SlotMultiObjectsToggle"):
-    GetComponent("Toggle")
+    GetComponent(typeof(Toggle))
 
     self.ApplyParentScaleToggle = root.transform:Find("DIYCreateVehicleCanvas/EquipList/Title/ApplyParentScaleToggle"):
-    GetComponent("Toggle")
+    GetComponent(typeof(Toggle))
 
     self.copyBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Main/CopyBtn"):
     GetComponent(
-        "Button"
+        typeof(Button)
     )
 
     self.symmetryXBtn = root.transform:Find(
             "DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Symmetry/XAxisBtn")
         :GetComponent(
-            "Button"
+            typeof(Button)
         )
 
     self.symmetryYBtn = root.transform:Find(
             "DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Symmetry/YAxisBtn")
         :GetComponent(
-            "Button"
+            typeof(Button)
         )
 
     self.symmetryZBtn = root.transform:Find(
             "DIYCreateVehicleCanvas/ConfigProp/Scroll View/Viewport/Content/Symmetry/ZAxisBtn")
         :GetComponent(
-            "Button"
+            typeof(Button)
         )
 
     self.allEquipGo = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll").gameObject
     self.allFilterBtn = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/AllBtn"):GetComponent(
-        "Button")
+        typeof(Button))
     self.turretFilterBtn = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/TurretBtn"):
-    GetComponent("Button")
+    GetComponent(typeof(Button))
     self.gunFilterBtn = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/GunBtn"):GetComponent(
-        "Button")
+        typeof(Button))
     self.itemFilterBtn = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/Filter/ItemBtn"):GetComponent(
-        "Button")
+        typeof(Button))
     self.filterSearchField = root.transform:Find("DIYCreateVehicleCanvas/EquipListAll/Title/FilterSearchField"):
-    GetComponent("InputField")
+    GetComponent(typeof(InputField))
 
     self.noneBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/NoneBtn"):GetComponent(
-        "Button")
+        typeof(Button))
     self.moveBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/MoveBtn"):GetComponent(
-        "Button")
+        typeof(Button))
     self.rotateBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/RotateBtn"):GetComponent(
-        "Button")
+        typeof(Button))
     self.scaleBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/TransformHandle/ScaleBtn"):GetComponent(
-        "Button")
+        typeof(Button))
 
     self.detailDeleteBtn = root.transform:Find("DIYCreateVehicleCanvas/ConfigProp/Title/DeleteBtn"):GetComponent(
-        "Button")
+        typeof(Button))
 
     self.dragInfo = root.transform:Find("DIYCreateVehicleCanvas/DragInfo").gameObject
-    self.pauseTimeBtn = root.transform:Find("DIYCreateVehicleCanvas/ToolAction/PauseTimeBtn"):GetComponent("Button")
+    self.pauseTimeBtn = root.transform:Find("DIYCreateVehicleCanvas/ToolAction/PauseTimeBtn"):GetComponent(typeof(Button))
     self.recoveryTimeBtn = root.transform:Find("DIYCreateVehicleCanvas/TimeScaleInfo/RecoverTimeBtn"):GetComponent(
-        "Button")
+        typeof(Button))
     self.timeScaleInfoGo = root.transform:Find("DIYCreateVehicleCanvas/TimeScaleInfo").gameObject
-    self.quickImportShareBtn = root.transform:Find("DIYCreateVehicleCanvas/ToolAction/ImportBtn"):GetComponent("Button")
+    self.quickImportShareBtn = root.transform:Find("DIYCreateVehicleCanvas/ToolAction/ImportBtn"):GetComponent(typeof(Button))
 
     self.longPressTipGo = root.transform:Find("DIYCreateVehicleCanvas/LongPressTip").gameObject
-    self.tipFillImg = self.longPressTipGo.transform:Find("Fill"):GetComponent("Image")
+    self.tipFillImg = self.longPressTipGo.transform:Find("Fill"):GetComponent(typeof(Image))
 
     self.eventTrigger = root.transform:Find("DIYCreateVehicleCanvas/TouchBar"):GetComponent(typeof(EventTrigger))
     ------------------------------------------------------
@@ -260,7 +259,7 @@ function DIY:OnUtilCreated(root)
         end
     )
 
-    self.fileSavePop:GetComponent("Button").onClick:AddListener(
+    self.fileSavePop:GetComponent(typeof(Button)).onClick:AddListener(
         function()
             if self.isLoadingParts then
                 return
@@ -312,7 +311,7 @@ function DIY:OnUtilCreated(root)
         end
     )
 
-    self.slotDisableMask:GetComponent("Button").onClick:AddListener(
+    self.slotDisableMask:GetComponent(typeof(Button)).onClick:AddListener(
         function()
             local isEmptyRuleCount = self.userDefined.rules.Count == 0
 
@@ -384,7 +383,7 @@ function DIY:OnUtilCreated(root)
     )
 
     -- 退出详情编辑
-    self.configComfirmBtn:GetComponent("Button").onClick:AddListener(
+    self.configComfirmBtn:GetComponent(typeof(Button)).onClick:AddListener(
         function()
             self:closeConfig()
         end
@@ -455,7 +454,7 @@ function DIY:OnUtilCreated(root)
 
 
     ---------------------分享码--------------------------
-    local findBtn = root.transform:Find("DIYCreateVehicleCanvas/ToolAction/FindBtn"):GetComponent("Button")
+    local findBtn = root.transform:Find("DIYCreateVehicleCanvas/ToolAction/FindBtn"):GetComponent(typeof(Button))
     local shareCodeListGo = root.transform:Find("DIYCreateVehicleCanvas/DIYShareCodeListCanvas").gameObject
     self.shareCodeListController:Init(findBtn, shareCodeListGo)
     ------------------------------------------------------
@@ -688,7 +687,7 @@ function DIY:RefreshEquipSlotInteractBtn()
                     self.gizmoUITransform:applySlotScale(instance.transform) -- 设置插槽的大小
 
                     instance:GetComponent(typeof(CS.ShanghaiWindy.Core.IconScreenPositionCtrl)).worldPos = iconPos
-                    instance:GetComponent("Button").onClick:AddListener(
+                    instance:GetComponent(typeof(Button)).onClick:AddListener(
                         function()
                             self:selectSlot(slotOwnerRuleId, slotIndex)
                         end
@@ -1109,9 +1108,9 @@ function DIY:selectRule(ruleId)
                 local propertyValue = toggleableProperty:GetValue()
                 local propertyIsEnable = toggleableProperty.isEnabled
 
-                instance.transform:Find("PropertyName"):GetComponent("Text").text = propertyName
+                instance.transform:Find("PropertyName"):GetComponent(typeof(Text)).text = propertyName
 
-                local inputField = instance.transform:Find("PropertyField"):GetComponent("InputField")
+                local inputField = instance.transform:Find("PropertyField"):GetComponent(typeof(InputField))
                 if toggleableProperty:IsInputFieldRequired() then
                     inputField.text = propertyValue
                     inputField.interactable = toggleableProperty.isEnabled
@@ -1129,8 +1128,8 @@ function DIY:selectRule(ruleId)
                     inputField.gameObject:SetActive(false)
                 end
 
-                instance.transform:Find("PropertyEnable"):GetComponent("Toggle").isOn = propertyIsEnable
-                instance.transform:Find("PropertyEnable"):GetComponent("Toggle").onValueChanged:AddListener(
+                instance.transform:Find("PropertyEnable"):GetComponent(typeof(Toggle)).isOn = propertyIsEnable
+                instance.transform:Find("PropertyEnable"):GetComponent(typeof(Toggle)).onValueChanged:AddListener(
                     function(isEnabled)
                         -- 开关参数，并保存
                         toggleableProperty.isEnabled = isEnabled
@@ -1227,44 +1226,44 @@ end
 
 --- 将 Vector3 赋值给 InputField
 function DIY:Vector3ToTransformInputFields(rectTransform, vec)
-    rectTransform:Find("XField"):GetComponent("InputField").text = string.format("%.3f", vec.x)
-    rectTransform:Find("YField"):GetComponent("InputField").text = string.format("%.3f", vec.y)
-    rectTransform:Find("ZField"):GetComponent("InputField").text = string.format("%.3f", vec.z)
+    rectTransform:Find("XField"):GetComponent(typeof(InputField)).text = string.format("%.3f", vec.x)
+    rectTransform:Find("YField"):GetComponent(typeof(InputField)).text = string.format("%.3f", vec.y)
+    rectTransform:Find("ZField"):GetComponent(typeof(InputField)).text = string.format("%.3f", vec.z)
 end
 
 --- 从 InputField 获得 Vector3
 --- @return Vector3
 function DIY:fromTransformInputFieldToVector3(rectTransform)
     local vec = SerializeVector3()
-    vec.x = tonumber(rectTransform:Find("XField"):GetComponent("InputField").text)
-    vec.y = tonumber(rectTransform:Find("YField"):GetComponent("InputField").text)
-    vec.z = tonumber(rectTransform:Find("ZField"):GetComponent("InputField").text)
+    vec.x = tonumber(rectTransform:Find("XField"):GetComponent(typeof(InputField)).text)
+    vec.y = tonumber(rectTransform:Find("YField"):GetComponent(typeof(InputField)).text)
+    vec.z = tonumber(rectTransform:Find("ZField"):GetComponent(typeof(InputField)).text)
     return vec
 end
 
 function DIY:clearBindTransformInputField(rectTransform)
     -- 清空上次事件的绑定
-    rectTransform:Find("XField"):GetComponent("InputField").onValueChanged:RemoveAllListeners()
-    rectTransform:Find("YField"):GetComponent("InputField").onValueChanged:RemoveAllListeners()
-    rectTransform:Find("ZField"):GetComponent("InputField").onValueChanged:RemoveAllListeners()
+    rectTransform:Find("XField"):GetComponent(typeof(InputField)).onValueChanged:RemoveAllListeners()
+    rectTransform:Find("YField"):GetComponent(typeof(InputField)).onValueChanged:RemoveAllListeners()
+    rectTransform:Find("ZField"):GetComponent(typeof(InputField)).onValueChanged:RemoveAllListeners()
 end
 
 --- 绑定坐标变化事件
 function DIY:bindTransformInputField(rectTransform, onValueChanged)
     -- 新的事件绑定
-    rectTransform:Find("XField"):GetComponent("InputField").onValueChanged:AddListener(
+    rectTransform:Find("XField"):GetComponent(typeof(InputField)).onValueChanged:AddListener(
         function(text)
             onValueChanged(self:fromTransformInputFieldToVector3(rectTransform))
         end
     )
 
-    rectTransform:Find("YField"):GetComponent("InputField").onValueChanged:AddListener(
+    rectTransform:Find("YField"):GetComponent(typeof(InputField)).onValueChanged:AddListener(
         function(text)
             onValueChanged(self:fromTransformInputFieldToVector3(rectTransform))
         end
     )
 
-    rectTransform:Find("ZField"):GetComponent("InputField").onValueChanged:AddListener(
+    rectTransform:Find("ZField"):GetComponent(typeof(InputField)).onValueChanged:AddListener(
         function(text)
             onValueChanged(self:fromTransformInputFieldToVector3(rectTransform))
         end

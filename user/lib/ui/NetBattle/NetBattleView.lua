@@ -11,7 +11,7 @@ function M:InitUI(root)
     --- @type GameObject
     self.vChat = root:Find("#obj_Chat").gameObject
     --- @type Button
-    self.vOpenChatSender = root:Find("#obj_Chat/#btn_OpenChatSender"):GetComponent("Button")
+    self.vOpenChatSender = root:Find("#obj_Chat/#btn_OpenChatSender"):GetComponent(typeof(Button))
     --- @type GameObject
     self.vChatMessages = root:Find("#obj_Chat/#obj_ChatMessages").gameObject
     --- @type GameObject
@@ -19,17 +19,17 @@ function M:InitUI(root)
     --- @type GameObject
     self.vChatSenderBar = root:Find("#obj_Chat/#obj_ChatSenderBar").gameObject
     --- @type Button
-    self.vCloseChatSenderBar = root:Find("#obj_Chat/#obj_ChatSenderBar/#btn_CloseChatSenderBar"):GetComponent("Button")
+    self.vCloseChatSenderBar = root:Find("#obj_Chat/#obj_ChatSenderBar/#btn_CloseChatSenderBar"):GetComponent(typeof(Button))
     --- @type InputField
-    self.vSenderContent = root:Find("#obj_Chat/#obj_ChatSenderBar/#input_SenderContent"):GetComponent("InputField")
+    self.vSenderContent = root:Find("#obj_Chat/#obj_ChatSenderBar/#input_SenderContent"):GetComponent(typeof(InputField))
     --- @type Button
-    self.vSendChat = root:Find("#obj_Chat/#obj_ChatSenderBar/#btn_SendChat"):GetComponent("Button")
+    self.vSendChat = root:Find("#obj_Chat/#obj_ChatSenderBar/#btn_SendChat"):GetComponent(typeof(Button))
     --- @type Dropdown
     self.vChatTargetType = root:Find("#obj_Chat/#obj_ChatSenderBar/#dropdown_ChatTargetType"):GetComponent("Dropdown")
     --- @type Text
-    self.vPing = root:Find("#txt_Ping"):GetComponent("Text")
+    self.vPing = root:Find("#txt_Ping"):GetComponent(typeof(Text))
     --- @type GameObject
     self.vTextPopTemplate = root:Find("#obj_TextPopTemplate").gameObject
     --- @type Text
-    self.vBattleMeta = root:Find("#txt_BattleMeta"):GetComponent("Text")
+    self.vBattleMeta = root:Find("#txt_BattleMeta"):GetComponent(typeof(Text))
 end

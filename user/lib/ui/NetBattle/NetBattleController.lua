@@ -135,7 +135,7 @@ end
 --- Add the top chat
 function M:OnChat(message)
     local instance = self._chatPool:Get(false)
-    local text = instance:GetComponent("Text")
+    local text = instance:GetComponent(typeof(Text))
     text.text = message
 
     table.insert(self._chatMessageList, {
@@ -147,7 +147,7 @@ end
 --- Add the pop text chat
 function M:OnPopText(message, position)
     local instance = self._chatPopPool:Get(false)
-    local text = instance.transform:Find("Text"):GetComponent("Text")
+    local text = instance.transform:Find("Text"):GetComponent(typeof(Text))
     text.text = message
 
     table.insert(self._chatPopTextList, {

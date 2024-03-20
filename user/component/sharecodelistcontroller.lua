@@ -22,7 +22,7 @@ function ShareCodeListController:Init(entryBtn, rootGo)
     self.root = rootGo.transform
     ---------------------Transform--------------------------
     self.templateGo = self.root:Find("Scroll View/Viewport/Content/Template").gameObject
-    self.closeBtn = self.root:Find("Title/CloseBtn"):GetComponent("Button")
+    self.closeBtn = self.root:Find("Title/CloseBtn"):GetComponent(typeof(Button))
     ---------------------Transform--------------------------
 
     self.templateGo:SetActive(false)
@@ -65,15 +65,15 @@ function ShareCodeListController:getList(url)
 
                     local instance = GameObject.Instantiate(self.templateGo, self.templateGo.transform.parent, true)
                         .transform
-                    instance:Find("DefineName"):GetComponent("Text").text = defineName
-                    instance:Find("DownloadCount"):GetComponent("Text").text = downloadCount
-                    instance:Find("ShareCode"):GetComponent("Text").text = shareCode
-                    instance:Find("ImportBtn"):GetComponent("Button").onClick:AddListener(
+                    instance:Find("DefineName"):GetComponent(typeof(Text)).text = defineName
+                    instance:Find("DownloadCount"):GetComponent(typeof(Text)).text = downloadCount
+                    instance:Find("ShareCode"):GetComponent(typeof(Text)).text = shareCode
+                    instance:Find("ImportBtn"):GetComponent(typeof(Button)).onClick:AddListener(
                         function()
                             self.importCB(shareCode)
                         end
                     )
-                    instance:Find("CopyBtn"):GetComponent("Button").onClick:AddListener(
+                    instance:Find("CopyBtn"):GetComponent(typeof(Button)).onClick:AddListener(
                         function()
                             GUIUtility.systemCopyBuffer = v.ShareCode
 

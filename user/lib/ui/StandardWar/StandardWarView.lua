@@ -12,17 +12,17 @@ function M:InitUI(root)
     self.vVehiclePickBar = root:Find("#obj_VehiclePickBar").gameObject
     --- @type Image
     self.vVehicleThumbnail = root:Find("#obj_VehiclePickBar/VehickeBackground'/#img_VehicleThumbnail"):GetComponent(
-        "Image")
+        typeof(Image))
     --- @type Text
     self.vVehicleName = root:Find("#obj_VehiclePickBar/VehickeBackground'/#img_VehicleThumbnail/#txt_VehicleName")
-        :GetComponent("Text")
+        :GetComponent(typeof(Text))
     --- @type Text
     self.vVehicleRank = root:Find("#obj_VehiclePickBar/VehickeBackground'/#img_VehicleThumbnail/#txt_VehicleRank")
-        :GetComponent("Text")
+        :GetComponent(typeof(Text))
     --- @type Button
-    self.vPickVehicle = root:Find("#obj_VehiclePickBar/#btn_PickVehicle"):GetComponent("Button")
+    self.vPickVehicle = root:Find("#obj_VehiclePickBar/#btn_PickVehicle"):GetComponent(typeof(Button))
     --- @type Button
-    self.vBattle = root:Find("#obj_VehiclePickBar/#btn_Battle"):GetComponent("Button")
+    self.vBattle = root:Find("#obj_VehiclePickBar/#btn_Battle"):GetComponent(typeof(Button))
     --- @type GameObject
     self.vUnuseMask = root:Find("#obj_VehiclePickBar/#btn_Battle/#obj_UnuseMask").gameObject
 end

@@ -30,8 +30,8 @@ function LuaModeSetting:OnStartMode()
 end
 
 function LuaModeSetting:InitUI(root)
-    self.confirmBtn = root:Find("LuaModeConfig/Bar/Title/ConfirmBtn"):GetComponent("Button")
-    self.multiTurretToggle = root:Find("LuaModeConfig/Bar/Content/EnableMultiTurret/Toggle"):GetComponent("Toggle")
+    self.confirmBtn = root:Find("LuaModeConfig/Bar/Title/ConfirmBtn"):GetComponent(typeof(Button))
+    self.multiTurretToggle = root:Find("LuaModeConfig/Bar/Content/EnableMultiTurret/Toggle"):GetComponent(typeof(Toggle))
 
     self.confirmBtn.onClick:AddListener(
         function()

@@ -55,7 +55,7 @@ function DIYMap:OnStartMode()
 end
 
 function DIYMap:onUtilCreated(root)
-    local settingBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/SettingBtn"):GetComponent("Button")
+    local settingBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/SettingBtn"):GetComponent(typeof(Button))
     local configTransform = root.transform:Find("DIYCreateMapCanvas/GizmoConfig")
     local rtPluginTransform = root.transform:Find("RT-Plugin")
 
@@ -69,58 +69,58 @@ function DIYMap:onUtilCreated(root)
 
     self.dragInfo = root.transform:Find("DIYCreateMapCanvas/DragInfo")
     self.configProp = root.transform:Find("DIYCreateMapCanvas/ConfigProp")
-    self.configComfirmBtn = self.configProp:Find("Title/ConfirmBtn"):GetComponent("Button")
-    self.configDeleteBtn = self.configProp:Find("Title/DeleteBtn"):GetComponent("Button")
+    self.configComfirmBtn = self.configProp:Find("Title/ConfirmBtn"):GetComponent(typeof(Button))
+    self.configDeleteBtn = self.configProp:Find("Title/DeleteBtn"):GetComponent(typeof(Button))
     self.configMethodTemplateGo = self.configProp:Find("Methods/MethodTemplate").gameObject
 
     self.configContent = self.configProp:Find("Content")
-    self.configPropEquipText = self.configContent:Find("BaseInfo/EquipName"):GetComponent("Text")
-    self.configPropEquipDescriptionText = self.configContent:Find("BaseInfo/EquipDescription"):GetComponent("Text")
-    self.configPropEquipImg = self.configContent:Find("BaseInfo/Icon"):GetComponent("Image")
-    self.configDuplicateBtn = self.configContent:Find("Main/DuplicateBtn"):GetComponent("Button")
-    self.configFocusBtn = self.configContent:Find("Main/FocusBtn"):GetComponent("Button")
-    self.configTransformBtn = self.configContent:Find("Main/TransformBtn"):GetComponent("Button")
-    self.configPropertyBtn = self.configContent:Find("Main/PropertyBtn"):GetComponent("Button")
+    self.configPropEquipText = self.configContent:Find("BaseInfo/EquipName"):GetComponent(typeof(Text))
+    self.configPropEquipDescriptionText = self.configContent:Find("BaseInfo/EquipDescription"):GetComponent(typeof(Text))
+    self.configPropEquipImg = self.configContent:Find("BaseInfo/Icon"):GetComponent(typeof(Image))
+    self.configDuplicateBtn = self.configContent:Find("Main/DuplicateBtn"):GetComponent(typeof(Button))
+    self.configFocusBtn = self.configContent:Find("Main/FocusBtn"):GetComponent(typeof(Button))
+    self.configTransformBtn = self.configContent:Find("Main/TransformBtn"):GetComponent(typeof(Button))
+    self.configPropertyBtn = self.configContent:Find("Main/PropertyBtn"):GetComponent(typeof(Button))
 
     --- @type RuntimeInspector
     self.runtimeInspector = self.configContent:Find("Property/RuntimeInspector"):GetComponent(typeof(RuntimeInspector))
     self.runtimeInspector:Awake() -- 预热
 
-    self.noneBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/NoneBtn"):GetComponent("Button")
-    self.moveBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/MoveBtn"):GetComponent("Button")
+    self.noneBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/NoneBtn"):GetComponent(typeof(Button))
+    self.moveBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/MoveBtn"):GetComponent(typeof(Button))
     self.rotateBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/RotateBtn"):GetComponent(
-        "Button")
-    self.scaleBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/ScaleBtn"):GetComponent("Button")
+        typeof(Button))
+    self.scaleBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/ScaleBtn"):GetComponent(typeof(Button))
     self.worldLocalBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/WorldLocalBtn"):GetComponent(
-        "Button")
+        typeof(Button))
     self.localWorldBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/LocalWorldBtn"):GetComponent(
-        "Button")
+        typeof(Button))
 
-    self.exitActionBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/ExitBtn"):GetComponent("Button")
-    self.importActionBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/ImportBtn"):GetComponent("Button")
-    self.saveActionBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/SaveBtn"):GetComponent("Button")
-    self.loadActionBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/LoadBtn"):GetComponent("Button")
+    self.exitActionBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/ExitBtn"):GetComponent(typeof(Button))
+    self.importActionBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/ImportBtn"):GetComponent(typeof(Button))
+    self.saveActionBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/SaveBtn"):GetComponent(typeof(Button))
+    self.loadActionBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/LoadBtn"):GetComponent(typeof(Button))
 
     self.fileSavePop = root.transform:Find("DIYCreateMapCanvas/FileSavePop")
-    self.fileNameInput = self.fileSavePop.transform:Find("FileNameInput"):GetComponent("InputField")
-    self.saveBtn = self.fileSavePop.transform:Find("SaveBtn"):GetComponent("Button")
-    self.fileLoadCloseBtn = root.transform:Find("DIYCreateMapCanvas/FileLoadPop/Title/CloseBtn"):GetComponent("Button")
-    self.loadShareBtn = self.fileLoadPop:Find("Title/LoadShareBtn"):GetComponent("Button")
+    self.fileNameInput = self.fileSavePop.transform:Find("FileNameInput"):GetComponent(typeof(InputField))
+    self.saveBtn = self.fileSavePop.transform:Find("SaveBtn"):GetComponent(typeof(Button))
+    self.fileLoadCloseBtn = root.transform:Find("DIYCreateMapCanvas/FileLoadPop/Title/CloseBtn"):GetComponent(typeof(Button))
+    self.loadShareBtn = self.fileLoadPop:Find("Title/LoadShareBtn"):GetComponent(typeof(Button))
 
     self.shareImportPop = root.transform:Find("DIYCreateMapCanvas/ShareImportPop")
-    self.shareImportCancelBtn = self.shareImportPop:GetComponent("Button")
-    self.shareCodeInput = self.shareImportPop:Find("ShareCodeInput"):GetComponent("InputField")
-    self.shareImportBtn = self.shareImportPop:Find("ImportBtn"):GetComponent("Button")
+    self.shareImportCancelBtn = self.shareImportPop:GetComponent(typeof(Button))
+    self.shareCodeInput = self.shareImportPop:Find("ShareCodeInput"):GetComponent(typeof(InputField))
+    self.shareImportBtn = self.shareImportPop:Find("ImportBtn"):GetComponent(typeof(Button))
 
     self.longPressTipGo = root.transform:Find("DIYCreateMapCanvas/LongPressTip").gameObject
-    self.tipFillImg = self.longPressTipGo.transform:Find("Fill"):GetComponent("Image")
+    self.tipFillImg = self.longPressTipGo.transform:Find("Fill"):GetComponent(typeof(Image))
 
     self.eventTrigger = root.transform:Find("DIYCreateMapCanvas/TouchBar"):GetComponent(typeof(EventTrigger))
     self.seasonDropdown = root.transform:Find("DIYCreateMapCanvas/FileSavePop/SeasonDropdown"):GetComponent("Dropdown")
 
     self.downloadMaskGo = root.transform:Find("DIYCreateMapCanvas/DownloadMask").gameObject
 
-    self.navBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/NavBtn"):GetComponent("Button")
+    self.navBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/NavBtn"):GetComponent(typeof(Button))
 
     self.handlerTransform = root.transform:Find("RT-Plugin/Handle").transform
 
@@ -169,7 +169,7 @@ function DIYMap:onUtilCreated(root)
         end
     )
 
-    self.configComfirmBtn:GetComponent("Button").onClick:AddListener(
+    self.configComfirmBtn:GetComponent(typeof(Button)).onClick:AddListener(
         function()
             self:closeConfig()
         end
@@ -210,12 +210,12 @@ function DIYMap:onUtilCreated(root)
         end
     )
 
-    -- self.exitBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/ExitBtn"):GetComponent("Button")
-    -- self.importBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/ImportBtn"):GetComponent("Button")
-    -- self.saveBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/SaveBtn"):GetComponent("Button")
-    -- self.loadBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/LoadBtn"):GetComponent("Button")
+    -- self.exitBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/ExitBtn"):GetComponent(typeof(Button))
+    -- self.importBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/ImportBtn"):GetComponent(typeof(Button))
+    -- self.saveBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/SaveBtn"):GetComponent(typeof(Button))
+    -- self.loadBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/LoadBtn"):GetComponent(typeof(Button))
 
-    self.fileSavePop:GetComponent("Button").onClick:AddListener(
+    self.fileSavePop:GetComponent(typeof(Button)).onClick:AddListener(
         function()
             self.fileSavePop.gameObject:SetActive(false)
         end
@@ -304,7 +304,7 @@ function DIYMap:onUtilCreated(root)
     ------------------------------------------------------
 
     ---------------------分享码--------------------------
-    local findBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/FindBtn"):GetComponent("Button")
+    local findBtn = root.transform:Find("DIYCreateMapCanvas/ToolAction/FindBtn"):GetComponent(typeof(Button))
     local shareCodeListGo = root.transform:Find("DIYCreateMapCanvas/DIYShareCodeListCanvas").gameObject
     self.shareCodeListController:Init(findBtn, shareCodeListGo)
     ------------------------------------------------------
@@ -510,8 +510,8 @@ function DIYMap:selectItemComponent(itemCompoent)
 
     for i = 0, reflectMethods.Length - 1 do
         local go = self.configMethodGoPool:InstantiateObject()
-        local txt = go.transform:Find("Text"):GetComponent("Text")
-        local btn = go.transform:GetComponent("Button")
+        local txt = go.transform:Find("Text"):GetComponent(typeof(Text))
+        local btn = go.transform:GetComponent(typeof(Button))
         txt.text = methodDisplayNames[i]
         btn.onClick:RemoveAllListeners()
         btn.onClick:AddListener(function()
