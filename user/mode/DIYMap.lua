@@ -86,11 +86,14 @@ function DIYMap:onUtilCreated(root)
     self.runtimeInspector = self.configContent:Find("Property/RuntimeInspector"):GetComponent(typeof(RuntimeInspector))
     self.runtimeInspector:Awake() -- 预热
 
-    self.noneBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/NoneBtn"):GetComponent(typeof(Button))
-    self.moveBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/MoveBtn"):GetComponent(typeof(Button))
+    self.noneBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/NoneBtn"):GetComponent(typeof(
+    Button))
+    self.moveBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/MoveBtn"):GetComponent(typeof(
+    Button))
     self.rotateBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/RotateBtn"):GetComponent(
         typeof(Button))
-    self.scaleBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/ScaleBtn"):GetComponent(typeof(Button))
+    self.scaleBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/ScaleBtn"):GetComponent(typeof(
+    Button))
     self.worldLocalBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/WorldLocalBtn"):GetComponent(
         typeof(Button))
     self.localWorldBtn = root.transform:Find("DIYCreateMapCanvas/ConfigProp/TransformHandle/LocalWorldBtn"):GetComponent(
@@ -104,7 +107,8 @@ function DIYMap:onUtilCreated(root)
     self.fileSavePop = root.transform:Find("DIYCreateMapCanvas/FileSavePop")
     self.fileNameInput = self.fileSavePop.transform:Find("FileNameInput"):GetComponent(typeof(InputField))
     self.saveBtn = self.fileSavePop.transform:Find("SaveBtn"):GetComponent(typeof(Button))
-    self.fileLoadCloseBtn = root.transform:Find("DIYCreateMapCanvas/FileLoadPop/Title/CloseBtn"):GetComponent(typeof(Button))
+    self.fileLoadCloseBtn = root.transform:Find("DIYCreateMapCanvas/FileLoadPop/Title/CloseBtn"):GetComponent(typeof(
+    Button))
     self.loadShareBtn = self.fileLoadPop:Find("Title/LoadShareBtn"):GetComponent(typeof(Button))
 
     self.shareImportPop = root.transform:Find("DIYCreateMapCanvas/ShareImportPop")
@@ -456,7 +460,7 @@ function DIYMap:OnMapInstallClicked(baseData)
     local ray = self.mainCamera:ScreenPointToRay(self.dragInfo.position)
     DIYMapCreateUtil.AutoPlaceItem(baseData.itemGUID, ray.origin, ray.direction)
 
-    local content = UIAPI.FormatString(UIAPI.GetLocalizedContent("PlaceItem", baseData.displayName:GetDisplayName()))
+    local content = UIAPI.FormatString(UIAPI.GetLocalizedContent("PlaceItem"), baseData.displayName:GetDisplayName())
     PopMessageManager.Instance:PushNotice(content, 1)
 end
 
