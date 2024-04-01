@@ -1,0 +1,17 @@
+{
+    "description": "载具扩展包",
+    "infos": [
+        {
+            "modNames": [
+                "BuildPipline-Vehicle-AAA-Extend"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/extend-vehicle"
+                }
+            ],
+            "isCleanDstFolder": true
+        }
+    ]
+}
