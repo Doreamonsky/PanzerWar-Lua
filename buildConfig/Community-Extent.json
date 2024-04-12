@@ -15,7 +15,20 @@
         },
         {
             "modNames": [
-                "BuildPipline-Vehicle-AAA-Extend"
+                "BuildPipline-Vehicle-AAA-Extend-2"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/extend-vehicle-2"
+                }
+            ],
+            "isCleanDstFolder": true
+        },
+        {
+            "modNames": [
+                "BuildPipline-Vehicle-AAA-Extend",
+                "BuildPipline-Vehicle-AAA-Extend-2"
             ],
             "copyInfo": [
                 {
