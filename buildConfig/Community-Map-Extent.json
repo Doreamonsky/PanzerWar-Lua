@@ -15,7 +15,20 @@
         },
         {
             "modNames": [
-                "BuildPipline-MapExtension"
+                "BuildPipline-Road-Pack"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/road-pack"
+                }
+            ],
+            "isCleanDstFolder": true
+        },
+        {
+            "modNames": [
+                "BuildPipline-MapExtension",
+                "BuildPipline-Road-Pack"
             ],
             "copyInfo": [
                 {
