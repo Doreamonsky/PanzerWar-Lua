@@ -94,37 +94,16 @@ function CameraController:update()
 
     -- PC 输入 (PC input)
     if not Application.isMobile then
-        -- 检查键盘输入 (Check for keyboard input)
-        if Input.GetKey(KeyCode.W) then
-            self:makeCameraTargetDelta(Vector3.forward, true)
-        end
+        self:makeCameraTargetDelta(
+            Vector3.forward * InputAPI.GetDefaultValueInput(eDefaultValueInputType.FreeCamForwardBackward), true)
+        self:makeCameraTargetDelta(
+            Vector3.right * InputAPI.GetDefaultValueInput(eDefaultValueInputType.FreeCamRightLeft), true)
+        self:makeCameraTargetDelta(
+            Vector3.up * InputAPI.GetDefaultValueInput(eDefaultValueInputType.FreeCamUpDown), false)
 
-        if Input.GetKey(KeyCode.A) then
-            self:makeCameraTargetDelta(Vector3.left, true)
-        end
-
-        if Input.GetKey(KeyCode.S) then
-            self:makeCameraTargetDelta(Vector3.back, true)
-        end
-
-        if Input.GetKey(KeyCode.D) then
-            self:makeCameraTargetDelta(Vector3.right, true)
-        end
-
-        if Input.GetKey(KeyCode.E) then
-            self:makeCameraTargetDelta(Vector3.up, false)
-        end
-
-        if Input.GetKey(KeyCode.Q) then
-            self:makeCameraTargetDelta(Vector3.down, false)
-        end
-
-        -- 检查 Shift 键 (Check for Shift key)
-        if Input.GetKeyDown(KeyCode.LeftShift) then
+        if InputAPI.IsDefaultPressed(eDefaultButtonInputType.LeftShift) then
             self.keyboardCameraMoveSpeed = 10
-        end
-
-        if Input.GetKeyUp(KeyCode.LeftShift) then
+        else
             self.keyboardCameraMoveSpeed = 5
         end
     end

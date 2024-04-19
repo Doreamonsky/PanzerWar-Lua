@@ -1,4 +1,3 @@
-UIEnum = CS.ShanghaiWindy.Core.UIEnum
 AbstractNetBattleGameMode = CS.Frontend.Runtime.Impl.GameImpl.Battle.AbstractNetBattleGameMode
 CaptureZoneNetGameMode = CS.Frontend.Runtime.Impl.GameImpl.Battle.Mode.CaptureZoneNetGameMode
 ReplayNetGameMode = CS.Frontend.Runtime.Impl.GameImpl.Battle.Mode.ReplayNetGameMode
@@ -25,7 +24,7 @@ EIconPosition = CS.ShanghaiWindy.Core.EIconPosition
 AbstractBattlePlayer = CS.ShanghaiWindy.Core.AbstractBattlePlayer
 TeamManager = CS.ShanghaiWindy.Core.TeamManager
 TankFire = CS.ShanghaiWindy.Core.TankFire
-TankInitSystem = CS.ShanghaiWindy.Core.TankInitSystem
+VehicleInitSystem = CS.ShanghaiWindy.Core.VehicleInitSystem
 TankVehicleComponents = CS.ShanghaiWindy.Core.TankVehicleComponents
 TurretController = CS.ShanghaiWindy.Core.TurretController
 UIPoolComponent = CS.ShanghaiWindy.Core.UIPoolComponent
@@ -88,6 +87,8 @@ FontAPI = CS.ShanghaiWindy.Core.API.FontAPI
 GameAPI = CS.ShanghaiWindy.Core.API.GameAPI
 --- @class ShanghaiWindy.Core.API.GameObjectAPI
 GameObjectAPI = CS.ShanghaiWindy.Core.API.GameObjectAPI
+eDefaultValueInputType = CS.ShanghaiWindy.Core.API.eDefaultValueInputType
+eDefaultButtonInputType = CS.ShanghaiWindy.Core.API.eDefaultButtonInputType
 --- @class ShanghaiWindy.Core.API.InputAPI
 InputAPI = CS.ShanghaiWindy.Core.API.InputAPI
 --- @class ShanghaiWindy.Core.API.MapAPI
@@ -122,3 +123,5 @@ TransformAPI = CS.ShanghaiWindy.Core.API.TransformAPI
 UIAPI = CS.ShanghaiWindy.Core.API.UIAPI
 --- @class ShanghaiWindy.Core.API.VehicleAPI
 VehicleAPI = CS.ShanghaiWindy.Core.API.VehicleAPI
+IControllableVehicle = CS.ShanghaiWindy.Core.IControllableVehicle
+UIEnum = CS.ShanghaiWindy.Core.UIEnum

@@ -1,8 +1,3 @@
----@class ShanghaiWindy.Core.UIEnum
-local UIEnum = {}
-
-return UIEnum
-
 ---@class Frontend.Runtime.Impl.GameImpl.Battle.AbstractNetBattleGameMode
 local AbstractNetBattleGameMode = {}
 
@@ -525,7 +520,8 @@ return TankFire
 
 ---坦克初始化系统
 ---Tank Initialization System
----@class ShanghaiWindy.Core.TankInitSystem
+---@class ShanghaiWindy.Core.VehicleInitSystem
+---@field groundType ShanghaiWindy.Core.eGroundControlType @载具类型
 ---@field InstanceMesh UnityEngine.GameObject @实例网格             Instance Mesh
 ---@field vehicleTextData ShanghaiWindy.Core.VehicleTextData @车辆文本数据             Vehicle Text Data
 ---@field referenceManager ShanghaiWindy.Core.VehicleComponentsReferenceManager @车辆组件引用管理器             Vehicle Components Reference Manager
@@ -548,14 +544,14 @@ return TankFire
 ---@field OwnerTeam ShanghaiWindy.Core.TeamManager+Team
 ---@field IsDestroyed System.Boolean
 ---@field IsLoaded System.Boolean
-local TankInitSystem = {}
+local VehicleInitSystem = {}
 
-return TankInitSystem
+return VehicleInitSystem
 
 ---车辆组件
 ---Vehicle Components
 ---@class ShanghaiWindy.Core.TankVehicleComponents
----@field vehicleInputController ShanghaiWindy.Core.VehicleInputController @车辆输入控制器             Vehicle Input Controller
+---@field vehicleInputController ShanghaiWindy.Core.BaseVehicleInputController @车辆输入控制器             Vehicle Input Controller
 ---@field tankTracksController ShanghaiWindy.Core.TankTracksController @坦克履带控制器             Tank Track Controller
 ---@field playerCamera ShanghaiWindy.Core.GroundCameraController @玩家相机控制器             Player Camera Controller
 ---@field mainCamera UnityEngine.Camera @主相机             Main Camera
@@ -565,8 +561,8 @@ return TankInitSystem
 ---@field selfExplosionList System.Collections.Generic.List`1[ShanghaiWindy.Core.VehicleSelfExplosionFireSystem] @自爆火力系统列表             Vehicle Self-Explosion Fire System List
 ---@field turretControllerList System.Collections.Generic.List`1[ShanghaiWindy.Core.TurretController] @炮塔控制器列表             Turret Controller List
 ---@field identity ShanghaiWindy.Core.Identity @身份信息             Identity
----@field tankState ShanghaiWindy.Core.TankState @坦克状态             Tank State
----@field playerState ShanghaiWindy.Core.TankPlayerState @坦克玩家状态             Tank Player State
+---@field baseVehicleState ShanghaiWindy.Core.BaseVehicleState @坦克状态             Tank State
+---@field playerState ShanghaiWindy.Core.VehiclePlayerState @坦克玩家状态             Tank Player State
 ---@field basePlayerState ShanghaiWindy.Core.BasePlayerState @基本玩家状态             Base Player State
 ---@field damageStickManager ShanghaiWindy.Core.VehicleDamageStickManager @车辆伤害棒管理器             Vehicle Damage Stick Manager
 ---@field HitBoxes System.Collections.Generic.List`1[ShanghaiWindy.Core.HitBox] @碰撞箱列表             Hit Box List
@@ -757,8 +753,8 @@ local LuaBehaviorMono = {}
 ---@instance
 ---@function [LuaBehaviorMono:TryGetTankInitSystem]
 ---@return System.Boolean
----@param tankInitSystem ShanghaiWindy.Core.TankInitSystem&
-function LuaBehaviorMono:TryGetTankInitSystem(tankInitSystem) end
+---@param vehicleInitSystem ShanghaiWindy.Core.VehicleInitSystem&
+function LuaBehaviorMono:TryGetTankInitSystem(vehicleInitSystem) end
 ---@instance
 ---@function [LuaBehaviorMono:TryGetFlightInitSystem]
 ---@return System.Boolean
@@ -1013,8 +1009,8 @@ function BuffAPI.RemoveBuff(vehicle, buffCaster, isInterrupt) end
 ---@function [BuffAPI.TryGetBuffReceiverAsTank]
 ---@return System.Boolean
 ---@param buffReceiver ShanghaiWindy.Core.IBuffReceiver
----@param tankInitSystem ShanghaiWindy.Core.TankInitSystem&
-function BuffAPI.TryGetBuffReceiverAsTank(buffReceiver, tankInitSystem) end
+---@param vehicleInitSystem ShanghaiWindy.Core.VehicleInitSystem&
+function BuffAPI.TryGetBuffReceiverAsTank(buffReceiver, vehicleInitSystem) end
 ---@static
 ---@function [BuffAPI.TryGetBuffReceiverAsFlight]
 ---@return System.Boolean
@@ -1448,6 +1444,20 @@ function GameObjectAPI.SetActive(go, isActive) end
 function GameObjectAPI.SetVisible(go, isVisible) end
 return GameObjectAPI
 
+---默认值输入
+---Default value input
+---@class ShanghaiWindy.Core.API.eDefaultValueInputType
+local eDefaultValueInputType = {}
+
+return eDefaultValueInputType
+
+---默认按键输入
+---Default button input
+---@class ShanghaiWindy.Core.API.eDefaultButtonInputType
+local eDefaultButtonInputType = {}
+
+return eDefaultButtonInputType
+
 ---输入处理 API
 ---Input Handler API
 ---@class ShanghaiWindy.Core.API.InputAPI
@@ -1492,6 +1502,16 @@ function InputAPI.UnregisterRemoveKeyInput(onKeyUnregistered) end
 ---@function [InputAPI.GetBindings]
 ---@return System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[ShanghaiWindy.Core.API.InputAPICache, Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
 function InputAPI.GetBindings() end
+---@static
+---@function [InputAPI.GetDefaultValueInput]
+---@return System.Single
+---@param inputType ShanghaiWindy.Core.API.eDefaultValueInputType
+function InputAPI.GetDefaultValueInput(inputType) end
+---@static
+---@function [InputAPI.IsDefaultPressed]
+---@return System.Boolean
+---@param inputType ShanghaiWindy.Core.API.eDefaultButtonInputType
+function InputAPI.IsDefaultPressed(inputType) end
 return InputAPI
 
 ---Map api
@@ -1934,7 +1954,7 @@ local TankAPI = {}
 ---@static
 ---@function [TankAPI.GetTankFireList]
 ---@return System.Collections.Generic.List`1[[ShanghaiWindy.Core.TankFire, Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]] 坦克火力系统列表 List of tank fire systems
----@param vehicle ShanghaiWindy.Core.TankInitSystem
+---@param vehicle ShanghaiWindy.Core.VehicleInitSystem
 function TankAPI.GetTankFireList(vehicle) end
 return TankAPI
 
@@ -2202,8 +2222,8 @@ function VehicleAPI.TryGetBaseInitSystemFromGameObject(gameObject, baseInitSyste
 ---@function [VehicleAPI.TryGetTankInitSystemFromGameObject]
 ---@return System.Boolean
 ---@param gameObject UnityEngine.GameObject
----@param tankInitSystem ShanghaiWindy.Core.TankInitSystem&
-function VehicleAPI.TryGetTankInitSystemFromGameObject(gameObject, tankInitSystem) end
+---@param vehicleInitSystem ShanghaiWindy.Core.VehicleInitSystem&
+function VehicleAPI.TryGetTankInitSystemFromGameObject(gameObject, vehicleInitSystem) end
 ---@static
 ---@function [VehicleAPI.TryGetFlightInitSystemFromGameObject]
 ---@return System.Boolean
@@ -2267,4 +2287,14 @@ function VehicleAPI.GetFilteredBotVehicles(minRank, maxRank, allowArtillery, veh
 ---@param callback ShanghaiWindy.Core.Delegate.OnVehicleThumbnailLoadedDelegate
 function VehicleAPI.LoadVehicleThumbnail(vehicleInfo, callback) end
 return VehicleAPI
+
+---@class ShanghaiWindy.Core.IControllableVehicle
+local IControllableVehicle = {}
+
+return IControllableVehicle
+
+---@class ShanghaiWindy.Core.UIEnum
+local UIEnum = {}
+
+return UIEnum
 
