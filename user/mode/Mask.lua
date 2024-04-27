@@ -4,7 +4,7 @@ GameMode()
 
 function Mask:ctor()
     self.modName = "反光贴图全局管理模式"
-    self.author = "超级哆啦酱"
+    self.author = "WindyVerse Pte. Ltd."
     self.description = "管理反光"
 end
 

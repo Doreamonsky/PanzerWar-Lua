@@ -9,7 +9,7 @@ GameMode()
 
 function DIYMap:ctor()
     self.modName = "DIYMap"
-    self.author = "超级哆啦酱"
+    self.author = "WindyVerse Pte. Ltd."
     self.description = "创建自定义地图"
     self.isDefinitiveOnly = true
 end

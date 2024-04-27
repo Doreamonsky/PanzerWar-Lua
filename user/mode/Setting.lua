@@ -4,7 +4,7 @@ GameMode()
 
 function LuaModeSetting:ctor()
     self.modName = "Lua 设置"
-    self.author = "超级哆啦酱"
+    self.author = "WindyVerse Pte. Ltd."
     self.description = "Lua 设置"
 end
 

@@ -48,9 +48,11 @@ function M:GetConfigStorage()
 
     self.friendMinRank = math.min(self.friendMinRank, self.friendMaxRank)
     self.friendMaxRank = math.max(self.friendMinRank, self.friendMaxRank)
-   
+
     self.enemyMinRank = math.min(self.enemyMinRank, self.enemyMaxRank)
     self.enemyMaxRank = math.max(self.enemyMinRank, self.enemyMaxRank)
+
+    self.isInfinite = StorageAPI.GetStringValue(STORARAGE_DEFINE, "IsInfinite", ENUM_TOGGLE[1])
 end
 
 function M:SetConfigStorage()
@@ -73,6 +75,7 @@ function M:SetConfigStorage()
     StorageAPI.SetNumberValue(STORARAGE_DEFINE, "FriendScoreToEnd", self.friendScoreToEnd)
     StorageAPI.SetNumberValue(STORARAGE_DEFINE, "EnemyScoreToEnd", self.enemyScoreToEnd)
 
+    StorageAPI.SetStringValue(STORARAGE_DEFINE, "IsInfinite", self.isInfinite)
     StorageAPI.SaveStorage()
 end
 
@@ -188,6 +191,10 @@ function M:RefreshOptions()
         self.enemyScoreToEnd = res
     end)
 
+    CustomOptionUIAPI.AddOption("Infinite", self.isInfinite, ENUM_TOGGLE, function(res)
+        self.isInfinite = res
+    end)
+
     CustomOptionUIAPI.AddButton("HostBP", ">", function()
         BanPick.ShowBanPick()
     end)
@@ -242,7 +249,8 @@ function M:OnConfirmInfo()
 end
 
 function M:GetBotVehicleList(minRank, maxRank, vehicleType)
-    local vehicleList = VehicleAPI.GetFilteredBotVehicles(minRank, maxRank, self.isArtillery == ENUM_TOGGLE[2], vehicleType)
+    local vehicleList = VehicleAPI.GetFilteredBotVehicles(minRank, maxRank, self.isArtillery == ENUM_TOGGLE[2],
+        vehicleType)
     return vehicleList
 end
 
@@ -343,6 +351,10 @@ end
 
 function M:UpdateScore()
     ModeAPI.UpdateScore(self.friendTeamScore, self.enemyTeamScore, self.friendScoreToEnd, self.enemyScoreToEnd)
+
+    if self.isInfinite == ENUM_TOGGLE[2] then
+        return
+    end
 
     if self.enemyTeamScore >= self.enemyScoreToEnd or self.friendTeamScore >= self.friendScoreToEnd then
         local isVictory = self.friendTeamScore >= self.friendScoreToEnd

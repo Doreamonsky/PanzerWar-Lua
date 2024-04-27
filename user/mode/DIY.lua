@@ -17,7 +17,7 @@ GameMode()
 
 function DIY:ctor()
     self.modName = "DIY"
-    self.author = "超级哆啦酱"
+    self.author = "WindyVerse Pte. Ltd."
     self.description = "创建自定义坦克"
     self.isDefinitiveOnly = true
 end

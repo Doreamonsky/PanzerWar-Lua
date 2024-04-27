@@ -4,7 +4,7 @@ GameMode()
 
 function FreeCameraMode:ctor()
     self.modName = "自由摄像机"
-    self.author = "超级哆啦酱"
+    self.author = "WindyVerse Pte. Ltd."
     self.description = "自由摄像机"
 end
 
