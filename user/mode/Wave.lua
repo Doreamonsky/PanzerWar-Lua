@@ -9,7 +9,7 @@ local M = Wave
 
 function M:ctor()
     self.modName = "Wave"
-    self.author = "官方"
+    self.author = "WindyVerse Pte. Ltd."
     self.description = "防守战"
     self.isDefinitiveOnly = true
 end

@@ -14,7 +14,7 @@ end
 function M:InitModeMeta()
     -- Mod Ctor
     self.modName = "TotalWar"
-    self.author = "官方"
+    self.author = "WindyVerse Pte. Ltd."
     self.description = "双方空陆不间断冲突。"
 end
 

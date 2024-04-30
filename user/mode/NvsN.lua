@@ -11,7 +11,7 @@ local M = NvsN
 
 function M:ctor()
     self.modName = "NvsN"
-    self.author = "官方"
+    self.author = "WindyVerse Pte. Ltd."
     self.description = "N 人对 N 人"
 end
 

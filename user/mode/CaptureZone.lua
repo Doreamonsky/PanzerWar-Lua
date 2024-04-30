@@ -17,7 +17,7 @@ local M = CaptureZone
 
 function M:ctor()
     self.modName = "CaptureZone"
-    self.author = "官方"
+    self.author = "WindyVerse Pte. Ltd."
     self.description = "占领区域"
 end
 

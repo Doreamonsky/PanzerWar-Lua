@@ -9,7 +9,7 @@ local M = PlayField
 
 function M:ctor()
     self.modName = "PlayField"
-    self.author = "官方"
+    self.author = "WindyVerse Pte. Ltd."
     self.description = "生成坦克，并单挑"
 end
 
