@@ -24,7 +24,7 @@
             "copyInfo": [
                 {
                     "platform":"iOS",
-                    "dstDir":"/Users/shanghaiwindy/Projects/LuaProject/resources/ios/default/extend-vehicle"
+                    "dstDir":"/Users/shanghaiwindy/Projects/Free-LuaProject/resources/ios/default/extend-vehicle"
                 }
             ],
             "isCleanDstFolder": true
@@ -36,7 +36,7 @@
             "copyInfo": [
                 {
                     "platform":"iOS",
-                    "dstDir":"/Users/shanghaiwindy/Projects/LuaProject/resources/ios/default/extend-vehicle-2"
+                    "dstDir":"/Users/shanghaiwindy/Projects/Free-LuaProject/resources/ios/default/extend-vehicle-2"
                 }
             ],
             "isCleanDstFolder": true
