@@ -16,6 +16,30 @@
                 }
             ],
             "isCleanDstFolder": true
+        },
+        {
+            "modNames": [
+                "BuildPipline-Vehicle-AAA-Extend"
+            ],
+            "copyInfo": [
+                {
+                    "platform":"iOS",
+                    "dstDir":"/Users/shanghaiwindy/Projects/Free-LuaProject/resources/ios/default/extend-vehicle"
+                }
+            ],
+            "isCleanDstFolder": true
+        },
+        {
+            "modNames": [
+                "BuildPipline-Vehicle-AAA-Extend-2"
+            ],
+            "copyInfo": [
+                {
+                    "platform":"iOS",
+                    "dstDir":"/Users/shanghaiwindy/Projects/Free-LuaProject/resources/ios/default/extend-vehicle-2"
+                }
+            ],
+            "isCleanDstFolder": true
         }
     ]
 }
