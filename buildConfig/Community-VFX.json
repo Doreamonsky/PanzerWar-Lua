@@ -1,25 +1,22 @@
 {
-    "description": "决定版内置载具与工坊配件",
+    "description": "特效包",
     "infos": [
         {
             "modNames": [
-                "BuildPipline-Community-DE"
+                "BuildPipline-VFX-AdvancedEdition"
             ],
             "copyInfo": [
                 {
                     "platform": "Android",
-                    "dstDir": "D:/Projects/LuaProject/resources/android/default/diy"
+                    "dstDir": "D:/Projects/ExportPackages"
                 },
                 {
                     "platform": "StandaloneWindows64",
-                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/diy"
-                },
-                {
-                    "platform": "iOS",
-                    "dstDir": "/Users/shanghaiwindy/Projects/LuaProject/resources/ios/default/diy"
+                    "dstDir": "D:/Projects/ExportPackages"
                 }
             ],
-            "isCleanDstFolder": true
+            "isCleanDstFolder": false,
+            "isPackage": true
         }
     ]
 }
