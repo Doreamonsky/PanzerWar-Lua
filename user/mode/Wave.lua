@@ -147,7 +147,7 @@ function M:GenerateAttackInfo(attackInfos, botTeam)
             self.uid = self.uid + 1
 
             ---@type ShanghaiWindy.Core.AbstractBattlePlayer
-            local botPlayer = BattlePlayerAPI.CreateOfflineBotPlayer(self.uid, "DarkPaiMen", {})
+            local botPlayer = BattlePlayerAPI.CreateOfflineBotPlayer(self.uid, BattlePlayerAPI.GetRandomBotName(), {})
             botPlayer.BotTeam = botTeam
 
             ModeAPI.AddBattlePlayer(botPlayer)

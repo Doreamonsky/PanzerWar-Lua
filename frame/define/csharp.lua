@@ -303,7 +303,7 @@ return MaterialConfig
 ---@field isGodMode ShanghaiWindy.Core.PropValue`1[System.Boolean] @是否开启上帝模式，若为 true，则角色无敌。             If God Mode is enabled (true), the character is invincible.
 ---@field lastBeHitPosition UnityEngine.Vector3 @上次受到伤害的位置。             The position where the character was last hit.
 ---@field totalDamage ShanghaiWindy.Core.PropValue`1[System.Int32] @角色总共造成的伤害。             The total damage the character has caused.
----@field totalDesytroyed ShanghaiWindy.Core.PropValue`1[System.Int32] @角色总共摧毁的物体数量。             The total number of objects the character has destroyed.
+---@field totalDestroyed ShanghaiWindy.Core.PropValue`1[System.Int32] @角色总共摧毁的物体数量。             The total number of objects the character has destroyed.
 ---@field totalBlockDamage ShanghaiWindy.Core.PropValue`1[System.Int32] @角色总共阻挡的伤害。             The total damage the character has blocked.
 ---@field DamageResistanceBuffedCoff ShanghaiWindy.Core.BuffProperty @伤害阻挡 Buff             Damage resistance buff
 ---@field OnDamaged UnityEngine.Events.UnityEvent`2[System.Int32,UnityEngine.Vector3]
@@ -373,7 +373,7 @@ return BaseFireSystem
 ---基本初始化系统类，用于游戏任何载具的基本初始化。该类实现了 IDynamicDataPatchable 接口和 IIndex 接口。
 ---The BaseInitSystem class is used for basic initialization of any vehicle. This class implements the IDynamicDataPatchable and IIndex interfaces.
 ---@class ShanghaiWindy.Core.BaseInitSystem
----@field basePlayerState ShanghaiWindy.Core.BasePlayerState @基础玩家状态类，用于处理玩家状态的改变，如受到伤害、击中反弹等事件。             Base player state class for handling changes in player states such as taking damage, ricocheting hits, etc.
+---@field basePawn ShanghaiWindy.Core.BasePawn @基础玩家状态类，用于处理玩家状态的改变，如受到伤害、击中反弹等事件。             Base player state class for handling changes in player states such as taking damage, ricocheting hits, etc.
 ---@field equipmentBuffDataList System.Collections.Generic.List`1[ShanghaiWindy.Core.EquipmentBuffData] @装备 Buff 数据列表             Equipment Buff Data List
 ---@field OnVehicleLoaded UnityEngine.Events.UnityEvent
 ---@field OnVehiclePreLoaded UnityEngine.Events.UnityEvent
@@ -389,7 +389,7 @@ return BaseInitSystem
 
 ---基础玩家状态类，用于处理玩家状态的改变，如受到伤害、击中反弹等事件。
 ---Base player state class for handling changes in player states such as taking damage, ricocheting hits, etc.
----@class ShanghaiWindy.Core.BasePlayerState
+---@class ShanghaiWindy.Core.BasePawn
 ---@field vehicleName System.String @车辆名称。             Vehicle name.
 ---@field hp ShanghaiWindy.Core.PropValue`1[System.Int32] @玩家的生命值属性。             Player's health points property.
 ---@field defaultHP System.Int32 @默认生命值，用于初始化角色的生命值。Default Hit Points (HP) used for initializing the character's health.
@@ -397,7 +397,7 @@ return BaseInitSystem
 ---@field isGodMode ShanghaiWindy.Core.PropValue`1[System.Boolean] @是否开启上帝模式，若为 true，则角色无敌。             If God Mode is enabled (true), the character is invincible.
 ---@field lastBeHitPosition UnityEngine.Vector3 @上次受到伤害的位置。             The position where the character was last hit.
 ---@field totalDamage ShanghaiWindy.Core.PropValue`1[System.Int32] @角色总共造成的伤害。             The total damage the character has caused.
----@field totalDesytroyed ShanghaiWindy.Core.PropValue`1[System.Int32] @角色总共摧毁的物体数量。             The total number of objects the character has destroyed.
+---@field totalDestroyed ShanghaiWindy.Core.PropValue`1[System.Int32] @角色总共摧毁的物体数量。             The total number of objects the character has destroyed.
 ---@field totalBlockDamage ShanghaiWindy.Core.PropValue`1[System.Int32] @角色总共阻挡的伤害。             The total damage the character has blocked.
 ---@field DamageResistanceBuffedCoff ShanghaiWindy.Core.BuffProperty @伤害阻挡 Buff             Damage resistance buff
 ---@field OnDamaged UnityEngine.Events.UnityEvent`2[System.Int32,UnityEngine.Vector3]
@@ -406,9 +406,9 @@ return BaseInitSystem
 ---@field isDestroyed System.Boolean
 ---@field ViewRangeBuffedCoff ShanghaiWindy.Core.BuffProperty
 ---@field RepairSpeedBuffedCoff ShanghaiWindy.Core.BuffProperty
-local BasePlayerState = {}
+local BasePawn = {}
 
-return BasePlayerState
+return BasePawn
 
 ---@class ShanghaiWindy.Core.ECaptureStage
 local ECaptureStage = {}
@@ -505,7 +505,6 @@ return TeamManager
 ---@field attachedRigidbody UnityEngine.Rigidbody @附加刚体             Attached Rigidbody
 ---@field currentBulletId System.Int32 @当前炮弹 ID             Current Bullet ID
 ---@field isAutoCaclulateGravity System.Boolean @是否自动计算重力             Is Auto Calculate Gravity
----@field netType ShanghaiWindy.Core.InstanceNetType @网络类型             Instance Net Type
 ---@field isExtraTurret System.Boolean @是否为额外炮塔             Is Extra Turret
 ---@field canControl System.Boolean @是否可控制             Can Control
 ---@field useGravity System.Boolean @使用重力             Use Gravity
@@ -530,7 +529,7 @@ return TankFire
 ---@field thinkLogic ShanghaiWindy.Core.BotLogic @机器人逻辑             Bot Logic
 ---@field vehicleInfo ShanghaiWindy.Core.VehicleInfo @车辆信息             Vehicle Information
 ---@field vehicleRemoveManagerModule ShanghaiWindy.Core.VehicleRemoveManagerModule @车辆移除管理模块             Vehicle Remove Manager Module
----@field basePlayerState ShanghaiWindy.Core.BasePlayerState @基础玩家状态类，用于处理玩家状态的改变，如受到伤害、击中反弹等事件。             Base player state class for handling changes in player states such as taking damage, ricocheting hits, etc.
+---@field basePawn ShanghaiWindy.Core.BasePawn @基础玩家状态类，用于处理玩家状态的改变，如受到伤害、击中反弹等事件。             Base player state class for handling changes in player states such as taking damage, ricocheting hits, etc.
 ---@field equipmentBuffDataList System.Collections.Generic.List`1[ShanghaiWindy.Core.EquipmentBuffData] @装备 Buff 数据列表             Equipment Buff Data List
 ---@field CurEngineParam ShanghaiWindy.Core.PlayerTankControllerParameter
 ---@field CurMainTankFireParam ShanghaiWindy.Core.TankFireParameter
@@ -561,9 +560,9 @@ return VehicleInitSystem
 ---@field selfExplosionList System.Collections.Generic.List`1[ShanghaiWindy.Core.VehicleSelfExplosionFireSystem] @自爆火力系统列表             Vehicle Self-Explosion Fire System List
 ---@field turretControllerList System.Collections.Generic.List`1[ShanghaiWindy.Core.TurretController] @炮塔控制器列表             Turret Controller List
 ---@field identity ShanghaiWindy.Core.Identity @身份信息             Identity
----@field baseVehicleState ShanghaiWindy.Core.BaseVehicleState @坦克状态             Tank State
----@field playerState ShanghaiWindy.Core.VehiclePlayerState @坦克玩家状态             Tank Player State
----@field basePlayerState ShanghaiWindy.Core.BasePlayerState @基本玩家状态             Base Player State
+---@field baseVehiclePawn ShanghaiWindy.Core.BaseVehiclePawn @坦克状态             Tank State
+---@field battleVehiclePawn ShanghaiWindy.Core.BattleVehiclePawn
+---@field basePawn ShanghaiWindy.Core.BasePawn @基本玩家状态             Base Player State
 ---@field damageStickManager ShanghaiWindy.Core.VehicleDamageStickManager @车辆伤害棒管理器             Vehicle Damage Stick Manager
 ---@field HitBoxes System.Collections.Generic.List`1[ShanghaiWindy.Core.HitBox] @碰撞箱列表             Hit Box List
 ---@field rigidbody UnityEngine.Rigidbody @刚体组件             Rigidbody Component
@@ -571,9 +570,9 @@ return VehicleInitSystem
 ---@field renderers UnityEngine.Renderer[] @渲染器数组             Renderer Array
 ---@field mainBodyVisiblity ShanghaiWindy.Core.MainBodyVisibity @主体可见性             Main Body Visibility
 ---@field mainBodyTransform UnityEngine.Transform @主体变换组件             Main Body Transform Component
----@field fireAssistComponent ShanghaiWindy.Core.FireAssistComponet @火力辅助组件             Fire Assist Component
+---@field fireAssistComponent ShanghaiWindy.Core.FireAssistComponent @火力辅助组件             Fire Assist Component
 ---@field fireLockComponent ShanghaiWindy.Core.FireLockComponent @火力锁定组件             Fire Lock Component
----@field tracksControllers System.Collections.Generic.List`1[ShanghaiWindy.Core.TracksController] @履带控制器列表             Tracks Controller List
+---@field tracksControllers System.Collections.Generic.List`1[ShanghaiWindy.Core.SplineTrackController] @履带控制器列表             Tracks Controller List
 ---@field tankFireFireGroupManager ShanghaiWindy.Core.TankFireFireGroupManager @坦克火力分组管理器             Tank Fire Group Manager
 ---@field mainTankFire ShanghaiWindy.Core.TankFire
 ---@field mainTurretController ShanghaiWindy.Core.TurretController
@@ -959,13 +958,20 @@ local BattlePlayerAPI = {}
 ---@param nickName System.String
 ---@param info System.Object
 function BattlePlayerAPI.CreateOfflineBotPlayer(uid, nickName, info) end
----创建
+---创建离线主角
+---Create main player bot
 ---@static
 ---@function [BattlePlayerAPI.CreateOfflineMainPlayer]
 ---@return ShanghaiWindy.Core.OfflineMainBattlePlayer
 ---@param uid System.Int32
 ---@param info System.Object
 function BattlePlayerAPI.CreateOfflineMainPlayer(uid, info) end
+---获取离线完成名称
+---Get random bot name
+---@static
+---@function [BattlePlayerAPI.GetRandomBotName]
+---@return System.String
+function BattlePlayerAPI.GetRandomBotName() end
 return BattlePlayerAPI
 
 ---@class ShanghaiWindy.Core.API.BotAPI

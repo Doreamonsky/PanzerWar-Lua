@@ -174,7 +174,7 @@ function M:CreateBotPlayerList(num, team)
     local list = {}
 
     for i = 1, num do
-        local bot = BattlePlayerAPI.CreateOfflineBotPlayer(self.index, "DarkPaiMen", nil)
+        local bot = BattlePlayerAPI.CreateOfflineBotPlayer(self.index, BattlePlayerAPI.GetRandomBotName(), nil)
         bot.BotTeam = team
 
         ModeAPI.AddBattlePlayer(bot)
