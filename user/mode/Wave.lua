@@ -237,5 +237,4 @@ function M:IsProxyBattle()
     return false
 end
 
-
 return M

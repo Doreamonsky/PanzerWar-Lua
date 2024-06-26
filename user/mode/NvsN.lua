@@ -67,15 +67,16 @@ function M:GetConfigStorage()
 
     self.friendTankNum = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "FriendTankNum", 5)
     self.enemyTankNum = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "EnemyTankNum", 5)
+    self.lowerRankRange = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "LowerRankRange", 2)
+    self.upperRankRange = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "UpperRankRange", 2)
 end
 
 function M:SetConfigStorage()
     StorageAPI.SetStringValue(STORARAGE_DEFINE, "Team", self.team)
-
     StorageAPI.SetNumberValue(STORARAGE_DEFINE, "FriendTankNum", self.friendTankNum)
     StorageAPI.SetNumberValue(STORARAGE_DEFINE, "EnemyTankNum", self.enemyTankNum)
-
-
+    StorageAPI.SetNumberValue(STORARAGE_DEFINE, "LowerRankRange", self.lowerRankRange)
+    StorageAPI.SetNumberValue(STORARAGE_DEFINE, "UpperRankRange", self.upperRankRange)
     StorageAPI.SaveStorage()
 end
 
@@ -96,12 +97,21 @@ function M:RefreshOptions()
     end)
 
     CustomOptionUIAPI.AddTitle("Number")
+
     CustomOptionUIAPI.AddSlider("FriendTankNum", self.friendTankNum, 1, 20, true, function(res)
         self.friendTankNum = res
     end)
 
     CustomOptionUIAPI.AddSlider("EnemyTankNum", self.enemyTankNum, 1, 20, true, function(res)
         self.enemyTankNum = res
+    end)
+
+    CustomOptionUIAPI.AddSlider("LowerRankRange", self.lowerRankRange, 0, 5, true, function(res)
+        self.lowerRankRange = res
+    end)
+
+    CustomOptionUIAPI.AddSlider("UpperRankRange", self.upperRankRange, 0, 5, true, function(res)
+        self.upperRankRange = res
     end)
 
     CustomOptionUIAPI.AddButton("HostBP", ">", function()
@@ -151,8 +161,16 @@ function M:OnPickMainPlayerVehicle(evtData)
         self.mainBattlePlayer:CreateVehicle(vehicleInfo, trans.position, trans.rotation)
     end)
 
-    local minRankPattern = { playerRank - 2, playerRank - 1, playerRank }
-    local maxRankPattern = { playerRank, playerRank + 1, playerRank + 2 }
+    local minRankPattern = {}
+    local maxRankPattern = {}
+
+    for i = 0, self.lowerRankRange do
+        table.insert(minRankPattern, playerRank - i)
+    end
+
+    for i = 0, self.upperRankRange do
+        table.insert(maxRankPattern, playerRank + i)
+    end
 
     local minRank = self:GetRandomPattern(minRankPattern)
     local maxRank = self:GetRandomPattern(maxRankPattern)
@@ -220,7 +238,8 @@ function M:CreateVehiclesFromRanks(team, playerRank, ranks)
         for i = 1, number do
             if rankVehicleMap[rank].Count ~= 0 then
                 ---@type ShanghaiWindy.Core.AbstractBattlePlayer
-                local botPlayer = BattlePlayerAPI.CreateOfflineBotPlayer(self.index, BattlePlayerAPI.GetRandomBotName(), {})
+                local botPlayer = BattlePlayerAPI.CreateOfflineBotPlayer(self.index, BattlePlayerAPI.GetRandomBotName(),
+                    {})
                 botPlayer.BotTeam = team
                 botPlayer.IsKeepWreckage = true
 
