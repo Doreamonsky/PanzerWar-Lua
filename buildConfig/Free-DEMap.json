@@ -16,6 +16,18 @@
                 }
             ],
             "isCleanDstFolder": true
+        },
+        {
+            "modNames": [
+                "BuildPipline-MapExtension"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/Free-LuaProject/resources/ios/default/extend-map"
+                }
+            ],
+            "isCleanDstFolder": true
         }
     ]
 }
