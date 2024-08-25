@@ -3,7 +3,6 @@ local Mode = require("frame.game.mode")
 ---@class CaptureZone : Mode
 local CaptureZone = class("CaptureZone", Mode)
 
-
 ---@class SpawnQueue
 ---@field player ShanghaiWindy.Core.AbstractBattlePlayer 玩家
 ---@field killTime number 被击杀时间
@@ -103,7 +102,6 @@ function M:RefreshOptions()
         end
     end
 
-
     CustomOptionUIAPI.AddTitle("Team")
     CustomOptionUIAPI.AddOption("PlayerTeam", self.team, ENUM_TEAM, function(res)
         self.team = res
@@ -158,6 +156,17 @@ function M:RefreshOptions()
 
     CustomOptionUIAPI.AddButton("HostBP", ">", function()
         BanPick.ShowBanPick()
+    end)
+
+    -- Vehicle Type Limits
+    CustomOptionUIAPI.AddTitle("VehicleTypeLimits")
+    CustomOptionUIAPI.AddText(UIAPI.GetLocalizedContent("VehicleTypeLimitPrompt"))
+    CustomOptionUIAPI.AddSlider("MaxGroundVehicleTypes", self.maxGroundVehicleTypes, 1, 50, true, function(res)
+        self.maxGroundVehicleTypes = res
+    end)
+
+    CustomOptionUIAPI.AddSlider("MaxAviationVehicleTypes", self.maxAviationVehicleTypes, 1, 50, true, function(res)
+        self.maxAviationVehicleTypes = res
     end)
 end
 
@@ -280,12 +289,15 @@ function M:OnBattleSceneLoaded()
     self.enemyFlightBotPlayers = self:CreateBotPlayerList(self.enemyFlightNum, TeamAPI.GetEnemyTeam())
 
     --- Create suitable vehicle list
-    self.friendTankVehicleList = self:GetBotVehicleList(self.friendMinRank, self.friendMaxRank, VehicleInfo.Type.Ground)
-    self.enemyTankVehicleList = self:GetBotVehicleList(self.enemyMinRank, self.enemyMaxRank, VehicleInfo.Type.Ground)
+    self.friendTankVehicleList = self:GetBotVehicleList(self.friendMinRank, self.friendMaxRank, VehicleInfo.Type.Ground,
+        self.maxGroundVehicleTypes)
+    self.enemyTankVehicleList = self:GetBotVehicleList(self.enemyMinRank, self.enemyMaxRank, VehicleInfo.Type.Ground,
+        self.maxGroundVehicleTypes)
 
     self.friendFlightVehicleList = self:GetBotVehicleList(self.friendMinRank, self.friendMaxRank,
-        VehicleInfo.Type.Aviation)
-    self.enemyFlightVehicleList = self:GetBotVehicleList(self.enemyMinRank, self.enemyMaxRank, VehicleInfo.Type.Aviation)
+        VehicleInfo.Type.Aviation, self.maxAviationVehicleTypes)
+    self.enemyFlightVehicleList = self:GetBotVehicleList(self.enemyMinRank, self.enemyMaxRank, VehicleInfo.Type.Aviation,
+        self.maxAviationVehicleTypes)
 
     self:InitBotPlayerVehicle(self.friendTankBotPlayers, self.friendTankVehicleList)
     self:InitBotPlayerVehicle(self.enemyTankBotPlayers, self.enemyTankVehicleList)
@@ -360,9 +372,10 @@ function M:CreateBotPlayerList(num, team)
     return list
 end
 
-function M:GetBotVehicleList(minRank, maxRank, vehicleType)
-    local vehicleList = VehicleAPI.GetFilteredBotVehicles(minRank, maxRank, self.isArtillery == ENUM_TOGGLE[2], vehicleType)
-    return vehicleList
+function M:GetBotVehicleList(minRank, maxRank, vehicleType, maxVehicleTypes)
+    local vehicleList = VehicleAPI.GetFilteredBotVehicles(minRank, maxRank, self.isArtillery == ENUM_TOGGLE[2],
+        vehicleType)
+    return VehicleAPI.RandomPickVehicleFromList(vehicleList, maxVehicleTypes)
 end
 
 ---@param battlePlayerList table<number,ShanghaiWindy.Core.AbstractBattlePlayer>
@@ -475,9 +488,12 @@ function M:GetConfigStorage()
 
     self.scoreToEnd = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "ScoreToEnd", 200)
 
+    self.maxGroundVehicleTypes = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "MaxGroundVehicleTypes", 10)
+    self.maxAviationVehicleTypes = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "MaxAviationVehicleTypes", 5)
+
     self.friendMinRank = math.min(self.friendMinRank, self.friendMaxRank)
     self.friendMaxRank = math.max(self.friendMinRank, self.friendMaxRank)
-   
+
     self.enemyMinRank = math.min(self.enemyMinRank, self.enemyMaxRank)
     self.enemyMaxRank = math.max(self.enemyMinRank, self.enemyMaxRank)
 end
@@ -500,6 +516,9 @@ function M:SetConfigStorage()
     StorageAPI.SetStringValue(STORARAGE_DEFINE, "IsArtillery", self.isArtillery)
 
     StorageAPI.SetNumberValue(STORARAGE_DEFINE, "ScoreToEnd", self.scoreToEnd)
+
+    StorageAPI.SetNumberValue(STORARAGE_DEFINE, "MaxGroundVehicleTypes", self.maxGroundVehicleTypes)
+    StorageAPI.SetNumberValue(STORARAGE_DEFINE, "MaxAviationVehicleTypes", self.maxAviationVehicleTypes)
 
     StorageAPI.SaveStorage()
 end

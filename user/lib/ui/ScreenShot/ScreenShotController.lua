@@ -32,12 +32,16 @@ function M:OnScreenShotClicked()
     self._isScreenShot = not self._isScreenShot
 
     if self._isScreenShot then
-        local canvasGroup = ComponentAPI.GetObjectsInWorld("CanvasGroup")
+        PopMessageManager.Instance:PushPopup(UIAPI.GetLocalizedContent("ScreenshotModePrompt"), function(res)
+            if res then
+                local canvasGroup = ComponentAPI.GetObjectsInWorld("CanvasGroup")
 
-        for i = 0, canvasGroup.Length - 1 do
-            canvasGroup[i].alpha = 0
-            table.insert(self._canvasList, canvasGroup[i])
-        end
+                for i = 0, canvasGroup.Length - 1 do
+                    canvasGroup[i].alpha = 0
+                    table.insert(self._canvasList, canvasGroup[i])
+                end
+            end
+        end)
     else
         for k, v in pairs(self._canvasList) do
             v.alpha = 1

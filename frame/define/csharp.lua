@@ -306,15 +306,47 @@ return MaterialConfig
 ---@field totalDestroyed ShanghaiWindy.Core.PropValue`1[System.Int32] @角色总共摧毁的物体数量。             The total number of objects the character has destroyed.
 ---@field totalBlockDamage ShanghaiWindy.Core.PropValue`1[System.Int32] @角色总共阻挡的伤害。             The total damage the character has blocked.
 ---@field DamageResistanceBuffedCoff ShanghaiWindy.Core.BuffProperty @伤害阻挡 Buff             Damage resistance buff
----@field OnDamaged UnityEngine.Events.UnityEvent`2[System.Int32,UnityEngine.Vector3]
+---@field OnDamaged ShanghaiWindy.Core.OnDamagedEvent
 ---@field OnRichocheted UnityEngine.Events.UnityEvent
----@field OnNotBreakDowned UnityEngine.Events.UnityEvent
+---@field OnNotBreakDowned ShanghaiWindy.Core.OnNotBreakDownEvent
 ---@field isDestroyed System.Boolean
 ---@field ViewRangeBuffedCoff ShanghaiWindy.Core.BuffProperty
 ---@field RepairSpeedBuffedCoff ShanghaiWindy.Core.BuffProperty
 local FlightPlayerState = {}
 
 return FlightPlayerState
+
+---@class ShanghaiWindy.Core.ObjectPoolComponent
+local ObjectPoolComponent = {}
+
+---从对象池取物体
+---Get object from the pool
+---@instance
+---@function [ObjectPoolComponent:Get]
+---@return UnityEngine.GameObject
+---@param stayWorldPos System.Boolean
+function ObjectPoolComponent:Get(stayWorldPos) end
+---回收对象池物体
+---Return object back to the pool
+---@instance
+---@function [ObjectPoolComponent:Release]
+---@param instance UnityEngine.GameObject
+function ObjectPoolComponent:Release(instance) end
+---回收所以对象池物体
+---Return all the objects back to the pool
+---@instance
+---@function [ObjectPoolComponent:Clear]
+function ObjectPoolComponent:Clear() end
+---@instance
+---@function [ObjectPoolComponent:GetObjectList]
+---@return System.Collections.Generic.List`1[[UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
+function ObjectPoolComponent:GetObjectList() end
+---释放对象池
+---Dispose the pool
+---@instance
+---@function [ObjectPoolComponent:Dispose]
+function ObjectPoolComponent:Dispose() end
+return ObjectPoolComponent
 
 ---@class ShanghaiWindy.Core.VehicleInfo
 local VehicleInfo = {}
@@ -400,9 +432,9 @@ return BaseInitSystem
 ---@field totalDestroyed ShanghaiWindy.Core.PropValue`1[System.Int32] @角色总共摧毁的物体数量。             The total number of objects the character has destroyed.
 ---@field totalBlockDamage ShanghaiWindy.Core.PropValue`1[System.Int32] @角色总共阻挡的伤害。             The total damage the character has blocked.
 ---@field DamageResistanceBuffedCoff ShanghaiWindy.Core.BuffProperty @伤害阻挡 Buff             Damage resistance buff
----@field OnDamaged UnityEngine.Events.UnityEvent`2[System.Int32,UnityEngine.Vector3]
+---@field OnDamaged ShanghaiWindy.Core.OnDamagedEvent
 ---@field OnRichocheted UnityEngine.Events.UnityEvent
----@field OnNotBreakDowned UnityEngine.Events.UnityEvent
+---@field OnNotBreakDowned ShanghaiWindy.Core.OnNotBreakDownEvent
 ---@field isDestroyed System.Boolean
 ---@field ViewRangeBuffedCoff ShanghaiWindy.Core.BuffProperty
 ---@field RepairSpeedBuffedCoff ShanghaiWindy.Core.BuffProperty
@@ -531,7 +563,7 @@ return TankFire
 ---@field vehicleRemoveManagerModule ShanghaiWindy.Core.VehicleRemoveManagerModule @车辆移除管理模块             Vehicle Remove Manager Module
 ---@field basePawn ShanghaiWindy.Core.BasePawn @基础玩家状态类，用于处理玩家状态的改变，如受到伤害、击中反弹等事件。             Base player state class for handling changes in player states such as taking damage, ricocheting hits, etc.
 ---@field equipmentBuffDataList System.Collections.Generic.List`1[ShanghaiWindy.Core.EquipmentBuffData] @装备 Buff 数据列表             Equipment Buff Data List
----@field CurEngineParam ShanghaiWindy.Core.PlayerTankControllerParameter
+---@field CurEngineParam ShanghaiWindy.Core.TankControllerParameter
 ---@field CurMainTankFireParam ShanghaiWindy.Core.TankFireParameter
 ---@field CurMainTurretParam ShanghaiWindy.Core.MouseTurretParameter
 ---@field CurPlayerStateParam ShanghaiWindy.Core.PlayerStateParameter
@@ -568,7 +600,7 @@ return VehicleInitSystem
 ---@field rigidbody UnityEngine.Rigidbody @刚体组件             Rigidbody Component
 ---@field vehicleFireCrossEffect ShanghaiWindy.Core.VehicleFireCrossEffect @车辆火力交叉特效             Vehicle Fire Cross Effect
 ---@field renderers UnityEngine.Renderer[] @渲染器数组             Renderer Array
----@field mainBodyVisiblity ShanghaiWindy.Core.MainBodyVisibity @主体可见性             Main Body Visibility
+---@field mainBodyVisiblity ShanghaiWindy.Core.MainBodyVisibility @主体可见性             Main Body Visibility
 ---@field mainBodyTransform UnityEngine.Transform @主体变换组件             Main Body Transform Component
 ---@field fireAssistComponent ShanghaiWindy.Core.FireAssistComponent @火力辅助组件             Fire Assist Component
 ---@field fireLockComponent ShanghaiWindy.Core.FireLockComponent @火力锁定组件             Fire Lock Component
@@ -624,6 +656,12 @@ function UIPoolComponent:Clear() end
 ---@instance
 ---@function [UIPoolComponent:Dispose]
 function UIPoolComponent:Dispose() end
+---获取对象池中的物体数量
+---Get the count of the objects in the pool
+---@instance
+---@function [UIPoolComponent:GetActiveCount]
+---@return System.Int32
+function UIPoolComponent:GetActiveCount() end
 return UIPoolComponent
 
 ---Lua 模组接口，用于定义模组的基本信息。
@@ -1330,6 +1368,12 @@ function CustomOptionUIAPI.AddTitle(optionName) end
 ---@param optionName System.String
 ---@param onInputChanged System.Action`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]
 function CustomOptionUIAPI.AddTextField(optionName, onInputChanged) end
+---添加文字
+---Add text
+---@static
+---@function [CustomOptionUIAPI.AddText]
+---@param textArea System.String
+function CustomOptionUIAPI.AddText(textArea) end
 ---清空 Options
 ---Clear Options
 ---@static
@@ -2286,6 +2330,12 @@ function VehicleAPI.GetFilteredVehicles(minRank, maxRank) end
 ---@param allowArtillery System.Boolean
 ---@param vehicleType ShanghaiWindy.Core.VehicleInfo+Type
 function VehicleAPI.GetFilteredBotVehicles(minRank, maxRank, allowArtillery, vehicleType) end
+---@static
+---@function [VehicleAPI.RandomPickVehicleFromList]
+---@return System.Collections.Generic.List`1[[ShanghaiWindy.Core.VehicleInfo, Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
+---@param vehicleList System.Collections.Generic.List`1[[ShanghaiWindy.Core.VehicleInfo, Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
+---@param maxVehicles System.Int32
+function VehicleAPI.RandomPickVehicleFromList(vehicleList, maxVehicles) end
 ---加载缩略图
 ---@static
 ---@function [VehicleAPI.LoadVehicleThumbnail]

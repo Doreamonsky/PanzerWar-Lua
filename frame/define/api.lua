@@ -13,6 +13,7 @@ WaveInfo = CS.ShanghaiWindy.Data.WaveInfo
 WaveMissionConfig = CS.ShanghaiWindy.Data.WaveMissionConfig
 MaterialConfig = CS.ShanghaiWindy.Data.MaterialConfig
 FlightPlayerState = CS.ShanghaiWindy.Core.FlightPlayerState
+ObjectPoolComponent = CS.ShanghaiWindy.Core.ObjectPoolComponent
 VehicleInfo = CS.ShanghaiWindy.Core.VehicleInfo
 CaptureZoneTask = CS.ShanghaiWindy.Core.CaptureZoneTask
 BaseFireSystem = CS.ShanghaiWindy.Core.BaseFireSystem

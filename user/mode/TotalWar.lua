@@ -53,6 +53,9 @@ function M:GetConfigStorage()
     self.enemyMaxRank = math.max(self.enemyMinRank, self.enemyMaxRank)
 
     self.isInfinite = StorageAPI.GetStringValue(STORARAGE_DEFINE, "IsInfinite", ENUM_TOGGLE[1])
+
+    self.maxGroundVehicleTypes = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "MaxGroundVehicleTypes", 10)
+    self.maxAviationVehicleTypes = StorageAPI.GetNumberValue(STORARAGE_DEFINE, "MaxAviationVehicleTypes", 5)
 end
 
 function M:SetConfigStorage()
@@ -76,6 +79,10 @@ function M:SetConfigStorage()
     StorageAPI.SetNumberValue(STORARAGE_DEFINE, "EnemyScoreToEnd", self.enemyScoreToEnd)
 
     StorageAPI.SetStringValue(STORARAGE_DEFINE, "IsInfinite", self.isInfinite)
+
+    StorageAPI.SetNumberValue(STORARAGE_DEFINE, "MaxGroundVehicleTypes", self.maxGroundVehicleTypes)
+    StorageAPI.SetNumberValue(STORARAGE_DEFINE, "MaxAviationVehicleTypes", self.maxAviationVehicleTypes)
+
     StorageAPI.SaveStorage()
 end
 
@@ -125,7 +132,7 @@ function M:OnPickMainPlayerVehicle(evtData)
     self:CreateMainPlayerVehicle(vehicleInfo)
 end
 
---- Create ui of game mode settting
+--- Create ui of game mode setting
 function M:RefreshOptions()
     CustomOptionUIAPI.ClearOptions()
     CustomOptionUIAPI.ToggleUI(true)
@@ -198,6 +205,17 @@ function M:RefreshOptions()
     CustomOptionUIAPI.AddButton("HostBP", ">", function()
         BanPick.ShowBanPick()
     end)
+
+    -- Vehicle Type Limits
+    CustomOptionUIAPI.AddTitle("VehicleTypeLimits")
+    CustomOptionUIAPI.AddText(UIAPI.GetLocalizedContent("VehicleTypeLimitPrompt"))
+    CustomOptionUIAPI.AddSlider("MaxGroundVehicleTypes", self.maxGroundVehicleTypes, 1, 50, true, function(res)
+        self.maxGroundVehicleTypes = res
+    end)
+
+    CustomOptionUIAPI.AddSlider("MaxAviationVehicleTypes", self.maxAviationVehicleTypes, 1, 50, true, function(res)
+        self.maxAviationVehicleTypes = res
+    end)
 end
 
 function M:OnConfirmInfo()
@@ -232,12 +250,15 @@ function M:OnConfirmInfo()
     self.enemyFlightBotPlayers = self:CreateBotPlayerList(self.enemyFlightNum, self:GetEnemyTeam())
 
     --- Create suitable vehicle list
-    self.friendTankVehicleList = self:GetBotVehicleList(self.friendMinRank, self.friendMaxRank, VehicleInfo.Type.Ground)
-    self.enemyTankVehicleList = self:GetBotVehicleList(self.enemyMinRank, self.enemyMaxRank, VehicleInfo.Type.Ground)
+    self.friendTankVehicleList = self:GetBotVehicleList(self.friendMinRank, self.friendMaxRank, VehicleInfo.Type.Ground,
+        self.maxGroundVehicleTypes)
+    self.enemyTankVehicleList = self:GetBotVehicleList(self.enemyMinRank, self.enemyMaxRank, VehicleInfo.Type.Ground,
+        self.maxGroundVehicleTypes)
 
     self.friendFlightVehicleList = self:GetBotVehicleList(self.friendMinRank, self.friendMaxRank,
-        VehicleInfo.Type.Aviation)
-    self.enemyFlightVehicleList = self:GetBotVehicleList(self.enemyMinRank, self.enemyMaxRank, VehicleInfo.Type.Aviation)
+        VehicleInfo.Type.Aviation, self.maxAviationVehicleTypes)
+    self.enemyFlightVehicleList = self:GetBotVehicleList(self.enemyMinRank, self.enemyMaxRank, VehicleInfo.Type.Aviation,
+        self.maxAviationVehicleTypes)
 
     self:InitBotPlayerVehicle(self.friendTankBotPlayers, self.friendTankVehicleList)
     self:InitBotPlayerVehicle(self.enemyTankBotPlayers, self.enemyTankVehicleList)
@@ -248,10 +269,10 @@ function M:OnConfirmInfo()
     self.isGameLogic = true
 end
 
-function M:GetBotVehicleList(minRank, maxRank, vehicleType)
+function M:GetBotVehicleList(minRank, maxRank, vehicleType, maxVehicleTypes)
     local vehicleList = VehicleAPI.GetFilteredBotVehicles(minRank, maxRank, self.isArtillery == ENUM_TOGGLE[2],
         vehicleType)
-    return vehicleList
+    return VehicleAPI.RandomPickVehicleFromList(vehicleList, maxVehicleTypes)
 end
 
 function M:CreateMainPlayer()
