@@ -65,7 +65,11 @@ function M:Awake()
 
     GameObjectAPI.SetActive(self.view.vPointTemplate, false)
     self:OnPickBarChanged(true)
-    self:PickMainPlayerVehicle(self._mode.mainPlayerList[0])
+    
+    if self._mode.mainPlayerList.Count > 0 then
+        self:PickMainPlayerVehicle(self._mode.mainPlayerList[0])
+    end
+
     self:RefreshCaptureStatus()
     self:RefreshCaptureScreenUI()
     self:RefreshBackgroundCamera()
