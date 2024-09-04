@@ -11,25 +11,25 @@ function M:InitUI(root)
     --- @type GameObject
     self.vChat = root:Find("#obj_Chat").gameObject
     --- @type Button
-    self.vOpenChatSender = root:Find("#obj_Chat/#btn_OpenChatSender"):GetComponent(typeof(Button))
+    self.vOpenChatSender = root:Find("#obj_Chat/VerticalLayout/Chat/#btn_OpenChatSender"):GetComponent("Button")
     --- @type GameObject
-    self.vChatMessages = root:Find("#obj_Chat/#obj_ChatMessages").gameObject
+    self.vChatMessages = root:Find("#obj_Chat/VerticalLayout/Chat/#obj_ChatMessages").gameObject
     --- @type GameObject
-    self.vChatMessageTemplate = root:Find("#obj_Chat/#obj_ChatMessages/#obj_ChatMessageTemplate").gameObject
+    self.vChatMessageTemplate = root:Find("#obj_Chat/VerticalLayout/Chat/#obj_ChatMessages/#obj_ChatMessageTemplate").gameObject
     --- @type GameObject
     self.vChatSenderBar = root:Find("#obj_Chat/#obj_ChatSenderBar").gameObject
     --- @type Button
-    self.vCloseChatSenderBar = root:Find("#obj_Chat/#obj_ChatSenderBar/#btn_CloseChatSenderBar"):GetComponent(typeof(Button))
+    self.vCloseChatSenderBar = root:Find("#obj_Chat/#obj_ChatSenderBar/VerticalLayout/ChatSender/#btn_CloseChatSenderBar"):GetComponent("Button")
     --- @type InputField
-    self.vSenderContent = root:Find("#obj_Chat/#obj_ChatSenderBar/#input_SenderContent"):GetComponent(typeof(InputField))
+    self.vSenderContent = root:Find("#obj_Chat/#obj_ChatSenderBar/VerticalLayout/ChatSender/#input_SenderContent"):GetComponent("InputField")
     --- @type Button
-    self.vSendChat = root:Find("#obj_Chat/#obj_ChatSenderBar/#btn_SendChat"):GetComponent(typeof(Button))
+    self.vSendChat = root:Find("#obj_Chat/#obj_ChatSenderBar/VerticalLayout/ChatSender/#btn_SendChat"):GetComponent("Button")
     --- @type Dropdown
-    self.vChatTargetType = root:Find("#obj_Chat/#obj_ChatSenderBar/#dropdown_ChatTargetType"):GetComponent("Dropdown")
+    self.vChatTargetType = root:Find("#obj_Chat/#obj_ChatSenderBar/VerticalLayout/ChatSender/#dropdown_ChatTargetType"):GetComponent("Dropdown")
     --- @type Text
-    self.vPing = root:Find("#txt_Ping"):GetComponent(typeof(Text))
+    self.vPing = root:Find("#txt_Ping"):GetComponent("Text")
     --- @type GameObject
     self.vTextPopTemplate = root:Find("#obj_TextPopTemplate").gameObject
     --- @type Text
-    self.vBattleMeta = root:Find("#txt_BattleMeta"):GetComponent(typeof(Text))
+    self.vBattleMeta = root:Find("#txt_BattleMeta"):GetComponent("Text")
 end

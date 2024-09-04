@@ -29,8 +29,6 @@ function M:Destroy()
 end
 
 function M:OnScreenShotClicked()
-    self._isScreenShot = not self._isScreenShot
-
     if self._isScreenShot then
         PopMessageManager.Instance:PushPopup(UIAPI.GetLocalizedContent("ScreenshotModePrompt"), function(res)
             if res then
@@ -40,6 +38,8 @@ function M:OnScreenShotClicked()
                     canvasGroup[i].alpha = 0
                     table.insert(self._canvasList, canvasGroup[i])
                 end
+
+                self._isScreenShot = not self._isScreenShot
             end
         end)
     else
@@ -48,5 +48,6 @@ function M:OnScreenShotClicked()
         end
 
         self._canvasList = {}
+        self._isScreenShot = not self._isScreenShot
     end
 end
