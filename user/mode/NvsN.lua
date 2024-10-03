@@ -39,11 +39,19 @@ function M:OnStartMode()
     ---@type table<number,ShanghaiWindy.Core.AbstractBattlePlayer>
     self.countDownPlayerList = {}
 
+    self.playerDestroyedTime = 0
+    self.isFreeCameraCreated = false
+
     self:AddListeners()
     self:RefreshOptions()
 end
 
 function M:OnUpdated()
+    if TimeAPI.GetTime() - self.playerDestroyedTime >= 5 and not self.isFreeCameraCreated then
+        local cameraTrans = CameraAPI.GetCameraTransform()
+        SpawnVehicleAPI.CreateFreeCamera(cameraTrans.position, cameraTrans.rotation)
+        self.isFreeCameraCreated = true
+    end
 end
 
 function M:OnExitMode()
@@ -152,9 +160,7 @@ function M:OnPickMainPlayerVehicle(evtData)
 
     self.mainBattlePlayer.OnVehicleDestroyed:AddListener(function()
         self:OnBattlePlayerDestroyed(self.mainBattlePlayer)
-
-        local cameraTrans = CameraAPI.GetCameraTransform()
-        SpawnVehicleAPI.CreateFreeCamera(cameraTrans.position, cameraTrans.rotation)
+        self.playerDestroyedTime = TimeAPI.GetTime()
     end)
 
     SpawnAPI.AsyncSpawn(self.mainBattlePlayer:GetTeam(), function(trans)
