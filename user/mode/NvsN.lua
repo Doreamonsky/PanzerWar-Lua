@@ -48,7 +48,7 @@ function M:OnStartMode()
 end
 
 function M:OnUpdated()
-    if TimeAPI.GetTime() - self.playerDestroyedTime >= 5 and not self.isFreeCameraCreated then
+    if TimeAPI.GetTime() - self.playerDestroyedTime >= 5 and not self.isFreeCameraCreated and self.isPlayerDestroyed then
         local cameraTrans = CameraAPI.GetCameraTransform()
         SpawnVehicleAPI.CreateFreeCamera(cameraTrans.position, cameraTrans.rotation)
         self.isFreeCameraCreated = true
@@ -162,6 +162,7 @@ function M:OnPickMainPlayerVehicle(evtData)
     self.mainBattlePlayer.OnVehicleDestroyed:AddListener(function()
         self:OnBattlePlayerDestroyed(self.mainBattlePlayer)
         self.playerDestroyedTime = TimeAPI.GetTime()
+        self.isPlayerDestroyed = true
     end)
 
     SpawnAPI.AsyncSpawn(self.mainBattlePlayer:GetTeam(), function(trans)
