@@ -40,6 +40,7 @@ function M:OnStartMode()
     self.countDownPlayerList = {}
 
     self.playerDestroyedTime = 0
+    self.isPlayerDestroyed = false
     self.isFreeCameraCreated = false
 
     self:AddListeners()
