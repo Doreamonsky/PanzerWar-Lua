@@ -16,6 +16,19 @@
                 }
             ],
             "isCleanDstFolder": true
+        },
+        {
+            "modNames": [
+                "BuildPipline-FreeVerDIYExtension"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/ExportPackages"
+                }
+            ],
+            "isCleanDstFolder": false,
+            "isPackage": true
         }
     ]
 }
