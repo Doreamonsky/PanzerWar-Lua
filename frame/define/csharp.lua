@@ -388,6 +388,10 @@ function VehicleInfo:IsSupportModuleMode() end
 ---@function [VehicleInfo:GetRank]
 ---@return System.Int32
 function VehicleInfo:GetRank() end
+---@instance
+---@function [VehicleInfo:GetPreferSpawnPointType]
+---@return ShanghaiWindy.Core.ESpawnPointType
+function VehicleInfo:GetPreferSpawnPointType() end
 return VehicleInfo
 
 ---@class ShanghaiWindy.Core.CaptureZoneTask
@@ -552,7 +556,7 @@ return TankFire
 ---坦克初始化系统
 ---Tank Initialization System
 ---@class ShanghaiWindy.Core.VehicleInitSystem
----@field groundType ShanghaiWindy.Core.eGroundControlType @载具类型
+---@field groundType ShanghaiWindy.Core.EGroundControlType @载具类型
 ---@field InstanceMesh UnityEngine.GameObject @实例网格             Instance Mesh
 ---@field vehicleTextData ShanghaiWindy.Core.VehicleTextData @车辆文本数据             Vehicle Text Data
 ---@field referenceManager ShanghaiWindy.Core.VehicleComponentsReferenceManager @车辆组件引用管理器             Vehicle Components Reference Manager
@@ -1776,14 +1780,23 @@ function ModeAPI.GetModeInstance() end
 ---@function [ModeAPI.GetNativeMode]
 ---@return ShanghaiWindy.Core.GameMode.BaseGameMode
 function ModeAPI.GetNativeMode() end
+---开始录制
+---Start Record
 ---@static
 ---@function [ModeAPI.StartRecord]
----@return System.Void
 function ModeAPI.StartRecord() end
+---停止录制
+---Stop Record
 ---@static
 ---@function [ModeAPI.EndRecord]
----@return System.Void
 function ModeAPI.EndRecord() end
+---发送战斗信息
+---Send battle information
+---@static
+---@function [ModeAPI.SendInformation]
+---@param title System.String
+---@param information System.String
+function ModeAPI.SendInformation(title, information) end
 return ModeAPI
 
 ---位置点 API
@@ -1867,16 +1880,18 @@ local SpawnAPI = {}
 ---@static
 ---@function [SpawnAPI.AsyncSpawn]
 ---@return System.Void
+---@param spawnPointType ShanghaiWindy.Core.ESpawnPointType
 ---@param team ShanghaiWindy.Core.TeamManager+Team
 ---@param onSpawnPoint System.Action`1[[UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
-function SpawnAPI.AsyncSpawn(team, onSpawnPoint) end
+function SpawnAPI.AsyncSpawn(spawnPointType, team, onSpawnPoint) end
 ---异步寻找当前的出生点可用点
 ---Find spawn given point in async
 ---@static
 ---@function [SpawnAPI.AsyncSpawnGivenPoints]
+---@param spawnPointType ShanghaiWindy.Core.ESpawnPointType
 ---@param points UnityEngine.Transform[]
 ---@param onSpawnPoint System.Action`1[[UnityEngine.Transform, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
-function SpawnAPI.AsyncSpawnGivenPoints(points, onSpawnPoint) end
+function SpawnAPI.AsyncSpawnGivenPoints(spawnPointType, points, onSpawnPoint) end
 return SpawnAPI
 
 ---载具生成API

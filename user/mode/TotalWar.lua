@@ -322,17 +322,18 @@ function M:InitBotPlayerVehicle(battlePlayerList, vehicleList)
     end
 end
 
+---@param vehicleInfo ShanghaiWindy.Core.VehicleInfo
 function M:RandomSpawnMainPlayerVehicle(vehicleInfo)
     -- todo: 选点
-    SpawnAPI.AsyncSpawn(self.mainBattlePlayer:GetTeam(), function(trans)
+    SpawnAPI.AsyncSpawn(vehicleInfo:GetPreferSpawnPointType(), self.mainBattlePlayer:GetTeam(), function(trans)
         self.mainBattlePlayer:CreateVehicle(vehicleInfo, trans.position, trans.rotation)
     end)
 end
 
 ---@param battlePlayer ShanghaiWindy.Core.AbstractBattlePlayer
 function M:RandomSpawnBotVehicle(battlePlayer, vehicleList)
-    SpawnAPI.AsyncSpawn(battlePlayer:GetTeam(), function(trans)
-        local vehicleInfo = RandomAPI.GetRandomVehicleFromList(vehicleList)
+    local vehicleInfo = RandomAPI.GetRandomVehicleFromList(vehicleList)
+    SpawnAPI.AsyncSpawn(vehicleInfo:GetPreferSpawnPointType(), battlePlayer:GetTeam(), function(trans)
         local spawnPos = trans.position
 
         if vehicleInfo.type == VehicleInfo.Type.Aviation then

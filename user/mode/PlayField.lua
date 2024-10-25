@@ -65,9 +65,10 @@ function M:RemoveListeners()
 end
 
 function M:OnPickMainPlayerVehicle(evtData)
+    ---@type ShanghaiWindy.Core.VehicleInfo
     local vehicleInfo = evtData.VehicleInfo
 
-    SpawnAPI.AsyncSpawn(self.mainBattlePlayer:GetTeam(), function(trans)
+    SpawnAPI.AsyncSpawn(vehicleInfo:GetPreferSpawnPointType(), self.mainBattlePlayer:GetTeam(), function(trans)
         self.mainBattlePlayer:CreateVehicle(vehicleInfo, trans.position, trans.rotation)
     end)
 end
@@ -75,7 +76,6 @@ end
 function M:IsProxyBattle()
     return true
 end
-
 
 function M:GetMapMode()
     return MODE_PLAY_FIELD

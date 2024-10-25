@@ -145,6 +145,7 @@ function M:OnConfirmInfo()
 end
 
 function M:OnPickMainPlayerVehicle(evtData)
+    ---@type ShanghaiWindy.Core.VehicleInfo
     local vehicleInfo = evtData.VehicleInfo
 
     local playerRank = vehicleInfo:GetRank()
@@ -165,7 +166,7 @@ function M:OnPickMainPlayerVehicle(evtData)
         self.isPlayerDestroyed = true
     end)
 
-    SpawnAPI.AsyncSpawn(self.mainBattlePlayer:GetTeam(), function(trans)
+    SpawnAPI.AsyncSpawn(vehicleInfo:GetPreferSpawnPointType(), self.mainBattlePlayer:GetTeam(), function(trans)
         self.mainBattlePlayer:CreateVehicle(vehicleInfo, trans.position, trans.rotation)
     end)
 
@@ -253,8 +254,9 @@ function M:CreateVehiclesFromRanks(team, playerRank, ranks)
 
                 ModeAPI.AddBattlePlayer(botPlayer)
 
-                SpawnAPI.AsyncSpawn(team, function(trans)
-                    botPlayer:CreateVehicle(RandomAPI.GetRandomVehicleFromList(rankVehicleMap[rank]), trans.position,
+                local vehicleInfo = RandomAPI.GetRandomVehicleFromList(rankVehicleMap[rank])
+                SpawnAPI.AsyncSpawn(vehicleInfo:GetPreferSpawnPointType(), team, function(trans)
+                    botPlayer:CreateVehicle(vehicleInfo, trans.position,
                         trans.rotation)
                 end)
 

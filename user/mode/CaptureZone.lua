@@ -313,6 +313,7 @@ function M:OnBattleSceneLoaded()
 end
 
 --- Local player pick the vehicle info and the point
+---@param vehicleInfo ShanghaiWindy.Core.VehicleInfo
 function M:SpawnMainPlayer(vehicleInfo, pointIndex)
     local curPointIndex = pointIndex
 
@@ -332,7 +333,7 @@ function M:SpawnMainPlayer(vehicleInfo, pointIndex)
         EventSystem.DispatchEvent(EventDefine.OnPickBarVisibilityChanged, false)
 
         local transformList = self._captureSpawnPointMap[curPointIndex]
-        SpawnAPI.AsyncSpawnGivenPoints(transformList, function(trans)
+        SpawnAPI.AsyncSpawnGivenPoints(vehicleInfo:GetPreferSpawnPointType(), transformList, function(trans)
             self.mainBattlePlayer:CreateVehicle(vehicleInfo, trans.position, trans.rotation)
         end)
     else
@@ -398,32 +399,33 @@ function M:RandomSpawnBotVehicle(battlePlayer, vehicleList)
     local pointIndex = self:GetSpawnablePointIndex(battlePlayer:GetTeam())
 
     if pointIndex ~= -1 then
-        SpawnAPI.AsyncSpawnGivenPoints(self._captureSpawnPointMap[pointIndex], function(trans)
-            local vehicleInfo = RandomAPI.GetRandomVehicleFromList(vehicleList)
-            local spawnPos = trans.position
+        local vehicleInfo = RandomAPI.GetRandomVehicleFromList(vehicleList)
+        SpawnAPI.AsyncSpawnGivenPoints(vehicleInfo:GetPreferSpawnPointType(), self._captureSpawnPointMap[pointIndex],
+            function(trans)
+                local spawnPos = trans.position
 
-            if vehicleInfo.type == VehicleInfo.Type.Aviation then
-                spawnPos = spawnPos + Vector3(0, 500, 0)
-            end
+                if vehicleInfo.type == VehicleInfo.Type.Aviation then
+                    spawnPos = spawnPos + Vector3(0, 500, 0)
+                end
 
-            local vehicle = battlePlayer:CreateVehicle(vehicleInfo, spawnPos, trans.rotation)
+                local vehicle = battlePlayer:CreateVehicle(vehicleInfo, spawnPos, trans.rotation)
 
-            if vehicleInfo.type == VehicleInfo.Type.Ground then
-                local logic = BotAPI.GetTankBotTaskLogic()
-                vehicle.thinkLogic = logic
+                if vehicleInfo.type == VehicleInfo.Type.Ground then
+                    local logic = BotAPI.GetTankBotTaskLogic()
+                    vehicle.thinkLogic = logic
 
-                vehicle.OnVehicleLoaded:AddListener(function()
-                    local captureTask = BotAPI.AddCaptureTaskToBot(logic)
-                    self._botPlayerCaptureTaskMap[battlePlayer] = captureTask
-                    self:UpdateCaptureTask()
-                end)
+                    vehicle.OnVehicleLoaded:AddListener(function()
+                        local captureTask = BotAPI.AddCaptureTaskToBot(logic)
+                        self._botPlayerCaptureTaskMap[battlePlayer] = captureTask
+                        self:UpdateCaptureTask()
+                    end)
 
-                vehicle.OnGameObjectDestroyed:AddListener(function()
-                    self._botPlayerCaptureTaskMap[battlePlayer] = nil
-                    self:UpdateCaptureTask()
-                end)
-            end
-        end)
+                    vehicle.OnGameObjectDestroyed:AddListener(function()
+                        self._botPlayerCaptureTaskMap[battlePlayer] = nil
+                        self:UpdateCaptureTask()
+                    end)
+                end
+            end)
     end
 end
 
