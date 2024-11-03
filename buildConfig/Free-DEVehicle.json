@@ -3,13 +3,9 @@
     "infos": [
         {
             "modNames": [
-                "BuildPipline-Community-DE-Shared"
+                "BuildPipline-Vehicle-AAA-Extend-3-ForFree"
             ],
             "copyInfo": [
-                {
-                    "platform": "Android",
-                    "dstDir": "F:/Projects/Free-LuaProject/resources/android/default/de-shared-vehicle"
-                },
                 {
                     "platform": "iOS",
                     "dstDir": "/Users/shanghaiwindy/Projects/Free-LuaProject/resources/ios/default/de-shared-vehicle"
@@ -19,7 +15,7 @@
         },
         {
             "modNames": [
-                "BuildPipline-FreeVerDIYExtension"
+                "BuildPipline-Vehicle-AAA-Extend-3-ForFree"
             ],
             "copyInfo": [
                 {
