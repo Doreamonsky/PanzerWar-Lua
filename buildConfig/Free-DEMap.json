@@ -3,13 +3,9 @@
     "infos": [
         {
             "modNames": [
-                "BuildPipline-Community-DE-SharedMap"
+                "BuildPipline-Map-Extension-ForFree"
             ],
             "copyInfo": [
-                {
-                    "platform": "Android",
-                    "dstDir": "F:/Projects/Free-LuaProject/resources/android/default/de-shared-map"
-                },
                 {
                     "platform": "iOS",
                     "dstDir": "/Users/shanghaiwindy/Projects/Free-LuaProject/resources/ios/default/de-shared-map"
@@ -28,6 +24,19 @@
                 }
             ],
             "isCleanDstFolder": true
+        },
+        {
+            "modNames": [
+                "BuildPipline-Map-Extension-ForFree"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/ExportPackages"
+                }
+            ],
+            "isCleanDstFolder": false,
+            "isPackage": true
         }
     ]
 }
