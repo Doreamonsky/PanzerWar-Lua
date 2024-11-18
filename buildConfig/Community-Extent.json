@@ -35,16 +35,16 @@
         },
         {
             "modNames": [
-                "BuildPipline-Vehicle-AAA-Extend-3"
+                "BuildPipline-Vehicle-AAA-CN-Extend"
             ],
             "copyInfo": [
                 {
                     "platform": "StandaloneWindows64",
-                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/extend-vehicle-3"
+                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/cn-extend-vehicle"
                 },
                 {
                     "platform": "iOS",
-                    "dstDir": "/Users/shanghaiwindy/Projects/LuaProject/resources/ios/default/extend-vehicle-3"
+                    "dstDir": "/Users/shanghaiwindy/Projects/LuaProject/resources/ios/default/cn-extend-vehicle"
                 }
             ],
             "isCleanDstFolder": true
@@ -53,7 +53,7 @@
             "modNames": [
                 "BuildPipline-Vehicle-AAA-Extend",
                 "BuildPipline-Vehicle-AAA-Extend-2",
-                "BuildPipline-Vehicle-AAA-Extend-3",
+                "BuildPipline-Vehicle-AAA-CN-Extend",
                 "BuildPipline-Community",
                 "BuildPipline-Camouflage-Extension"
             ],
