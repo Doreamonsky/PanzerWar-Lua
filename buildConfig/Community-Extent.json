@@ -25,10 +25,6 @@
                 {
                     "platform": "StandaloneWindows64",
                     "dstDir": "D:/Projects/LuaProject/resources/windows/default/extend-vehicle-2"
-                },
-                {
-                    "platform": "iOS",
-                    "dstDir": "/Users/shanghaiwindy/Projects/LuaProject/resources/ios/default/extend-vehicle-2"
                 }
             ],
             "isCleanDstFolder": true
@@ -41,10 +37,18 @@
                 {
                     "platform": "StandaloneWindows64",
                     "dstDir": "D:/Projects/LuaProject/resources/windows/default/ger-extend-vehicle"
-                },
+                }
+            ],
+            "isCleanDstFolder": true
+        },
+        {
+            "modNames": [
+                "BuildPipline-Vehicle-ColdWar-Extend"
+            ],
+            "copyInfo": [
                 {
-                    "platform": "iOS",
-                    "dstDir": "/Users/shanghaiwindy/Projects/LuaProject/resources/ios/default/ger-extend-vehicle"
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/cold-war-extend-vehicle"
                 }
             ],
             "isCleanDstFolder": true
@@ -54,6 +58,7 @@
                 "BuildPipline-Vehicle-AAA-Extend",
                 "BuildPipline-Vehicle-AAA-Extend-2",
                 "BuildPipline-Vehicle-AAA-Ger-Extend",
+                "BuildPipline-Vehicle-ColdWar-Extend",
                 "BuildPipline-Community",
                 "BuildPipline-Camouflage-Extension"
             ],
@@ -61,6 +66,22 @@
                 {
                     "platform": "Android",
                     "dstDir": "D:/Projects/ExportPackages"
+                }
+            ],
+            "isCleanDstFolder": false,
+            "isPackage": true
+        },
+        {
+            "modNames": [
+                "BuildPipline-Vehicle-AAA-Extend-2",
+                "BuildPipline-Vehicle-AAA-Ger-Extend",
+                "BuildPipline-Vehicle-ColdWar-Extend",
+                "BuildPipline-Camouflage-Extension"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/ExportPackages"
                 }
             ],
             "isCleanDstFolder": false,
