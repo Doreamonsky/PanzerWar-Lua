@@ -29,7 +29,7 @@ function M:Destroy()
 end
 
 function M:OnScreenShotClicked()
-    if self._isScreenShot then
+    if not self._isScreenShot then
         PopMessageManager.Instance:PushPopup(UIAPI.GetLocalizedContent("ScreenshotModePrompt"), function(res)
             if res then
                 local canvasGroup = ComponentAPI.GetObjectsInWorld("CanvasGroup")
