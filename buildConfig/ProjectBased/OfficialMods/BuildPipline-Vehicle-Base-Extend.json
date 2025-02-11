@@ -1,9 +1,9 @@
 {
-    "description": "免费载具",
+    "description": "基础载具",
     "infos": [
         {
             "modNames": [
-                "BuildPipline-Community"
+                "BuildPipline-Vehicle-Base-Extend"
             ],
             "copyInfo": [
                 {
@@ -15,7 +15,7 @@
         },
         {
             "modNames": [
-                "BuildPipline-Community"
+                "BuildPipline-Vehicle-Base-Extend"
             ],
             "copyInfo": [
                 {
