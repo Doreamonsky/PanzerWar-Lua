@@ -1,0 +1,34 @@
+{
+    "description": "社区制作模组",
+    "infos": [
+        {
+            "modNames": [
+                "BuildPipline-Nameless-DIYSet"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/diy-third"
+                }
+            ],
+            "isCleanDstFolder": true
+        },
+        {
+            "modNames": [
+                "BuildPipline-Nameless-DIYSet"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/ExportPackages"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/ExportPackages"
+                }
+            ],
+            "isCleanDstFolder": false,
+            "isPackage": true
+        }
+    ]
+}

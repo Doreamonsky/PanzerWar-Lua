@@ -1,0 +1,34 @@
+{
+    "description": "载具扩展包-3（多为决定版专属载具）",
+    "infos": [
+        {
+            "modNames": [
+                "BuildPipline-Vehicle-AAA-Extend-3"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/diy"
+                }
+            ],
+            "isCleanDstFolder": true
+        },
+        {
+            "modNames": [
+                "BuildPipline-Vehicle-AAA-Extend-3"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/ExportPackages"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/ExportPackages"
+                }
+            ],
+            "isCleanDstFolder": false,
+            "isPackage": true
+        }
+    ]
+}
