@@ -1,0 +1,21 @@
+{
+    "infos": [
+        {
+            "modNames": [
+                "BuildPipline-Map-Extension-ForFree"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/ExportPackages"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/ExportPackages"
+                }
+            ],
+            "isCleanDstFolder": false,
+            "isPackage": true
+        },
+    ]
+}
