@@ -3,7 +3,7 @@
     "infos": [
         {
             "modNames": [
-                "BuildPipline-BaseMap"
+                "Packages/com.shanghaiwindy.panzerwar/ModManager/BuildPipline-BaseMap.asset"
             ],
             "copyInfo": [
                 {
@@ -15,7 +15,7 @@
         },
         {
             "modNames": [
-                "BuildPipline-BaseMap"
+                "Packages/com.shanghaiwindy.panzerwar/ModManager/BuildPipline-BaseMap.asset"
             ],
             "copyInfo": [
                 {
