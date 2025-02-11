@@ -36,26 +36,6 @@
                 }
             ],
             "isCleanDstFolder": true
-        },
-        {
-            "modNames": [
-                "Packages/com.shanghaiwindy.panzerwar/ModManager/BuildPipline-FreeMap.asset"
-            ],
-            "copyInfo": [
-                {
-                    "platform": "Android",
-                    "dstDir": "F:/Projects/Free-LuaProject/resources/android/default/free-map"
-                },
-                {
-                    "platform": "StandaloneWindows64",
-                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/free-map"
-                },
-                {
-                    "platform": "iOS",
-                    "dstDir": "/Users/shanghaiwindy/Projects/Free-LuaProject/resources/ios/default/free-map"
-                }
-            ],
-            "isCleanDstFolder": true
         }
     ]
 }
