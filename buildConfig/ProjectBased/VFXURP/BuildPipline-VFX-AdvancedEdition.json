@@ -8,15 +8,31 @@
             "copyInfo": [
                 {
                     "platform": "Android",
-                    "dstDir": "D:/Projects/ExportPackages"
+                    "dstDir": "D:/Projects/LuaProject/resources/android/default/vfx"
                 },
                 {
-                    "platform": "StandaloneWindows64",
-                    "dstDir": "D:/Projects/ExportPackages"
+                    "platform": "Android",
+                    "dstDir": "F:/Projects/Free-LuaProject/resources/android/default/vfx"
                 },
                 {
                     "platform": "iOS",
-                    "dstDir": "/Users/shanghaiwindy/Projects/ExportPackages"
+                    "dstDir": "/Users/shanghaiwindy/Projects/LuaProject/resources/ios/default/vfx"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/Free-LuaProject/resources/ios/default/vfx"
+                }
+            ],
+            "isCleanDstFolder": true
+        },
+        {
+            "modNames": [
+                "BuildPipline-VFX-AdvancedEdition"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/ExportPackages"
                 }
             ],
             "isCleanDstFolder": false,
