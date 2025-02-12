@@ -1,0 +1,29 @@
+{
+    "description": "默认资源扩展包",
+    "infos": [
+        {
+            "modNames": [
+                "BuildPipline-Provisional-Extend"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/LuaProject/resources/android/provisional/extend"
+                },
+                {
+                    "platform": "Android",
+                    "dstDir": "F:/Projects/Free-LuaProject/resources/android/provisional/extend"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/LuaProject/resources/ios/provisional/extend"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/Free-LuaProject/resources/ios/provisional/extend"
+                }
+            ],
+            "isCleanDstFolder": true
+        }
+    ]
+}
