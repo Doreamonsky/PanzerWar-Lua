@@ -1,0 +1,34 @@
+{
+    "description": "日式建筑扩展包",
+    "infos": [
+        {
+            "modNames": [
+                "BuildPipline-Map-DIY-JapaneseSets"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/japanese-pack"
+                }
+            ],
+            "isCleanDstFolder": true
+        },
+        {
+            "modNames": [
+                "BuildPipline-Map-DIY-JapaneseSets"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/ExportPackages"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/ExportPackages"
+                }
+            ],
+            "isCleanDstFolder": false,
+            "isPackage": true
+        }
+    ]
+}
