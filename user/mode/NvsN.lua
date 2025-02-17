@@ -93,7 +93,7 @@ end
 function M:RefreshOptions()
     CustomOptionUIAPI.ClearOptions()
     CustomOptionUIAPI.ToggleUI(true)
-    CustomOptionUIAPI.AddTitle("N vs N")
+    CustomOptionUIAPI.AddTitle("Blitzkrieg")
 
     CustomOptionUIAPI.AddButton("Battle", "Start", function()
         self:OnConfirmInfo()
