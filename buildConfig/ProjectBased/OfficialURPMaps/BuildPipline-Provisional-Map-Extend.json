@@ -1,0 +1,29 @@
+{
+    "description": "默认地图资源扩展包",
+    "infos": [
+        {
+            "modNames": [
+                "BuildPipline-Provisional-Map-Extend"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/LuaProject/resources/android/provisional/map-extend"
+                },
+                {
+                    "platform": "Android",
+                    "dstDir": "F:/Projects/Free-LuaProject/resources/android/provisional/map-extend"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/LuaProject/resources/ios/provisional/map-extend"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/Free-LuaProject/resources/ios/provisional/map-extend"
+                }
+            ],
+            "isCleanDstFolder": true
+        }
+    ]
+}
