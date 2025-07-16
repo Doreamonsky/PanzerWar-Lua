@@ -1,21 +1,21 @@
 {
-    "description": "沙漠地图扩展包",
+    "description": "海岛地图扩展包",
     "infos": [
         {
             "modNames": [
-                "BuildPipline-MapExtension-II"
+                "BuildPipline-Map-Extension-III"
             ],
             "copyInfo": [
                 {
                     "platform": "StandaloneWindows64",
-                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/extend-map-ii"
+                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/extend-map-iii"
                 }
             ],
             "isCleanDstFolder": true
         },
         {
             "modNames": [
-                "BuildPipline-MapExtension-II"
+                "BuildPipline-Map-Extension-III"
             ],
             "copyInfo": [
                 {
