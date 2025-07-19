@@ -1,0 +1,26 @@
+{
+    "description": "Re0",
+    "infos": [
+        {
+            "modNames": [
+                "BuildPipline-Re0Crew"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/ExportPackages"
+                },
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/ExportPackages"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/ExportPackages"
+                }
+            ],
+            "isCleanDstFolder": false,
+            "isPackage": true
+        }
+    ]
+}
