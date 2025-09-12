@@ -40,6 +40,26 @@
                 }
             ],
             "isCleanDstFolder": true
+        },
+        {
+            "modNames": [
+                "Packages/com.shanghaiwindy.urpresources/BuildPipline-RuntimeSupport-Scene.asset"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/LuaProject/resources/android/default/runtime-support-scene"
+                },
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Tools/ContentBuilder/content/Windows/dlc/PanzerWar-DE/BuiltInRes/runtime-support-scene"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/LuaProject/resources/ios/default/runtime-support-scene"
+                }
+            ],
+            "isCleanDstFolder": true
         }
     ]
 }
