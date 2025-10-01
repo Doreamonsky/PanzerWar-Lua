@@ -1,0 +1,34 @@
+{
+    "description": "船只扩展包",
+    "infos": [
+        {
+            "modNames": [
+                "BuildPipline-Ship-Extend"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/ship-extend"
+                }
+            ],
+            "isCleanDstFolder": true
+        },
+        {
+            "modNames": [
+                "BuildPipline-Ship-Extend"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/ExportPackages"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/ExportPackages"
+                }
+            ],
+            "isCleanDstFolder": false,
+            "isPackage": true
+        }
+    ]
+}
