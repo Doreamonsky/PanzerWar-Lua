@@ -1,0 +1,34 @@
+{
+    "description": "现代扩展包",
+    "infos": [
+        {
+            "modNames": [
+                "BuildPipline-Vehicle-Modern-Extend"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/LuaProject/resources/windows/default/modern-extend-vehicle"
+                }
+            ],
+            "isCleanDstFolder": true
+        },
+        {
+            "modNames": [
+                "BuildPipline-Vehicle-Modern-Extend"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/ExportPackages"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/ExportPackages"
+                }
+            ],
+            "isCleanDstFolder": false,
+            "isPackage": true
+        }
+    ]
+}
