@@ -254,6 +254,22 @@ local TransformInfo = {}
 
 return TransformInfo
 
+---@class ShanghaiWindy.Data.WarZoneCaptureZone
+---@field zoneCapturePoint ShanghaiWindy.Data.ZoneCapturePoint
+local WarZoneCaptureZone = {}
+
+return WarZoneCaptureZone
+
+---@class ShanghaiWindy.Data.WarZoneModeConfig
+---@field warZoneName System.String
+---@field displayName ShanghaiWindy.Core.LocalizedName
+---@field mapGuid System.String
+---@field captureZones ShanghaiWindy.Data.WarZoneCaptureZone[]
+---@field backgroundCameraTransformInfo ShanghaiWindy.Data.TransformInfo
+local WarZoneModeConfig = {}
+
+return WarZoneModeConfig
+
 ---@class ShanghaiWindy.Data.WaveAttackInfo
 ---@field comment System.String
 ---@field vehicleGuid System.String
@@ -292,29 +308,6 @@ return WaveMissionConfig
 local MaterialConfig = {}
 
 return MaterialConfig
-
----飞行玩家状态类，继承自基础玩家状态类。
----FlightPlayerState class, inherits from the BasePlayerState.
----@class ShanghaiWindy.Core.FlightPlayerState
----@field vehicleName System.String @车辆名称。             Vehicle name.
----@field hp ShanghaiWindy.Core.PropValue`1[System.Int32] @玩家的生命值属性。             Player's health points property.
----@field defaultHP System.Int32 @默认生命值，用于初始化角色的生命值。Default Hit Points (HP) used for initializing the character's health.
----@field isFakeHP System.Boolean @是否为假生命值。             Whether it's fake health points.
----@field isGodMode ShanghaiWindy.Core.PropValue`1[System.Boolean] @是否开启上帝模式，若为 true，则角色无敌。             If God Mode is enabled (true), the character is invincible.
----@field lastBeHitPosition UnityEngine.Vector3 @上次受到伤害的位置。             The position where the character was last hit.
----@field totalDamage ShanghaiWindy.Core.PropValue`1[System.Int32] @角色总共造成的伤害。             The total damage the character has caused.
----@field totalDestroyed ShanghaiWindy.Core.PropValue`1[System.Int32] @角色总共摧毁的物体数量。             The total number of objects the character has destroyed.
----@field totalBlockDamage ShanghaiWindy.Core.PropValue`1[System.Int32] @角色总共阻挡的伤害。             The total damage the character has blocked.
----@field DamageResistanceBuffedCoff ShanghaiWindy.Core.BuffProperty @伤害阻挡 Buff             Damage resistance buff
----@field OnDamaged ShanghaiWindy.Core.OnDamagedEvent
----@field OnRichocheted UnityEngine.Events.UnityEvent
----@field OnNotBreakDowned ShanghaiWindy.Core.OnNotBreakDownEvent
----@field isDestroyed System.Boolean
----@field ViewRangeBuffedCoff ShanghaiWindy.Core.BuffProperty
----@field RepairSpeedBuffedCoff ShanghaiWindy.Core.BuffProperty
-local FlightPlayerState = {}
-
-return FlightPlayerState
 
 ---@class ShanghaiWindy.Core.ObjectPoolComponent
 local ObjectPoolComponent = {}
@@ -373,14 +366,6 @@ function VehicleInfo:GetLoadGUID() end
 ---@param isMultiplayer System.Boolean
 function VehicleInfo:GetRepairCost(isMultiplayer) end
 ---@instance
----@function [VehicleInfo:GetResearchExp]
----@return System.Int32
-function VehicleInfo:GetResearchExp() end
----@instance
----@function [VehicleInfo:IsResearched]
----@return System.Boolean
-function VehicleInfo:IsResearched() end
----@instance
 ---@function [VehicleInfo:IsSupportModuleMode]
 ---@return System.Boolean
 function VehicleInfo:IsSupportModuleMode() end
@@ -392,59 +377,39 @@ function VehicleInfo:GetRank() end
 ---@function [VehicleInfo:GetPreferSpawnPointType]
 ---@return ShanghaiWindy.Core.ESpawnPointType
 function VehicleInfo:GetPreferSpawnPointType() end
+---@instance
+---@function [VehicleInfo:GetVehicleProduceYear]
+---@return System.Int32
+function VehicleInfo:GetVehicleProduceYear() end
 return VehicleInfo
 
 ---@class ShanghaiWindy.Core.CaptureZoneTask
 ---@field ZoneId System.Int32
----@field Weight System.Int32
+---@field Weight System.Single
 local CaptureZoneTask = {}
 
 return CaptureZoneTask
 
----@class ShanghaiWindy.Core.BaseFireSystem
-local BaseFireSystem = {}
-
-return BaseFireSystem
-
 ---基本初始化系统类，用于游戏任何载具的基本初始化。该类实现了 IDynamicDataPatchable 接口和 IIndex 接口。
 ---The BaseInitSystem class is used for basic initialization of any vehicle. This class implements the IDynamicDataPatchable and IIndex interfaces.
 ---@class ShanghaiWindy.Core.BaseInitSystem
----@field basePawn ShanghaiWindy.Core.BasePawn @基础玩家状态类，用于处理玩家状态的改变，如受到伤害、击中反弹等事件。             Base player state class for handling changes in player states such as taking damage, ricocheting hits, etc.
+---@field basePawn ShanghaiWindy.Core.IPawn @基础玩家状态类，用于处理玩家状态的改变，如受到伤害、击中反弹等事件。             Base player state class for handling changes in player states such as taking damage, ricocheting hits, etc.
 ---@field equipmentBuffDataList System.Collections.Generic.List`1[ShanghaiWindy.Core.EquipmentBuffData] @装备 Buff 数据列表             Equipment Buff Data List
 ---@field OnVehicleLoaded UnityEngine.Events.UnityEvent
 ---@field OnVehiclePreLoaded UnityEngine.Events.UnityEvent
 ---@field OnVehicleDestroyed UnityEngine.Events.UnityEvent
 ---@field OnGameObjectDestroyed UnityEngine.Events.UnityEvent
 ---@field OnDamagedInternalModule ShanghaiWindy.Core.BaseInitSystem+DamagedInternalModule
+---@field VehicleName System.String
+---@field VehicleInfo ShanghaiWindy.Core.VehicleInfo
 ---@field OwnerTeam ShanghaiWindy.Core.TeamManager+Team
+---@field PlayerAvatarInfo ShanghaiWindy.Core.ClientAvatarInfo
+---@field OwnerBattlePlayer ShanghaiWindy.Core.AbstractBattlePlayer
 ---@field IsDestroyed System.Boolean
 ---@field IsLoaded System.Boolean
 local BaseInitSystem = {}
 
 return BaseInitSystem
-
----基础玩家状态类，用于处理玩家状态的改变，如受到伤害、击中反弹等事件。
----Base player state class for handling changes in player states such as taking damage, ricocheting hits, etc.
----@class ShanghaiWindy.Core.BasePawn
----@field vehicleName System.String @车辆名称。             Vehicle name.
----@field hp ShanghaiWindy.Core.PropValue`1[System.Int32] @玩家的生命值属性。             Player's health points property.
----@field defaultHP System.Int32 @默认生命值，用于初始化角色的生命值。Default Hit Points (HP) used for initializing the character's health.
----@field isFakeHP System.Boolean @是否为假生命值。             Whether it's fake health points.
----@field isGodMode ShanghaiWindy.Core.PropValue`1[System.Boolean] @是否开启上帝模式，若为 true，则角色无敌。             If God Mode is enabled (true), the character is invincible.
----@field lastBeHitPosition UnityEngine.Vector3 @上次受到伤害的位置。             The position where the character was last hit.
----@field totalDamage ShanghaiWindy.Core.PropValue`1[System.Int32] @角色总共造成的伤害。             The total damage the character has caused.
----@field totalDestroyed ShanghaiWindy.Core.PropValue`1[System.Int32] @角色总共摧毁的物体数量。             The total number of objects the character has destroyed.
----@field totalBlockDamage ShanghaiWindy.Core.PropValue`1[System.Int32] @角色总共阻挡的伤害。             The total damage the character has blocked.
----@field DamageResistanceBuffedCoff ShanghaiWindy.Core.BuffProperty @伤害阻挡 Buff             Damage resistance buff
----@field OnDamaged ShanghaiWindy.Core.OnDamagedEvent
----@field OnRichocheted UnityEngine.Events.UnityEvent
----@field OnNotBreakDowned ShanghaiWindy.Core.OnNotBreakDownEvent
----@field isDestroyed System.Boolean
----@field ViewRangeBuffedCoff ShanghaiWindy.Core.BuffProperty
----@field RepairSpeedBuffedCoff ShanghaiWindy.Core.BuffProperty
-local BasePawn = {}
-
-return BasePawn
 
 ---@class ShanghaiWindy.Core.ECaptureStage
 local ECaptureStage = {}
@@ -480,6 +445,7 @@ return EIconPosition
 ---@class ShanghaiWindy.Core.AbstractBattlePlayer
 ---@field Uid System.Int32 @唯一 Id             Uid
 ---@field NickName System.String @昵称             Nick name
+---@field AvatarInfo ShanghaiWindy.Core.ClientAvatarInfo @角色头像             Avatar
 ---@field VehicleInfo ShanghaiWindy.Core.VehicleInfo @载具信息             Vehicle Info
 ---@field Vehicle ShanghaiWindy.Core.BaseInitSystem @载具             Vehicle
 ---@field Info System.Object
@@ -531,24 +497,24 @@ local TeamManager = {}
 
 return TeamManager
 
----弹夹炮逻辑
+---@class ShanghaiWindy.Core.UIEnum
+local UIEnum = {}
+
+return UIEnum
+
 ---@class ShanghaiWindy.Core.TankFire
----@field mainBody UnityEngine.Transform @车体 Transform             Main Body Transform
----@field ffPoint UnityEngine.Transform @FF 点 Transform             FF Point Transform
----@field fireEffectPoint UnityEngine.Transform @射击特效点 Transform             Fire Effect Point Transform
----@field fireRecoilPoint UnityEngine.Transform @射击后坐力点 Transform             Fire Recoil Point Transform
----@field gunDym UnityEngine.Transform @Gun Transform
----@field attachedRigidbody UnityEngine.Rigidbody @附加刚体             Attached Rigidbody
----@field currentBulletId System.Int32 @当前炮弹 ID             Current Bullet ID
----@field isAutoCaclulateGravity System.Boolean @是否自动计算重力             Is Auto Calculate Gravity
----@field isExtraTurret System.Boolean @是否为额外炮塔             Is Extra Turret
 ---@field canControl System.Boolean @是否可控制             Can Control
 ---@field useGravity System.Boolean @使用重力             Use Gravity
 ---@field projectile ShanghaiWindy.Core.ProjectileManager @投射物管理器             Projectile Manager
----@field isPlayVFX System.Boolean @是否播放 VFX             Is Play VFX
----@field overrideVelocity UnityEngine.Vector3 @覆盖速度             Override Velocity
----@field bulletCountList System.Int32[]
----@field currentBullet ShanghaiWindy.Core.BulletData
+---@field fireTransforms System.Collections.Generic.List`1[ShanghaiWindy.Core.TankFireTransformInstance] @开火位置             Tank Fire Transforms
+---@field mainBody UnityEngine.Transform
+---@field fireRecoilPoint UnityEngine.Transform
+---@field attachedRigidbody UnityEngine.Rigidbody
+---@field isAutoCalculateGravity System.Boolean
+---@field isExtraTurret System.Boolean
+---@field ffPoint UnityEngine.Transform
+---@field fireEffectPoint UnityEngine.Transform
+---@field gunDym UnityEngine.Transform
 local TankFire = {}
 
 return TankFire
@@ -561,22 +527,26 @@ return TankFire
 ---@field vehicleTextData ShanghaiWindy.Core.VehicleTextData @车辆文本数据             Vehicle Text Data
 ---@field referenceManager ShanghaiWindy.Core.VehicleComponentsReferenceManager @车辆组件引用管理器             Vehicle Components Reference Manager
 ---@field diyReferenceManager ShanghaiWindy.Core.DIYVehicleComponentsReferenceManager @DIY 车辆组件引用管理器             DIY Vehicle Components Reference Manager
----@field vehicleComponents ShanghaiWindy.Core.TankVehicleComponents @车辆组件集合             Vehicle Components Collection
+---@field vehicleComponents ShanghaiWindy.Core.VehicleComponents @车辆组件集合             Vehicle Components Collection
 ---@field thinkLogic ShanghaiWindy.Core.BotLogic @机器人逻辑             Bot Logic
----@field vehicleInfo ShanghaiWindy.Core.VehicleInfo @车辆信息             Vehicle Information
 ---@field vehicleRemoveManagerModule ShanghaiWindy.Core.VehicleRemoveManagerModule @车辆移除管理模块             Vehicle Remove Manager Module
----@field basePawn ShanghaiWindy.Core.BasePawn @基础玩家状态类，用于处理玩家状态的改变，如受到伤害、击中反弹等事件。             Base player state class for handling changes in player states such as taking damage, ricocheting hits, etc.
+---@field basePawn ShanghaiWindy.Core.IPawn @基础玩家状态类，用于处理玩家状态的改变，如受到伤害、击中反弹等事件。             Base player state class for handling changes in player states such as taking damage, ricocheting hits, etc.
 ---@field equipmentBuffDataList System.Collections.Generic.List`1[ShanghaiWindy.Core.EquipmentBuffData] @装备 Buff 数据列表             Equipment Buff Data List
 ---@field CurEngineParam ShanghaiWindy.Core.TankControllerParameter
 ---@field CurMainTankFireParam ShanghaiWindy.Core.TankFireParameter
----@field CurMainTurretParam ShanghaiWindy.Core.MouseTurretParameter
+---@field CurMainTurretParam ShanghaiWindy.Core.TurretParameter
 ---@field CurPlayerStateParam ShanghaiWindy.Core.PlayerStateParameter
+---@field CurWaterPassiveParam ShanghaiWindy.Core.Data.PassiveWaterInteractParameter
 ---@field OnVehicleLoaded UnityEngine.Events.UnityEvent
 ---@field OnVehiclePreLoaded UnityEngine.Events.UnityEvent
 ---@field OnVehicleDestroyed UnityEngine.Events.UnityEvent
 ---@field OnGameObjectDestroyed UnityEngine.Events.UnityEvent
 ---@field OnDamagedInternalModule ShanghaiWindy.Core.BaseInitSystem+DamagedInternalModule
+---@field VehicleName System.String
+---@field VehicleInfo ShanghaiWindy.Core.VehicleInfo
 ---@field OwnerTeam ShanghaiWindy.Core.TeamManager+Team
+---@field PlayerAvatarInfo ShanghaiWindy.Core.ClientAvatarInfo
+---@field OwnerBattlePlayer ShanghaiWindy.Core.AbstractBattlePlayer
 ---@field IsDestroyed System.Boolean
 ---@field IsLoaded System.Boolean
 local VehicleInitSystem = {}
@@ -585,88 +555,67 @@ return VehicleInitSystem
 
 ---车辆组件
 ---Vehicle Components
----@class ShanghaiWindy.Core.TankVehicleComponents
----@field vehicleInputController ShanghaiWindy.Core.BaseVehicleInputController @车辆输入控制器             Vehicle Input Controller
----@field tankTracksController ShanghaiWindy.Core.TankTracksController @坦克履带控制器             Tank Track Controller
----@field playerCamera ShanghaiWindy.Core.GroundCameraController @玩家相机控制器             Player Camera Controller
+---@class ShanghaiWindy.Core.VehicleComponents
+---@field multiInputWrapper ShanghaiWindy.Core.MultiInputWrapperManageComponent @多输入映射管理组件             Multi Input Mapping Manage Component
+---@field trackController ShanghaiWindy.Core.TrackController @坦克履带控制器             Tank Track Controller
+---@field playerCamera ShanghaiWindy.Core.VehicleCameraController @玩家相机控制器             Player Camera Controller
 ---@field mainCamera UnityEngine.Camera @主相机             Main Camera
 ---@field mainTankFireIndex ShanghaiWindy.Core.PropValue`1[System.Int32] @主坦克火力索引             Main Tank Fire Index
----@field fireSystemList System.Collections.Generic.List`1[ShanghaiWindy.Core.FireSystemConfigure] @火力系统配置列表             Fire System Configuration List
----@field tankfireList System.Collections.Generic.List`1[ShanghaiWindy.Core.TankFire] @坦克火力列表             Tank Fire List
+---@field tankfireList ShanghaiWindy.Core.ObservedList`1[ShanghaiWindy.Core.TankFire] @坦克火力列表             Tank Fire List
+---@field indexTankFireMap System.Collections.Generic.Dictionary`2[System.Int64,ShanghaiWindy.Core.TankFire] @坦克火力索引与火力的映射             Tank Fire Index and Fire Mapping
 ---@field selfExplosionList System.Collections.Generic.List`1[ShanghaiWindy.Core.VehicleSelfExplosionFireSystem] @自爆火力系统列表             Vehicle Self-Explosion Fire System List
----@field turretControllerList System.Collections.Generic.List`1[ShanghaiWindy.Core.TurretController] @炮塔控制器列表             Turret Controller List
+---@field turretControllerList ShanghaiWindy.Core.ObservedList`1[ShanghaiWindy.Core.TurretController] @炮塔控制器列表             Turret Controller List
 ---@field identity ShanghaiWindy.Core.Identity @身份信息             Identity
----@field baseVehiclePawn ShanghaiWindy.Core.BaseVehiclePawn @坦克状态             Tank State
+---@field baseVehiclePawn ShanghaiWindy.Core.IVehiclePawn @坦克状态             Tank State
 ---@field battleVehiclePawn ShanghaiWindy.Core.BattleVehiclePawn
----@field basePawn ShanghaiWindy.Core.BasePawn @基本玩家状态             Base Player State
+---@field basePawn ShanghaiWindy.Core.IPawn @基本玩家状态             Base Player State
 ---@field damageStickManager ShanghaiWindy.Core.VehicleDamageStickManager @车辆伤害棒管理器             Vehicle Damage Stick Manager
 ---@field HitBoxes System.Collections.Generic.List`1[ShanghaiWindy.Core.HitBox] @碰撞箱列表             Hit Box List
 ---@field rigidbody UnityEngine.Rigidbody @刚体组件             Rigidbody Component
 ---@field vehicleFireCrossEffect ShanghaiWindy.Core.VehicleFireCrossEffect @车辆火力交叉特效             Vehicle Fire Cross Effect
 ---@field renderers UnityEngine.Renderer[] @渲染器数组             Renderer Array
----@field mainBodyVisiblity ShanghaiWindy.Core.MainBodyVisibility @主体可见性             Main Body Visibility
 ---@field mainBodyTransform UnityEngine.Transform @主体变换组件             Main Body Transform Component
----@field fireAssistComponent ShanghaiWindy.Core.FireAssistComponent @火力辅助组件             Fire Assist Component
----@field fireLockComponent ShanghaiWindy.Core.FireLockComponent @火力锁定组件             Fire Lock Component
----@field tracksControllers System.Collections.Generic.List`1[ShanghaiWindy.Core.SplineTrackController] @履带控制器列表             Tracks Controller List
+---@field tracksControllers System.Collections.Generic.List`1[ShanghaiWindy.Core.SplineTrackComponent] @履带控制器列表             Tracks Controller List
 ---@field tankFireFireGroupManager ShanghaiWindy.Core.TankFireFireGroupManager @坦克火力分组管理器             Tank Fire Group Manager
+---@field groundAARadarSystem ShanghaiWindy.Core.GroundAARadarSystem
+---@field engineFmodSoundModules System.Collections.Generic.List`1[ShanghaiWindy.Core.EngineFmodSoundModule]
+---@field passiveWaterInteractComponent ShanghaiWindy.Core.PassiveWaterInteractComponent
+---@field tankFireGuids ShanghaiWindy.Core.Framework.BiDirectionalDictionary`2[ShanghaiWindy.Core.TankFire,System.String]
+---@field turretControllerGuids ShanghaiWindy.Core.Framework.BiDirectionalDictionary`2[ShanghaiWindy.Core.TurretController,System.String]
+---@field attachments System.Collections.Generic.List`1[ShanghaiWindy.Core.AbstractVehicleAttachment]
+---@field vehicleController ShanghaiWindy.Core.IVehicleController
 ---@field mainTankFire ShanghaiWindy.Core.TankFire
 ---@field mainTurretController ShanghaiWindy.Core.TurretController
-local TankVehicleComponents = {}
+local VehicleComponents = {}
 
-return TankVehicleComponents
+return VehicleComponents
 
 ---@class ShanghaiWindy.Core.TurretController
----@field turretParams ShanghaiWindy.Core.MouseTurretParameter @炮塔参数             Turret Parameters
----@field target UnityEngine.Transform @目标             Target
----@field turretTransform UnityEngine.Transform @炮塔 Transform             Turret Transform
----@field gunTransform UnityEngine.Transform @炮管 Transform             Gun Transform
----@field dymTransform UnityEngine.Transform @炮管伸缩 Transform             Dym Transform
----@field InitialTrans UnityEngine.Transform @初始变换             Initial Transform
----@field isTargetWithinRange System.Boolean @目标是否在射程内             Is Target Within Range
----@field isLocked System.Boolean @是否锁定             Is Locked
----@field fireAngle System.Single @射击角度             Fire Angle
+---@field turretParams ShanghaiWindy.Core.TurretParameter
+---@field InitialTrans ShanghaiWindy.Core.VirtualTransform
+---@field isLocked System.Boolean
+---@field fireAngle System.Single
 ---@field turretParamProvider ShanghaiWindy.Core.Interface.ITurretParamProvider
 ---@field isLocalPlayer System.Boolean
+---@field turretTransform UnityEngine.Transform
+---@field gunTransform UnityEngine.Transform
+---@field dymTransform UnityEngine.Transform
+---@field isTargetWithinRange System.Boolean
+---@field maxElevation System.Single
+---@field maxDepression System.Single
+---@field turretTraverseAngle System.Single
+---@field elevationAngle System.Single
 ---@field TurretSpeedBuffedCoff ShanghaiWindy.Core.BuffProperty
 ---@field GunSpeedBuffedCoff ShanghaiWindy.Core.BuffProperty
 local TurretController = {}
 
 return TurretController
 
----@class ShanghaiWindy.Core.UIPoolComponent
-local UIPoolComponent = {}
+---@class ShanghaiWindy.Core.MultiInputWrapperManageComponent
+---@field isShipControllerActive ShanghaiWindy.Core.PropValue`1[System.Boolean]
+local MultiInputWrapperManageComponent = {}
 
----从对象池取物体
----Get object from the pool
----@instance
----@function [UIPoolComponent:Get]
----@return UnityEngine.GameObject
----@param stayWorldPos System.Boolean
-function UIPoolComponent:Get(stayWorldPos) end
----回收对象池物体
----Return object back to the pool
----@instance
----@function [UIPoolComponent:Release]
----@param instance UnityEngine.GameObject
-function UIPoolComponent:Release(instance) end
----回收所以对象池物体
----Return all the objects back to the pool
----@instance
----@function [UIPoolComponent:Clear]
-function UIPoolComponent:Clear() end
----释放对象池
----Dispose the pool
----@instance
----@function [UIPoolComponent:Dispose]
-function UIPoolComponent:Dispose() end
----获取对象池中的物体数量
----Get the count of the objects in the pool
----@instance
----@function [UIPoolComponent:GetActiveCount]
----@return System.Int32
-function UIPoolComponent:GetActiveCount() end
-return UIPoolComponent
+return MultiInputWrapperManageComponent
 
 ---Lua 模组接口，用于定义模组的基本信息。
 ---Lua mod interface, providing basic information about the mod.
@@ -732,13 +681,6 @@ function ILuaCommon:OnSceneLoaded(levelName) end
 function ILuaCommon:OnDispose() end
 return ILuaCommon
 
----Vehicle() 定义下的类型接口。Lua 游戏载具模块接口，用于定义游戏载具的行为和逻辑。
----Interface for Vehicle() define. Lua vehicle module interface, providing vehicle behaviors and logic.
----@class ShanghaiWindy.Core.Lua.ILuaControllableVehicle
-local ILuaControllableVehicle = {}
-
-return ILuaControllableVehicle
-
 ---GameMode() 定义下的类型接口。Lua 游戏模式模块接口，用于定义游戏模式的行为和逻辑。
 ---Interface for GameMode() define. Lua game mode module interface, providing game mode behaviors and logic.
 ---@class ShanghaiWindy.Core.Lua.ILuaGameMode
@@ -767,12 +709,6 @@ function ILuaGameMode:OnUpdated() end
 ---@instance
 ---@function [ILuaGameMode:OnExitMode]
 function ILuaGameMode:OnExitMode() end
----是否让用户自己管理进入战斗的加载流程。
----Determine if the user should manage the battle loading process.
----@instance
----@function [ILuaGameMode:IsProxyBattle]
----@return System.Boolean 如果为 true，则用户自己管理进入战斗的加载流程。If true, the user manages the battle loading process.
-function ILuaGameMode:IsProxyBattle() end
 ---是否启用占领点
 ---Is enable capture point
 ---@instance
@@ -785,27 +721,24 @@ function ILuaGameMode:IsEnableCapturePoint() end
 ---@function [ILuaGameMode:GetMapMode]
 ---@return System.Int32
 function ILuaGameMode:GetMapMode() end
+---是否显示小地图
+---Is shown minimap
+---@instance
+---@function [ILuaGameMode:IsEnableMinimap]
+---@return System.Boolean
+function ILuaGameMode:IsEnableMinimap() end
 return ILuaGameMode
 
+---Vehicle() 定义下的类型接口。Lua 游戏载具模块接口，用于定义游戏载具的行为和逻辑。
+---Interface for Vehicle() define. Lua vehicle module interface, providing vehicle behaviors and logic.
+---@class ShanghaiWindy.Core.Lua.ILuaVehicleController
+local ILuaVehicleController = {}
+
+return ILuaVehicleController
+
 ---@class ShanghaiWindy.Core.Lua.LuaBehaviorMono
----@field ClassName System.String
 local LuaBehaviorMono = {}
 
----@instance
----@function [LuaBehaviorMono:TryGetTankInitSystem]
----@return System.Boolean
----@param vehicleInitSystem ShanghaiWindy.Core.VehicleInitSystem&
-function LuaBehaviorMono:TryGetTankInitSystem(vehicleInitSystem) end
----@instance
----@function [LuaBehaviorMono:TryGetFlightInitSystem]
----@return System.Boolean
----@param flightInitSystem ShanghaiWindy.Core.FlightInitSystem&
-function LuaBehaviorMono:TryGetFlightInitSystem(flightInitSystem) end
----@instance
----@function [LuaBehaviorMono:TryGetArmyInitSystem]
----@return System.Boolean
----@param armyInitSystem ShanghaiWindy.Core.FPS.ArmyInitSystem&
-function LuaBehaviorMono:TryGetArmyInitSystem(armyInitSystem) end
 return LuaBehaviorMono
 
 ---子弹发射信息
@@ -995,7 +928,7 @@ local BattlePlayerAPI = {}
 ---Create offline bot
 ---@static
 ---@function [BattlePlayerAPI.CreateOfflineBotPlayer]
----@return ShanghaiWindy.Core.OfflineBotBattlePlayer
+---@return ShanghaiWindy.Core.OfflineBotBattlePlayer 离线 Bot 玩家 Offline bot player
 ---@param uid System.Int32
 ---@param nickName System.String
 ---@param info System.Object
@@ -1004,7 +937,7 @@ function BattlePlayerAPI.CreateOfflineBotPlayer(uid, nickName, info) end
 ---Create main player bot
 ---@static
 ---@function [BattlePlayerAPI.CreateOfflineMainPlayer]
----@return ShanghaiWindy.Core.OfflineMainBattlePlayer
+---@return ShanghaiWindy.Core.OfflineMainBattlePlayer 离线主角玩家 Offline main player
 ---@param uid System.Int32
 ---@param info System.Object
 function BattlePlayerAPI.CreateOfflineMainPlayer(uid, info) end
@@ -1012,24 +945,26 @@ function BattlePlayerAPI.CreateOfflineMainPlayer(uid, info) end
 ---Get random bot name
 ---@static
 ---@function [BattlePlayerAPI.GetRandomBotName]
----@return System.String
+---@return System.String 随机名称 Random bot name
 function BattlePlayerAPI.GetRandomBotName() end
 return BattlePlayerAPI
 
+---Bot AI API
+---Bot AI API
 ---@class ShanghaiWindy.Core.API.BotAPI
 local BotAPI = {}
 
----@static
----@function [BotAPI.GetTankDefenceBotLogic]
----@return ShanghaiWindy.Core.DefenceBotLogic
-function BotAPI.GetTankDefenceBotLogic() end
+---创建一个坦克 Bot 任务逻辑。
+---Create a tank bot task logic.
 ---@static
 ---@function [BotAPI.GetTankBotTaskLogic]
----@return ShanghaiWindy.Core.TankBotTaskLogic
+---@return ShanghaiWindy.Core.TankBotTaskLogic 坦克 Bot 任务逻辑 Tank bot task logic
 function BotAPI.GetTankBotTaskLogic() end
+---为 Bot 添加占领区任务。
+---Add a capture zone task to the bot.
 ---@static
 ---@function [BotAPI.AddCaptureTaskToBot]
----@return ShanghaiWindy.Core.CaptureZoneTask
+---@return ShanghaiWindy.Core.CaptureZoneTask 占领区任务 Capture zone task
 ---@param logic ShanghaiWindy.Core.TankBotTaskLogic
 function BotAPI.AddCaptureTaskToBot(logic) end
 return BotAPI
@@ -1082,7 +1017,7 @@ local CameraAPI = {}
 ---Get camera transform
 ---@static
 ---@function [CameraAPI.GetCameraTransform]
----@return UnityEngine.Transform
+---@return UnityEngine.Transform 摄像机 Transform Camera transform
 function CameraAPI.GetCameraTransform() end
 ---设置背景摄像机位置
 ---Set background camera position
@@ -1100,13 +1035,13 @@ function CameraAPI.SetBackgroundCameraEulerAngles(eulerAngles) end
 ---Get background camera
 ---@static
 ---@function [CameraAPI.GetBackGroundCamera]
----@return UnityEngine.Camera
+---@return UnityEngine.Camera 背景摄像机 Background camera
 function CameraAPI.GetBackGroundCamera() end
 ---屏幕位置转为世界坐标
 ---Screen point to world point
 ---@static
 ---@function [CameraAPI.ScreenToWorldPoint]
----@return UnityEngine.Vector3
+---@return UnityEngine.Vector3 世界坐标 World point
 ---@param camera UnityEngine.Camera
 ---@param screenPoint UnityEngine.Vector3
 function CameraAPI.ScreenToWorldPoint(camera, screenPoint) end
@@ -1114,7 +1049,7 @@ function CameraAPI.ScreenToWorldPoint(camera, screenPoint) end
 ---World point to screen point
 ---@static
 ---@function [CameraAPI.WorldToScreenPoint]
----@return UnityEngine.Vector3
+---@return UnityEngine.Vector3 屏幕坐标 Screen point
 ---@param camera UnityEngine.Camera
 ---@param worldPoint UnityEngine.Vector3
 function CameraAPI.WorldToScreenPoint(camera, worldPoint) end
@@ -1122,7 +1057,7 @@ function CameraAPI.WorldToScreenPoint(camera, worldPoint) end
 ---Get the current main game camera
 ---@static
 ---@function [CameraAPI.GetGameCamera]
----@return UnityEngine.Camera
+---@return UnityEngine.Camera 游戏摄像机 Game camera
 function CameraAPI.GetGameCamera() end
 ---@static
 ---@function [CameraAPI.GetScreenPosition]
@@ -1132,6 +1067,8 @@ function CameraAPI.GetGameCamera() end
 function CameraAPI.GetScreenPosition(worldPos, iconPosition) end
 return CameraAPI
 
+---占领区 API
+---Capture Zone API
 ---@class ShanghaiWindy.Core.API.CaptureZoneAPI
 local CaptureZoneAPI = {}
 
@@ -1139,6 +1076,7 @@ local CaptureZoneAPI = {}
 ---Add a capture zone
 ---@static
 ---@function [CaptureZoneAPI.AddCaptureZone]
+---@return System.Int64 占领区 ID Capture zone ID
 ---@param zoneName System.String
 ---@param point UnityEngine.Vector3
 ---@param radius System.Single
@@ -1162,14 +1100,14 @@ function CaptureZoneAPI.SetCapturingZoneStatus(id, progress, capturingTeam, stag
 ---Get capture zone
 ---@static
 ---@function [CaptureZoneAPI.GetCaptureZone]
----@return ShanghaiWindy.Core.CaptureZoneInfo
+---@return ShanghaiWindy.Core.CaptureZoneInfo 占领区信息 Capture zone info
 ---@param id System.Int64
 function CaptureZoneAPI.GetCaptureZone(id) end
 ---从名称获取占领点
 ---Get capture zone from index
 ---@static
 ---@function [CaptureZoneAPI.GetCaptureZoneFromName]
----@return ShanghaiWindy.Core.CaptureZoneInfo
+---@return ShanghaiWindy.Core.CaptureZoneInfo 占领区信息 Capture zone info
 ---@param name System.String
 function CaptureZoneAPI.GetCaptureZoneFromName(name) end
 ---销毁一个占领区域
@@ -1182,16 +1120,20 @@ function CaptureZoneAPI.RemoveCaptureZone(id) end
 ---Get capture zone infos
 ---@static
 ---@function [CaptureZoneAPI.GetCaptureZoneInfos]
----@return ShanghaiWindy.Core.CaptureZoneInfo[]
+---@return ShanghaiWindy.Core.CaptureZoneInfo[] 占领区信息数组 Capture zone info array
 function CaptureZoneAPI.GetCaptureZoneInfos() end
 return CaptureZoneAPI
 
+---颜色 API
+---Color API
 ---@class ShanghaiWindy.Core.API.ColorAPI
 local ColorAPI = {}
 
+---通过 RGBA 值创建颜色。
+---Create a color from RGBA values.
 ---@static
 ---@function [ColorAPI.GetColor]
----@return UnityEngine.Color
+---@return UnityEngine.Color 颜色 Color
 ---@param r System.Single
 ---@param g System.Single
 ---@param b System.Single
@@ -1275,6 +1217,8 @@ function ComponentAPI.GetNativeComponentsInChildren(target, componentName) end
 function ComponentAPI.GetObjectsInWorld(componentName) end
 return ComponentAPI
 
+---配置表 API
+---Config API
 ---@class ShanghaiWindy.Core.API.ConfigAPI
 local ConfigAPI = {}
 
@@ -1282,28 +1226,34 @@ local ConfigAPI = {}
 ---Get wave mission config list
 ---@static
 ---@function [ConfigAPI.GetWaveMissionConfigs]
----@return ShanghaiWindy.Data.WaveMissionConfig[]
+---@return ShanghaiWindy.Data.WaveMissionConfig[] 防守任务配置数组 Wave mission config array
 function ConfigAPI.GetWaveMissionConfigs() end
 ---获取防守任务配置
 ---Get wave mission config
 ---@static
 ---@function [ConfigAPI.GetWaveMissionConfig]
----@return ShanghaiWindy.Data.WaveMissionConfig
+---@return ShanghaiWindy.Data.WaveMissionConfig 防守任务配置 Wave mission config
 ---@param guid System.String
 function ConfigAPI.GetWaveMissionConfig(guid) end
 ---获取占领点配置列表
 ---Get capture zone config list
 ---@static
 ---@function [ConfigAPI.GetCaptureZoneConfigs]
----@return ShanghaiWindy.Data.CaptureZoneModeConfig[]
+---@return ShanghaiWindy.Data.CaptureZoneModeConfig[] 占领点配置数组 Capture zone config array
 function ConfigAPI.GetCaptureZoneConfigs() end
 ---获取占领区任务配置
 ---Get capture zone config
 ---@static
 ---@function [ConfigAPI.GetCaptureZoneConfig]
----@return ShanghaiWindy.Data.CaptureZoneModeConfig
+---@return ShanghaiWindy.Data.CaptureZoneModeConfig 占领区配置 Capture zone config
 ---@param guid System.String
 function ConfigAPI.GetCaptureZoneConfig(guid) end
+---获取战区配置列表
+---Get war zone config list
+---@static
+---@function [ConfigAPI.GetWarZoneConfigs]
+---@return ShanghaiWindy.Data.WarZoneModeConfig[] 战区配置数组 War zone config array
+function ConfigAPI.GetWarZoneConfigs() end
 return ConfigAPI
 
 ---将 Lua Table 转为 C# 对象
@@ -1315,7 +1265,7 @@ local ConvertAPI = {}
 ---Covert Lua Class to IBuffCaster Object
 ---@static
 ---@function [ConvertAPI.CovertToBuffCaster]
----@return ShanghaiWindy.Core.Lua.ILuaBuffCaster
+---@return ShanghaiWindy.Core.Lua.ILuaBuffCaster ILuaBuffCaster 对象 ILuaBuffCaster object
 ---@param luaTable XLua.LuaTable
 function ConvertAPI.CovertToBuffCaster(luaTable) end
 return ConvertAPI
@@ -1399,12 +1349,15 @@ local FlightAPI = {}
 function FlightAPI.GetFlightFireList(vehicle) end
 return FlightAPI
 
+---字体 API
+---Font API
 ---@class ShanghaiWindy.Core.API.FontAPI
 local FontAPI = {}
 
+---替换目标对象下所有 Text 组件的字体为主字体。
+---Replace all Text fonts under the target GameObject with the main font.
 ---@static
 ---@function [FontAPI.ReplaceAsMainFont]
----@return System.Void
 ---@param instance UnityEngine.GameObject
 function FontAPI.ReplaceAsMainFont(instance) end
 return FontAPI
@@ -1452,14 +1405,16 @@ function GameAPI.RegisterVehicleGameObjectDestroyedEvent(gameVehicleGameObjectDe
 function GameAPI.UnRegisterVehicleGameObjectDestroyedEvent(gameVehicleGameObjectDestroyedDelegate) end
 return GameAPI
 
+---游戏对象 API
+---GameObject API
 ---@class ShanghaiWindy.Core.API.GameObjectAPI
 local GameObjectAPI = {}
 
 ---寻找路径物体
----Find path
+---Find child by path
 ---@static
 ---@function [GameObjectAPI.Find]
----@return UnityEngine.GameObject
+---@return UnityEngine.GameObject 目标子物体 Target child GameObject
 ---@param go UnityEngine.GameObject
 ---@param path System.String
 function GameObjectAPI.Find(go, path) end
@@ -1473,7 +1428,7 @@ function GameObjectAPI.DontDestroyOnLoad(go) end
 ---Clone object
 ---@static
 ---@function [GameObjectAPI.Clone]
----@return UnityEngine.GameObject
+---@return UnityEngine.GameObject 复制的对象 Cloned GameObject
 ---@param go UnityEngine.GameObject
 function GameObjectAPI.Clone(go) end
 ---销毁物体
@@ -1497,6 +1452,48 @@ function GameObjectAPI.SetActive(go, isActive) end
 ---@param isVisible System.Boolean
 function GameObjectAPI.SetVisible(go, isVisible) end
 return GameObjectAPI
+
+---装甲碰撞盒 API
+---HitBox Armor API
+---@class ShanghaiWindy.Core.API.HitBoxAPI
+local HitBoxAPI = {}
+
+---从 GameObject 获取 HitBoxComponent。
+---Get HitBoxComponent from a GameObject.
+---@static
+---@function [HitBoxAPI.GetHitBox]
+---@return ShanghaiWindy.Core.HitBoxComponent HitBoxComponent，不存在则返回 null
+---@param gameObject UnityEngine.GameObject
+function HitBoxAPI.GetHitBox(gameObject) end
+---从 Collider 获取 HitBoxComponent。
+---Get HitBoxComponent from a Collider.
+---@static
+---@function [HitBoxAPI.GetHitBoxFromCollider]
+---@return ShanghaiWindy.Core.HitBoxComponent HitBoxComponent，不存在则返回 null
+---@param collider UnityEngine.Collider
+function HitBoxAPI.GetHitBoxFromCollider(collider) end
+---获取 HitBox 的装甲厚度。
+---Get the armor thickness of a HitBox.
+---@static
+---@function [HitBoxAPI.GetArmor]
+---@return System.Int32 装甲厚度 Armor thickness
+---@param hitBox ShanghaiWindy.Core.HitBoxComponent
+function HitBoxAPI.GetArmor(hitBox) end
+---获取 HitBox 所属载具。
+---Get the vehicle that owns this HitBox.
+---@static
+---@function [HitBoxAPI.GetOwner]
+---@return ShanghaiWindy.Core.BaseInitSystem 所属载具 Owner vehicle
+---@param hitBox ShanghaiWindy.Core.HitBoxComponent
+function HitBoxAPI.GetOwner(hitBox) end
+---获取载具上所有 HitBoxComponent。
+---Get all HitBoxComponents on a vehicle.
+---@static
+---@function [HitBoxAPI.GetAllHitBoxes]
+---@return System.Collections.Generic.List`1[[ShanghaiWindy.Core.HitBoxComponent, Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]] HitBoxComponent 列表 List of HitBoxComponent
+---@param vehicle ShanghaiWindy.Core.BaseInitSystem
+function HitBoxAPI.GetAllHitBoxes(vehicle) end
+return HitBoxAPI
 
 ---默认值输入
 ---Default value input
@@ -1532,65 +1529,145 @@ function InputAPI.RegisterKeyInput(actionName, keyCode, keyPerformed, keyCancele
 ---@function [InputAPI.UnregisterKeyInput]
 ---@param actionName System.String
 function InputAPI.UnregisterKeyInput(actionName) end
+---注册按键添加事件回调。
+---Register a callback when a key input is added.
 ---@static
 ---@function [InputAPI.RegisterAddKeyInput]
----@return System.Void
 ---@param onKeyRegistered ShanghaiWindy.Core.Delegate.OnKeyRegistered
 function InputAPI.RegisterAddKeyInput(onKeyRegistered) end
+---取消注册按键添加事件回调。
+---Unregister a callback when a key input is added.
 ---@static
 ---@function [InputAPI.UnregisterAddKeyInput]
----@return System.Void
 ---@param onKeyRegistered ShanghaiWindy.Core.Delegate.OnKeyRegistered
 function InputAPI.UnregisterAddKeyInput(onKeyRegistered) end
+---注册按键移除事件回调。
+---Register a callback when a key input is removed.
 ---@static
 ---@function [InputAPI.RegisterRemoveKeyInput]
----@return System.Void
 ---@param onKeyUnregistered ShanghaiWindy.Core.Delegate.OnKeyUnregistered
 function InputAPI.RegisterRemoveKeyInput(onKeyUnregistered) end
+---取消注册按键移除事件回调。
+---Unregister a callback when a key input is removed.
 ---@static
 ---@function [InputAPI.UnregisterRemoveKeyInput]
----@return System.Void
 ---@param onKeyUnregistered ShanghaiWindy.Core.Delegate.OnKeyUnregistered
 function InputAPI.UnregisterRemoveKeyInput(onKeyUnregistered) end
+---获取所有已注册的按键绑定。
+---Get all registered key bindings.
 ---@static
 ---@function [InputAPI.GetBindings]
----@return System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[ShanghaiWindy.Core.API.InputAPICache, Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
+---@return System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[ShanghaiWindy.Core.API.InputAPICache, Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]] 按键绑定字典 Key bindings dictionary
 function InputAPI.GetBindings() end
+---获取默认值类型输入的当前值。
+---Get the current value of a default value input.
 ---@static
 ---@function [InputAPI.GetDefaultValueInput]
----@return System.Single
+---@return System.Single 输入值 Input value
 ---@param inputType ShanghaiWindy.Core.API.eDefaultValueInputType
 function InputAPI.GetDefaultValueInput(inputType) end
+---检查默认按键是否被按下。
+---Check if a default button input is pressed.
 ---@static
 ---@function [InputAPI.IsDefaultPressed]
----@return System.Boolean
+---@return System.Boolean 是否按下 Is pressed
 ---@param inputType ShanghaiWindy.Core.API.eDefaultButtonInputType
 function InputAPI.IsDefaultPressed(inputType) end
 return InputAPI
 
----Map api
+---内部模块 API
+---Internal Module API
+---@class ShanghaiWindy.Core.API.InternalModuleAPI
+local InternalModuleAPI = {}
+
+---从 GameObject 获取内部模块组件。
+---Get InternalModuleComponent from a GameObject.
+---@static
+---@function [InternalModuleAPI.GetInternalModule]
+---@return ShanghaiWindy.Core.InternalModuleComponent InternalModuleComponent，不存在则返回 null
+---@param gameObject UnityEngine.GameObject
+function InternalModuleAPI.GetInternalModule(gameObject) end
+---从 Collider 获取内部模块组件。
+---Get InternalModuleComponent from a Collider.
+---@static
+---@function [InternalModuleAPI.GetInternalModuleFromCollider]
+---@return ShanghaiWindy.Core.InternalModuleComponent InternalModuleComponent，不存在则返回 null
+---@param collider UnityEngine.Collider
+function InternalModuleAPI.GetInternalModuleFromCollider(collider) end
+---获取模块类型。
+---Get the module type.
+---@static
+---@function [InternalModuleAPI.GetModuleType]
+---@return ShanghaiWindy.Core.EInternalModuleType 模块类型 Module type
+---@param module ShanghaiWindy.Core.InternalModuleComponent
+function InternalModuleAPI.GetModuleType(module) end
+---获取模块状态。
+---Get module state (Good/Slight/Middle/Critical/Serious/Destroyed).
+---@static
+---@function [InternalModuleAPI.GetModuleState]
+---@return ShanghaiWindy.Core.InternalModuleState 模块状态 Module state
+---@param module ShanghaiWindy.Core.InternalModuleComponent
+function InternalModuleAPI.GetModuleState(module) end
+---获取模块当前血量。
+---Get the current hit point.
+---@static
+---@function [InternalModuleAPI.GetCurrentHitPoint]
+---@return System.Int32 当前血量 Current HP
+---@param module ShanghaiWindy.Core.InternalModuleComponent
+function InternalModuleAPI.GetCurrentHitPoint(module) end
+---获取模块最大血量。
+---Get the max hit point.
+---@static
+---@function [InternalModuleAPI.GetMaxHitPoint]
+---@return System.Int32 最大血量 Max HP
+---@param module ShanghaiWindy.Core.InternalModuleComponent
+function InternalModuleAPI.GetMaxHitPoint(module) end
+---获取模块所属载具。
+---Get the vehicle that owns this module.
+---@static
+---@function [InternalModuleAPI.GetOwner]
+---@return ShanghaiWindy.Core.BaseInitSystem 所属载具 Owner vehicle
+---@param module ShanghaiWindy.Core.InternalModuleComponent
+function InternalModuleAPI.GetOwner(module) end
+---获取载具上所有内部模块组件。
+---Get all InternalModuleComponents on a vehicle.
+---@static
+---@function [InternalModuleAPI.GetAllInternalModules]
+---@return System.Collections.Generic.List`1[[ShanghaiWindy.Core.InternalModuleComponent, Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]] 模块列表 List of InternalModuleComponent
+---@param vehicle ShanghaiWindy.Core.BaseInitSystem
+function InternalModuleAPI.GetAllInternalModules(vehicle) end
+return InternalModuleAPI
+
+---地图 API
+---Map API
 ---@class ShanghaiWindy.Core.API.MapAPI
 local MapAPI = {}
 
----Get map from guid
+---通过 GUID 获取地图数据。
+---Get map data by GUID.
 ---@static
 ---@function [MapAPI.GetMapDataByGuid]
----@return ShanghaiWindy.Core.MapData
+---@return ShanghaiWindy.Core.MapData 地图数据 Map data
 ---@param guid System.String
 function MapAPI.GetMapDataByGuid(guid) end
 return MapAPI
 
+---材质 API
+---Material API
 ---@class ShanghaiWindy.Core.API.MaterialAPI
 local MaterialAPI = {}
 
+---异步为目标对象应用材质。
+---Asynchronously apply a material to the target GameObject.
 ---@static
 ---@function [MaterialAPI.AsyncApplyMaterial]
----@return System.Void
 ---@param guid System.String
 ---@param instance UnityEngine.GameObject
 function MaterialAPI.AsyncApplyMaterial(guid, instance) end
 return MaterialAPI
 
+---网格与碰撞体 API
+---Mesh and Collider API
 ---@class ShanghaiWindy.Core.API.MeshAPI
 local MeshAPI = {}
 
@@ -1598,7 +1675,7 @@ local MeshAPI = {}
 ---Create mesh
 ---@static
 ---@function [MeshAPI.CreateMesh]
----@return System.Int32
+---@return System.Int32 Mesh ID
 ---@param points UnityEngine.Vector3[]
 ---@param height System.Single
 function MeshAPI.CreateMesh(points, height) end
@@ -1606,7 +1683,7 @@ function MeshAPI.CreateMesh(points, height) end
 ---Get mesh
 ---@static
 ---@function [MeshAPI.GetMesh]
----@return UnityEngine.GameObject
+---@return UnityEngine.GameObject Mesh 对应的 GameObject
 ---@param meshId System.Int32
 function MeshAPI.GetMesh(meshId) end
 ---删除 mesh
@@ -1615,17 +1692,21 @@ function MeshAPI.GetMesh(meshId) end
 ---@function [MeshAPI.DeleteMesh]
 ---@param meshId System.Int32
 function MeshAPI.DeleteMesh(meshId) end
+---创建球形触发区域。
+---Create a sphere trigger box.
 ---@static
 ---@function [MeshAPI.CreateSphereTriggerBox]
----@return System.Int32
+---@return System.Int32 触发器 ID Trigger ID
 ---@param position UnityEngine.Vector3
 ---@param radius System.Single
 ---@param onEnter System.Action`1[[UnityEngine.Collider, UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
 ---@param onExit System.Action`1[[UnityEngine.Collider, UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
 function MeshAPI.CreateSphereTriggerBox(position, radius, onEnter, onExit) end
+---判断点是否在多边形内（XZ 平面）。
+---Check if a point is inside a polygon (XZ plane).
 ---@static
 ---@function [MeshAPI.IsPointInPolygon]
----@return System.Boolean
+---@return System.Boolean 是否在多边形内 Is inside polygon
 ---@param point UnityEngine.Vector3
 ---@param polygonPoints UnityEngine.Vector3[]
 function MeshAPI.IsPointInPolygon(point, polygonPoints) end
@@ -1772,13 +1853,13 @@ function ModeAPI.EnableCountDown(countDown, countDownTitle, countDownDescription
 ---Get mode instance of lua class
 ---@static
 ---@function [ModeAPI.GetModeInstance]
----@return XLua.LuaTable
+---@return XLua.LuaTable Lua 模式实例 Lua mode instance
 function ModeAPI.GetModeInstance() end
 ---获取 c# 游戏模式实例
 ---Get the native game mode in c#
 ---@static
 ---@function [ModeAPI.GetNativeMode]
----@return ShanghaiWindy.Core.GameMode.BaseGameMode
+---@return ShanghaiWindy.Core.GameMode.BaseGameMode 游戏模式实例 Game mode instance
 function ModeAPI.GetNativeMode() end
 ---开始录制
 ---Start Record
@@ -1797,6 +1878,22 @@ function ModeAPI.EndRecord() end
 ---@param title System.String
 ---@param information System.String
 function ModeAPI.SendInformation(title, information) end
+---打开载具选择器（单选，点击即关闭）
+---Open vehicle picker (single select, closes on pick)
+---@static
+---@function [ModeAPI.ShowVehiclePicker]
+---@param titleKey System.String
+---@param onPicked System.Action`1[[ShanghaiWindy.Core.VehicleInfo, Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
+function ModeAPI.ShowVehiclePicker(titleKey, onPicked) end
+---打开载具队列选择器（多选，确认后关闭）
+---Open vehicle queue picker (multi select, closes on confirm)
+---@static
+---@function [ModeAPI.ShowVehicleQueuePicker]
+---@param titleKey System.String
+---@param queue ShanghaiWindy.Core.ClientUserVehicleQueue
+---@param maxVehicles System.Int32
+---@param onDone System.Action`1[[ShanghaiWindy.Core.ClientUserVehicleQueue, Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
+function ModeAPI.ShowVehicleQueuePicker(titleKey, queue, maxVehicles, onDone) end
 return ModeAPI
 
 ---位置点 API
@@ -1839,7 +1936,7 @@ local RandomAPI = {}
 ---Random vehicle from list
 ---@static
 ---@function [RandomAPI.GetRandomVehicleFromList]
----@return ShanghaiWindy.Core.VehicleInfo
+---@return ShanghaiWindy.Core.VehicleInfo 随机选中的载具 Randomly selected vehicle
 ---@param vehicleInfos System.Collections.Generic.List`1[[ShanghaiWindy.Core.VehicleInfo, Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]
 function RandomAPI.GetRandomVehicleFromList(vehicleInfos) end
 return RandomAPI
@@ -1938,7 +2035,7 @@ local StorageAPI = {}
 ---Get Number
 ---@static
 ---@function [StorageAPI.GetNumberValue]
----@return System.Single
+---@return System.Single 存储的数值 Stored number value
 ---@param group System.String
 ---@param key System.String
 ---@param defaultValue System.Single
@@ -2007,6 +2104,11 @@ function StorageAPI.SetBooleanValue(group, key, value) end
 ---@static
 ---@function [StorageAPI.SaveStorage]
 function StorageAPI.SaveStorage() end
+---清空所有存储数据
+---Clear all stored data
+---@static
+---@function [StorageAPI.Clear]
+function StorageAPI.Clear() end
 return StorageAPI
 
 ---坦克相关 API
@@ -2055,89 +2157,112 @@ function TeamAPI.GetPlayerTeam() end
 ---@function [TeamAPI.GetEnemyTeam]
 ---@return ShanghaiWindy.Core.TeamManager+Team 敌对团队 Enemy Team
 function TeamAPI.GetEnemyTeam() end
+---获取红队
+---Get red team
 ---@static
 ---@function [TeamAPI.GetRedTeam]
----@return ShanghaiWindy.Core.TeamManager+Team
+---@return ShanghaiWindy.Core.TeamManager+Team 红队 Red team
 function TeamAPI.GetRedTeam() end
+---获取蓝队
+---Get blue team
 ---@static
 ---@function [TeamAPI.GetBlueTeam]
----@return ShanghaiWindy.Core.TeamManager+Team
+---@return ShanghaiWindy.Core.TeamManager+Team 蓝队 Blue team
 function TeamAPI.GetBlueTeam() end
+---获取无队伍
+---Get none team
 ---@static
 ---@function [TeamAPI.GetNoneTeam]
----@return ShanghaiWindy.Core.TeamManager+Team
+---@return ShanghaiWindy.Core.TeamManager+Team 无队伍 None team
 function TeamAPI.GetNoneTeam() end
 return TeamAPI
 
+---时间与帧回调 API
+---Time and Tick API
 ---@class ShanghaiWindy.Core.API.TimeAPI
 local TimeAPI = {}
 
+---注册 Quarter Tick 回调（每 0.25 秒触发一次）。
+---Register a quarter tick callback (triggered every 0.25 seconds).
 ---@static
 ---@function [TimeAPI.RegisterQuarterTick]
----@return System.Void
 ---@param callback ShanghaiWindy.Core.Delegate.OnQuarterTickDelegate
 function TimeAPI.RegisterQuarterTick(callback) end
+---取消注册 Quarter Tick 回调。
+---Unregister a quarter tick callback.
 ---@static
 ---@function [TimeAPI.UnRegisterQuarterTick]
----@return System.Void
 ---@param callback ShanghaiWindy.Core.Delegate.OnQuarterTickDelegate
 function TimeAPI.UnRegisterQuarterTick(callback) end
+---注册 LateUpdate 帧回调。
+---Register a LateUpdate frame tick callback.
 ---@static
 ---@function [TimeAPI.RegisterLateFrameTick]
----@return System.Void
 ---@param callback ShanghaiWindy.Core.Delegate.OnTickDelegate
 function TimeAPI.RegisterLateFrameTick(callback) end
+---取消注册 LateUpdate 帧回调。
+---Unregister a LateUpdate frame tick callback.
 ---@static
 ---@function [TimeAPI.UnRegisterLateFrameTick]
----@return System.Void
 ---@param callback ShanghaiWindy.Core.Delegate.OnTickDelegate
 function TimeAPI.UnRegisterLateFrameTick(callback) end
+---注册 FixedUpdate 帧回调。
+---Register a FixedUpdate frame tick callback.
 ---@static
 ---@function [TimeAPI.RegisterFixedFrameTick]
----@return System.Void
 ---@param callback ShanghaiWindy.Core.Delegate.OnTickDelegate
 function TimeAPI.RegisterFixedFrameTick(callback) end
+---取消注册 FixedUpdate 帧回调。
+---Unregister a FixedUpdate frame tick callback.
 ---@static
 ---@function [TimeAPI.UnRegisterFixedFrameTick]
----@return System.Void
 ---@param callback ShanghaiWindy.Core.Delegate.OnTickDelegate
 function TimeAPI.UnRegisterFixedFrameTick(callback) end
+---获取上一帧的时间增量。
+---Get the time elapsed since the last frame.
 ---@static
 ---@function [TimeAPI.GetDeltaTime]
----@return System.Single
+---@return System.Single 帧间隔时间 Delta time in seconds
 function TimeAPI.GetDeltaTime() end
+---获取固定时间步长。
+---Get the fixed time step interval.
 ---@static
 ---@function [TimeAPI.GetFixedDeltaTime]
----@return System.Single
+---@return System.Single 固定帧间隔时间 Fixed delta time in seconds
 function TimeAPI.GetFixedDeltaTime() end
+---获取游戏已运行时间。
+---Get the time since the game started.
 ---@static
 ---@function [TimeAPI.GetTime]
----@return System.Single
+---@return System.Single 游戏时间 Time in seconds
 function TimeAPI.GetTime() end
 return TimeAPI
 
+---Transform 操作 API
+---Transform API
 ---@class ShanghaiWindy.Core.API.TransformAPI
 local TransformAPI = {}
 
----From euler angle to rotation
+---将欧拉角转为四元数旋转。
+---Convert euler angles to quaternion rotation.
 ---@static
 ---@function [TransformAPI.EulerToRot]
----@return UnityEngine.Quaternion
+---@return UnityEngine.Quaternion 四元数 Quaternion
 ---@param eulerAngle UnityEngine.Vector3
 function TransformAPI.EulerToRot(eulerAngle) end
 ---寻找路径物体
----Find path
+---Find child by path
 ---@static
 ---@function [TransformAPI.Find]
----@return UnityEngine.Transform
+---@return UnityEngine.Transform 目标 Transform Target transform
 ---@param trans UnityEngine.Transform
 ---@param path System.String
 function TransformAPI.Find(trans, path) end
 ---创建 Transform
----Create transform
+---Create a new transform
 ---@static
 ---@function [TransformAPI.CreateTransform]
----@return UnityEngine.Transform
+---@return UnityEngine.Transform 新建的 Transform New transform
 ---@param transformName System.String
 function TransformAPI.CreateTransform(transformName) end
 return TransformAPI
@@ -2163,7 +2288,7 @@ function UIAPI.RemoveUI(index) end
 ---UI Pool
 ---@static
 ---@function [UIAPI.GetUIPool]
----@return ShanghaiWindy.Core.UIPoolComponent
+---@return ShanghaiWindy.Core.UIPoolComponent UI 对象池组件 UI pool component
 ---@param prototype UnityEngine.GameObject
 function UIAPI.GetUIPool(prototype) end
 ---@static
@@ -2177,14 +2302,14 @@ function UIAPI.ShowPopup(message, hasCancel, callback) end
 ---Get localized content
 ---@static
 ---@function [UIAPI.GetLocalizedContent]
----@return System.String
+---@return System.String 本地化文字 Localized text
 ---@param text System.String
 function UIAPI.GetLocalizedContent(text) end
 ---格式化文本
 ---Format string
 ---@static
 ---@function [UIAPI.FormatString]
----@return System.String
+---@return System.String 格式化结果 Formatted string
 ---@param format System.String
 ---@param objects System.Object[]
 function UIAPI.FormatString(format, objects) end
@@ -2305,7 +2430,7 @@ function VehicleAPI.TryGetArmyInitSystemFromGameObject(gameObject, armyInitSyste
 ---Get all the fire system from vehicle.
 ---@static
 ---@function [VehicleAPI.GetFireList]
----@return System.Collections.Generic.List`1[[ShanghaiWindy.Core.BaseFireSystem, Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]] 火力系统数组 Array of fire system
+---@return System.Collections.Generic.List`1[[ShanghaiWindy.Core.IBaseFireSystem, Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]] 火力系统数组 Array of fire system
 ---@param vehicle ShanghaiWindy.Core.BaseInitSystem
 function VehicleAPI.GetFireList(vehicle) end
 ---获取载具信息
@@ -2319,7 +2444,7 @@ function VehicleAPI.GetVehicleInfoByName(vehicleName) end
 ---Get vehicle info guid
 ---@static
 ---@function [VehicleAPI.GetVehicleInfoByGuid]
----@return ShanghaiWindy.Core.VehicleInfo
+---@return ShanghaiWindy.Core.VehicleInfo 载具信息 Vehicle info
 ---@param guid System.String
 function VehicleAPI.GetVehicleInfoByGuid(guid) end
 ---获取所有可驾驶载具列表
@@ -2359,13 +2484,35 @@ function VehicleAPI.RandomPickVehicleFromList(vehicleList, maxVehicles) end
 function VehicleAPI.LoadVehicleThumbnail(vehicleInfo, callback) end
 return VehicleAPI
 
----@class ShanghaiWindy.Core.IControllableVehicle
-local IControllableVehicle = {}
+---@class ShanghaiWindy.Core.IVehicleController
+local IVehicleController = {}
 
-return IControllableVehicle
+return IVehicleController
 
----@class ShanghaiWindy.Core.UIEnum
-local UIEnum = {}
+---@class ShanghaiWindy.Core.UIPoolComponent
+local UIPoolComponent = {}
 
-return UIEnum
+---@instance
+---@function [UIPoolComponent:Get]
+---@return UnityEngine.GameObject
+---@param stayWorldPos System.Boolean
+function UIPoolComponent:Get(stayWorldPos) end
+---@instance
+---@function [UIPoolComponent:Release]
+---@return System.Void
+---@param instance UnityEngine.GameObject
+function UIPoolComponent:Release(instance) end
+---@instance
+---@function [UIPoolComponent:Clear]
+---@return System.Void
+function UIPoolComponent:Clear() end
+---@instance
+---@function [UIPoolComponent:Dispose]
+---@return System.Void
+function UIPoolComponent:Dispose() end
+---@instance
+---@function [UIPoolComponent:GetActiveCount]
+---@return System.Int32
+function UIPoolComponent:GetActiveCount() end
+return UIPoolComponent
 
