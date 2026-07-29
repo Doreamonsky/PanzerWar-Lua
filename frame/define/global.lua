@@ -44,16 +44,6 @@ DIYMapUserDefinedRule = CS.ShanghaiWindy.Core.Data.DIYMapUserDefined.Rule
 --- @field GetDIYUserDefines fun():List<DIYMapUserDefined>
 UserDIYMapDataManager = CS.ShanghaiWindy.Core.UserDIYMapDataManager
 
---- @class DIYFileRecycleMgr
---- @field OnShareFile UnityEvent<string>
---- @field OnLoadFile UnityEvent<string>
---- @field OnPublishFile UnityEvent<string>
---- @field OnDeleteFile UnityEvent<string>
---- @field AddFileName fun(fileName:string):void
---- @field RemoveFileName fun(fileName:string):void
---- @field Refresh fun():void
---- @field Clean fun():void
-DIYFileRecycleMgr = CS.ShanghaiWindy.Core.DIYFileRecycleMgr
 GameEventManager = CS.ShanghaiWindy.Core.GameEventManager
 
 --- @field Team Team
@@ -146,20 +136,11 @@ FreeCamera = CS.ShanghaiWindy.Core.FreeCamera
 
 Joystick = CS.ShanghaiWindy.Core.Joystick
 
---- @class DIYHandleManager
---- @field Instance DIYHandleManager
---- @field isDragging boolean
-DIYHandleManager = CS.ShanghaiWindy.Core.DIYHandleManager
-
 --- @class DIYMapItemComponentDragPicker
 --- @field Instance DIYMapItemComponentDragPicker
 --- @field GetRayItem fun(screenPoint:Vector2)
 DIYMapItemComponentDragPicker = CS.ShanghaiWindy.Core.DIYMapItemComponentDragPicker
 
---- @class DIYDragPicker
---- @field Instance DIYDragPicker
---- @field GetRayItem fun(screenPoint:Vector2)
-DIYDragPicker = CS.ShanghaiWindy.Core.DIYDragPicker
 
 --- @class DIYDataPackageManager
 --- @field Instance DIYDataPackageManager
