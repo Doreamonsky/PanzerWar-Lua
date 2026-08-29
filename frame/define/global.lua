@@ -126,10 +126,6 @@ eDIYControlType = CS.ShanghaiWindy.Core.eDIYControlType
 --- @field Dispose fun():void
 GameObjectPool = CS.ShanghaiWindy.Core.Utils.GameObjectPool
 
---- @class RuntimeHandlesComponent
---- @field HandleScale float
-RuntimeHandlesComponent = CS.Battlehub.RTHandles.RuntimeHandlesComponent
-
 --- @class FreeCamera
 --- @field CreateFreeCamera fun():void 创建摄像机
 FreeCamera = CS.ShanghaiWindy.Core.FreeCamera
@@ -154,10 +150,6 @@ RuntimeInspector = CS.RuntimeInspectorNamespace.RuntimeInspector
 
 --- @class UIEventUtil
 UIEventUtil = CS.ShanghaiWindy.Core.UIEventUtil
-
-PositionHandle = CS.Battlehub.RTHandles.PositionHandle
-RotationHandle = CS.Battlehub.RTHandles.RotationHandle
-ScaleHandle = CS.Battlehub.RTHandles.ScaleHandle
 
 --- @class UIManager
 --- @field Instance UIManager
