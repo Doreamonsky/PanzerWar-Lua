@@ -1,0 +1,26 @@
+{
+    "description": "弃用载具扩展包（不再维护）",
+    "infos": [
+        {
+            "modNames": [
+                "BuildPipline-Vehicle-Legacy-Extend"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/ExportPackages"
+                },
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/ExportPackages"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/ExportPackages"
+                }
+            ],
+            "isCleanDstFolder": false,
+            "isPackage": true
+        }
+    ]
+}
