@@ -1,0 +1,26 @@
+{
+    "description": "Atlas 地图 · 圩港交战区（Polderhaven Battle）",
+    "infos": [
+        {
+            "modNames": [
+                "Packages/com.shanghaiwindy.atlas.architecture/Styles/Netherlands/Maps/PolderhavenBattle/ModPackage/PolderhavenBattle-BuildPipeline.asset"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/ExportPackages"
+                },
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/ExportPackages"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/ExportPackages"
+                }
+            ],
+            "isCleanDstFolder": false,
+            "isPackage": true
+        }
+    ]
+}
