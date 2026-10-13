@@ -1,0 +1,26 @@
+{
+    "description": "Atlas 地图 · 炼油城交战区（Refinery Battle）",
+    "infos": [
+        {
+            "modNames": [
+                "Packages/com.shanghaiwindy.atlas.architecture/Styles/MiddleEast/Maps/RefineryBattle/ModPackage/RefineryBattle-BuildPipeline.asset"
+            ],
+            "copyInfo": [
+                {
+                    "platform": "Android",
+                    "dstDir": "D:/Projects/ExportPackages"
+                },
+                {
+                    "platform": "StandaloneWindows64",
+                    "dstDir": "D:/Projects/ExportPackages"
+                },
+                {
+                    "platform": "iOS",
+                    "dstDir": "/Users/shanghaiwindy/Projects/ExportPackages"
+                }
+            ],
+            "isCleanDstFolder": false,
+            "isPackage": true
+        }
+    ]
+}
